@@ -37,6 +37,9 @@
   <!-- Confetti library for victory celebration -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
+  <!-- QR Code Generator for Projector & Mobile Join -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
   <style>
     :root {
       /* Brand Color Palette - Community Innovation Hub */
@@ -630,6 +633,172 @@
       transition: all 0.2s;
     }
     .pin-copy-pill:hover { background: rgba(6, 182, 212, 0.25); }
+
+    /* Host Join Showcase & QR Code Display */
+    .host-join-showcase {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid var(--card-border-glow);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+    @media (max-width: 620px) {
+      .host-join-showcase {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+    .qr-code-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      flex-shrink: 0;
+      width: 154px;
+    }
+    .qr-code-svg-wrap {
+      width: 134px;
+      height: 134px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-code-svg-wrap svg {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+    .qr-code-prompt {
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .host-pin-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      min-width: 200px;
+    }
+    .join-url-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .join-url-hint strong {
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .btn-qr-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(14, 165, 233, 0.35);
+      color: #38bdf8;
+      padding: 5px 11px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-qr-action:hover {
+      background: rgba(14, 165, 233, 0.3);
+      color: #ffffff;
+      border-color: rgba(14, 165, 233, 0.6);
+    }
+    .dual-qr-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 8px;
+      margin: 8px auto;
+      width: 120px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+    .dual-qr-svg-wrap {
+      width: 104px;
+      height: 104px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dual-qr-svg-wrap svg {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+    .dual-qr-actions-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .pin-detected-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #34d399;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      animation: pulseDetected 2s infinite ease-in-out;
+    }
+    @keyframes pulseDetected {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.25); }
+    }
+    .modal-qr-card {
+      max-width: 440px;
+      width: 92%;
+      text-align: center;
+    }
+    .enlarge-qr-svg-wrap {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      margin: 0 auto;
+      width: 260px;
+      height: 260px;
+    }
+    .enlarge-qr-svg-wrap svg {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
 
     .lobby-counter-row {
       display: flex;
@@ -3167,6 +3336,12 @@
           </div>
         </div>
 
+        <!-- PIN Auto-Detected Banner -->
+        <div id="join-pin-detected-pill" class="pin-detected-pill" style="display: none;">
+          <svg class="ui-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span id="join-pin-detected-text">Room PIN Auto-Detected from QR Code!</span>
+        </div>
+
         <div class="input-card">
           <label class="input-label" for="input-join-name">Your Name (No nickname)</label>
           <input type="text" id="input-join-name" class="text-input" placeholder="eg Mubarak, Semilore, Bilal" maxlength="25" autocomplete="name">
@@ -3538,6 +3713,21 @@
               <div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Room PIN</div>
               <div id="dual-pin-creative" class="dual-pin-box">----</div>
             </div>
+            <!-- Dual Creative QR Code -->
+            <div class="dual-qr-wrapper">
+              <div id="dual-qr-creative" class="dual-qr-svg-wrap"></div>
+              <div class="qr-code-prompt" style="font-size:10px; margin-top:3px;">
+                <svg class="ui-icon" viewBox="0 0 24 24" style="width:11px; height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg> Scan for 3D
+              </div>
+            </div>
+            <div class="dual-qr-actions-row">
+              <button type="button" class="btn-qr-action" id="btn-enlarge-qr-creative" title="Enlarge Creative QR Code">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg> Enlarge QR
+              </button>
+              <button type="button" class="btn-qr-action" id="btn-copy-link-creative" title="Copy Direct Join Link">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> Copy Link
+              </button>
+            </div>
             <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700;">
               <span id="dual-count-creative">Innovators: 0</span>
               <span style="color: var(--cih-cyan);">Blender 3D</span>
@@ -3559,6 +3749,21 @@
             <div style="text-align: center; margin: 4px 0;">
               <div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Room PIN</div>
               <div id="dual-pin-programming" class="dual-pin-box">----</div>
+            </div>
+            <!-- Dual Programming QR Code -->
+            <div class="dual-qr-wrapper">
+              <div id="dual-qr-programming" class="dual-qr-svg-wrap"></div>
+              <div class="qr-code-prompt" style="font-size:10px; margin-top:3px;">
+                <svg class="ui-icon" viewBox="0 0 24 24" style="width:11px; height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg> Scan for JS
+              </div>
+            </div>
+            <div class="dual-qr-actions-row">
+              <button type="button" class="btn-qr-action" id="btn-enlarge-qr-programming" title="Enlarge Programming QR Code">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg> Enlarge QR
+              </button>
+              <button type="button" class="btn-qr-action" id="btn-copy-link-programming" title="Copy Direct Join Link">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> Copy Link
+              </button>
             </div>
             <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700;">
               <span id="dual-count-programming">Innovators: 0</span>
@@ -3585,12 +3790,42 @@
 
       <!-- SINGLE LOBBY VIEW (When Host picks 1 track or when Student joins) -->
       <div id="lobby-single-container">
-        <div class="lobby-pin-card">
-          <p class="lobby-pin-label">Share This Room PIN with Innovators</p>
-          <div id="lobby-pin-display" class="lobby-pin-number">----</div>
-          <button id="btn-copy-pin" class="pin-copy-pill" title="Copy PIN">
-            Copy PIN &amp; Link
-          </button>
+        <!-- Host Showcase: QR Code & Big PIN (Visible to Host) -->
+        <div id="lobby-host-pin-showcase" class="host-join-showcase">
+          <div class="qr-code-box">
+            <div id="single-lobby-qr-container" class="qr-code-svg-wrap">
+              <!-- Rendered SVG QR -->
+            </div>
+            <div class="qr-code-prompt">
+              <svg class="ui-icon" viewBox="0 0 24 24" style="width:12px; height:12px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              Scan to Join
+            </div>
+            <button type="button" id="btn-enlarge-qr-single" class="btn-qr-action" style="margin-top: 6px; width: 100%; justify-content: center;" title="Enlarge QR Code on Big Screen">
+              <svg class="ui-icon" viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg> Enlarge QR
+            </button>
+          </div>
+
+          <div class="host-pin-details">
+            <p class="lobby-pin-label">Share This Room PIN with Innovators</p>
+            <div id="lobby-pin-display" class="lobby-pin-number">----</div>
+            <p class="join-url-hint" id="host-join-domain-hint">
+              Point camera or browse to join
+            </p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+              <button id="btn-copy-join-link" class="pin-copy-pill" title="Copy direct link for WhatsApp">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> Copy Join Link
+              </button>
+              <button id="btn-copy-pin" class="pin-copy-pill" style="background: rgba(255,255,255,0.06); color: var(--text-secondary);" title="Copy PIN only">
+                Copy PIN
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Waiting View PIN Summary (Visible when Student joins) -->
+        <div id="lobby-student-pin-showcase" class="lobby-pin-card" style="display: none;">
+          <p class="lobby-pin-label">Room PIN</p>
+          <div id="lobby-student-pin-display" class="lobby-pin-number">----</div>
         </div>
 
         <div class="lobby-counter-row">
@@ -4230,6 +4465,42 @@ D) E"></textarea>
               </button>
             </div>
           </form>
+        </div>
+    <!-- ==========================================
+         MODAL: ENLARGE QR CODE ON BIG SCREEN
+         ========================================== -->
+    <div id="modal-enlarge-qr" class="modal-overlay" style="display: none;">
+      <div class="modal-card modal-qr-card">
+        <div class="modal-header">
+          <h3 id="modal-qr-title" class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+            <svg class="ui-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Scan to Join Showdown
+          </h3>
+          <button type="button" id="btn-close-enlarge-qr" class="modal-close-btn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body" style="text-align: center; padding: 18px 14px;">
+          <p id="modal-qr-subtitle" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+            Point your smartphone camera at this QR code to join instantly
+          </p>
+          <div id="modal-qr-svg-container" class="enlarge-qr-svg-wrap">
+            <!-- Rendered massive SVG QR code -->
+          </div>
+          <div style="margin-top: 16px;">
+            <div style="font-size: 11px; color: var(--cih-cyan); text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em;">Room PIN</div>
+            <div id="modal-qr-pin" style="font-family: var(--font-heading); font-size: 46px; font-weight: 900; letter-spacing: 0.18em; color: #fff; text-shadow: 0 0 24px rgba(6, 182, 212, 0.7);">
+              ----
+            </div>
+            <div id="modal-qr-url" style="font-size: 11px; color: var(--text-secondary); word-break: break-all; margin-top: 6px;"></div>
+          </div>
+          <div style="margin-top: 18px; display: flex; justify-content: center; gap: 10px;">
+            <button type="button" id="btn-modal-copy-link" class="btn btn-primary" style="width: auto; min-height: 40px; padding: 0 18px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg class="ui-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              Copy Join Link
+            </button>
+            <button type="button" id="btn-modal-dismiss-qr" class="btn btn-secondary" style="width: auto; min-height: 40px; padding: 0 18px; font-size: 13px;">
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -6320,7 +6591,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
       setTimeout(() => {
         introSplashScreen.style.display = 'none';
-        const inputName = document.getElementById('input-player-name');
+        const inputName = document.getElementById('input-join-name') || document.getElementById('input-player-name');
         if (inputName) {
           try { inputName.focus(); } catch (_) {}
         }
@@ -6521,6 +6792,34 @@ if (typeof module !== 'undefined' && module.exports) {
     const lobbyHostControls = document.getElementById('lobby-host-controls');
     const lobbyStudentWaiting = document.getElementById('lobby-student-waiting');
     const lobbyRulesSummary = document.getElementById('lobby-rules-summary');
+
+    // Host QR Code & Join Showcase Elements
+    const lobbyHostPinShowcase = document.getElementById('lobby-host-pin-showcase');
+    const lobbyStudentPinShowcase = document.getElementById('lobby-student-pin-showcase');
+    const lobbyStudentPinDisplay = document.getElementById('lobby-student-pin-display');
+    const singleLobbyQrContainer = document.getElementById('single-lobby-qr-container');
+    const hostJoinDomainHint = document.getElementById('host-join-domain-hint');
+    const btnEnlargeQrSingle = document.getElementById('btn-enlarge-qr-single');
+    const btnCopyJoinLink = document.getElementById('btn-copy-join-link');
+
+    // Dual Lobby QR Elements
+    const dualQrCreative = document.getElementById('dual-qr-creative');
+    const dualQrProgramming = document.getElementById('dual-qr-programming');
+    const btnEnlargeQrCreative = document.getElementById('btn-enlarge-qr-creative');
+    const btnEnlargeQrProgramming = document.getElementById('btn-enlarge-qr-programming');
+    const btnCopyLinkCreative = document.getElementById('btn-copy-link-creative');
+    const btnCopyLinkProgramming = document.getElementById('btn-copy-link-programming');
+
+    // Enlarge QR Modal Elements
+    const modalEnlargeQr = document.getElementById('modal-enlarge-qr');
+    const modalQrTitle = document.getElementById('modal-qr-title');
+    const modalQrSubtitle = document.getElementById('modal-qr-subtitle');
+    const modalQrSvgContainer = document.getElementById('modal-qr-svg-container');
+    const modalQrPin = document.getElementById('modal-qr-pin');
+    const modalQrUrl = document.getElementById('modal-qr-url');
+    const btnCloseEnlargeQr = document.getElementById('btn-close-enlarge-qr');
+    const btnModalCopyLink = document.getElementById('btn-modal-copy-link');
+    const btnModalDismissQr = document.getElementById('btn-modal-dismiss-qr');
 
     // Dual Lobby Elements
     const dualPinCreative = document.getElementById('dual-pin-creative');
@@ -7819,6 +8118,167 @@ if (typeof module !== 'undefined' && module.exports) {
     loadAllTrackDecksFromStorage();
     switchStudioTrack('creative');
 
+    /* ==========================================================================
+       7.3 QR CODE GENERATOR & INSTANT MOBILE JOIN
+       ========================================================================== */
+    function getRoomJoinUrl(pin, track) {
+      const loc = window.location;
+      let base = loc.protocol + '//' + loc.host + loc.pathname;
+      let url = base + '?pin=' + encodeURIComponent(pin || '');
+      if (track) {
+        url += '&track=' + encodeURIComponent(track);
+      }
+      return url;
+    }
+
+    function generateQrCodeSvg(text, cellSize = 5, margin = 2) {
+      try {
+        if (typeof qrcode === 'function') {
+          const qr = qrcode(0, 'M');
+          qr.addData(text);
+          qr.make();
+          return qr.createSvgTag(cellSize, margin);
+        }
+      } catch (err) {
+        console.warn('QR generation error:', err);
+      }
+      return '<div style="padding:12px;text-align:center;color:#0f172a;background:#fff;border-radius:8px;font-size:11px;font-weight:700;">Scan at Hub:<br><span style="font-size:14px;letter-spacing:1px;color:#203ee8;">' + escapeHtml(text) + '</span></div>';
+    }
+
+    function renderSingleLobbyQrCode() {
+      if (!singleLobbyQrContainer) return;
+      const joinUrl = getRoomJoinUrl(state.roomPin, state.track);
+      singleLobbyQrContainer.innerHTML = generateQrCodeSvg(joinUrl, 4, 1);
+      if (hostJoinDomainHint) {
+        const displayHost = window.location.host + (window.location.pathname.length > 1 ? window.location.pathname : '');
+        hostJoinDomainHint.innerHTML = 'Point camera or browse to <strong>' + escapeHtml(displayHost) + '</strong>';
+      }
+    }
+
+    function renderDualLobbyQrCodes() {
+      if (dualQrCreative) {
+        const urlCreative = getRoomJoinUrl(state.pinCreative, 'creative');
+        dualQrCreative.innerHTML = generateQrCodeSvg(urlCreative, 3, 1);
+      }
+      if (dualQrProgramming) {
+        const urlProgramming = getRoomJoinUrl(state.pinProgramming, 'programming');
+        dualQrProgramming.innerHTML = generateQrCodeSvg(urlProgramming, 3, 1);
+      }
+    }
+
+    function openEnlargeQrModal(pin, trackTitle, trackParam) {
+      if (!modalEnlargeQr) return;
+      const url = getRoomJoinUrl(pin, trackParam);
+      if (modalQrTitle) {
+        modalQrTitle.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> ' + escapeHtml(trackTitle || 'Hub Showdown') + ': Scan to Join';
+      }
+      if (modalQrSubtitle) {
+        modalQrSubtitle.textContent = 'Point your smartphone camera at this QR code to join ' + (trackTitle || 'the room') + ' instantly';
+      }
+      if (modalQrPin) modalQrPin.textContent = pin || '----';
+      if (modalQrUrl) modalQrUrl.textContent = url;
+      if (modalQrSvgContainer) modalQrSvgContainer.innerHTML = generateQrCodeSvg(url, 7, 3);
+
+      modalEnlargeQr.dataset.currentUrl = url;
+      modalEnlargeQr.style.display = 'flex';
+      modalEnlargeQr.classList.add('active');
+    }
+
+    function closeEnlargeQrModal() {
+      if (!modalEnlargeQr) return;
+      modalEnlargeQr.style.display = 'none';
+      modalEnlargeQr.classList.remove('active');
+    }
+
+    function checkUrlJoinParams() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        let pin = urlParams.get('pin');
+        if (!pin && window.location.hash) {
+          const hashMatch = window.location.hash.match(/pin=([0-9A-Za-z]{4})/i);
+          if (hashMatch) pin = hashMatch[1];
+        }
+        if (pin) {
+          pin = pin.trim().toUpperCase();
+          if (pin.length === 4) {
+            if (inputJoinPin) inputJoinPin.value = pin;
+            const pill = document.getElementById('join-pin-detected-pill');
+            const pillText = document.getElementById('join-pin-detected-text');
+            const track = urlParams.get('track');
+            if (pill) {
+              pill.style.display = 'inline-flex';
+              if (track) {
+                const trackName = track === 'creative' ? 'Creative (3D)' : (track === 'programming' ? 'Programming (Web Dev)' : track);
+                if (pillText) pillText.textContent = 'Room PIN ' + pin + ' detected (' + trackName + ') via QR code!';
+              } else {
+                if (pillText) pillText.textContent = 'Room PIN ' + pin + ' detected via QR code!';
+              }
+            }
+            const splashHelper = document.querySelector('.intro-btn-helper');
+            if (splashHelper) {
+              splashHelper.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Room PIN ' + pin + ' detected - Click Enter to join!';
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('URL param parse error:', err);
+      }
+    }
+
+    // Modal listeners
+    if (btnCloseEnlargeQr) btnCloseEnlargeQr.addEventListener('click', closeEnlargeQrModal);
+    if (btnModalDismissQr) btnModalDismissQr.addEventListener('click', closeEnlargeQrModal);
+    if (modalEnlargeQr) {
+      modalEnlargeQr.addEventListener('click', (e) => {
+        if (e.target === modalEnlargeQr) closeEnlargeQrModal();
+      });
+    }
+    if (btnModalCopyLink) {
+      btnModalCopyLink.addEventListener('click', () => {
+        const url = (modalEnlargeQr && modalEnlargeQr.dataset.currentUrl) ? modalEnlargeQr.dataset.currentUrl : window.location.href;
+        copyTextToClipboard(url, btnModalCopyLink, 'Copy Join Link');
+      });
+    }
+
+    if (btnEnlargeQrSingle) {
+      btnEnlargeQrSingle.addEventListener('click', () => {
+        const trackTitle = state.track === 'creative' ? 'Creative Track (Blender 3D)' : (state.track === 'programming' ? 'Programming Track (JavaScript)' : (state.track === 'general' ? 'General Knowledge' : 'Custom Quiz'));
+        openEnlargeQrModal(state.roomPin, trackTitle, state.track);
+      });
+    }
+    if (btnCopyJoinLink) {
+      btnCopyJoinLink.addEventListener('click', () => {
+        const url = getRoomJoinUrl(state.roomPin, state.track);
+        copyTextToClipboard(url, btnCopyJoinLink, 'Copy Join Link');
+      });
+    }
+
+    if (btnEnlargeQrCreative) {
+      btnEnlargeQrCreative.addEventListener('click', () => {
+        openEnlargeQrModal(state.pinCreative, 'Creative Track (Blender 3D)', 'creative');
+      });
+    }
+    if (btnCopyLinkCreative) {
+      btnCopyLinkCreative.addEventListener('click', () => {
+        const url = getRoomJoinUrl(state.pinCreative, 'creative');
+        copyTextToClipboard(url, btnCopyLinkCreative, 'Copy Link');
+      });
+    }
+
+    if (btnEnlargeQrProgramming) {
+      btnEnlargeQrProgramming.addEventListener('click', () => {
+        openEnlargeQrModal(state.pinProgramming, 'Programming Track (JavaScript)', 'programming');
+      });
+    }
+    if (btnCopyLinkProgramming) {
+      btnCopyLinkProgramming.addEventListener('click', () => {
+        const url = getRoomJoinUrl(state.pinProgramming, 'programming');
+        copyTextToClipboard(url, btnCopyLinkProgramming, 'Copy Link');
+      });
+    }
+
+    checkUrlJoinParams();
+
 
     function generateRoomPin() {
       return String(Math.floor(1000 + Math.random() * 9000));
@@ -7929,6 +8389,7 @@ if (typeof module !== 'undefined' && module.exports) {
           if (lobbySingleContainer) lobbySingleContainer.style.display = 'none';
 
           renderDualLobbyRosters();
+          renderDualLobbyQrCodes();
           showScreen('lobby');
 
           hubNet.connect([state.pinCreative, state.pinProgramming], 'host', () => {
@@ -7972,6 +8433,9 @@ if (typeof module !== 'undefined' && module.exports) {
           if (lobbyPinDisplay) lobbyPinDisplay.textContent = state.roomPin;
           if (lobbyHostControls) lobbyHostControls.style.display = 'block';
           if (lobbyStudentWaiting) lobbyStudentWaiting.style.display = 'none';
+          if (lobbyHostPinShowcase) lobbyHostPinShowcase.style.display = 'flex';
+          if (lobbyStudentPinShowcase) lobbyStudentPinShowcase.style.display = 'none';
+
           if (lobbyRulesSummary) {
             const trackTitle = state.track === 'creative' ? 'Blender 3D' : (state.track === 'programming' ? 'JavaScript' : (state.track === 'general' ? 'General Knowledge' : 'Custom Quiz'));
             lobbyRulesSummary.textContent = `${state.totalQuestions} Questions | ${state.timerSeconds}s Timer | ${trackTitle}`;
@@ -7982,6 +8446,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
           state.lobbyPlayers = [{ id: state.playerId, name: state.playerName, isHost: true }];
           renderSingleLobbyRoster();
+          renderSingleLobbyQrCode();
           showScreen('lobby');
 
           hubNet.connect([state.roomPin], 'host', () => {
@@ -8023,6 +8488,9 @@ if (typeof module !== 'undefined' && module.exports) {
 
         if (appShellMain) appShellMain.classList.remove('wide-shell');
         if (lobbyPinDisplay) lobbyPinDisplay.textContent = pin;
+        if (lobbyStudentPinDisplay) lobbyStudentPinDisplay.textContent = pin;
+        if (lobbyHostPinShowcase) lobbyHostPinShowcase.style.display = 'none';
+        if (lobbyStudentPinShowcase) lobbyStudentPinShowcase.style.display = 'block';
         if (lobbyHostControls) lobbyHostControls.style.display = 'none';
         if (lobbyStudentWaiting) lobbyStudentWaiting.style.display = 'block';
 
@@ -8074,19 +8542,27 @@ if (typeof module !== 'undefined' && module.exports) {
 
     /* Copy PIN & Link Buttons */
     function copyTextToClipboard(text, btnElement, defaultLabel) {
+      const originalHtml = btnElement ? btnElement.innerHTML : '';
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-          btnElement.textContent = 'Copied!';
-          setTimeout(() => { btnElement.textContent = defaultLabel; }, 2000);
+          if (btnElement) {
+            btnElement.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
+            setTimeout(() => {
+              btnElement.innerHTML = originalHtml || defaultLabel;
+            }, 2000);
+          }
+          sound.playCorrect();
+        }).catch(() => {
+          window.prompt('Copy below:', text);
         });
       } else {
-        window.prompt('Copy Room PIN:', text);
+        window.prompt('Copy below:', text);
       }
     }
 
     if (btnCopyPin) {
       btnCopyPin.addEventListener('click', () => {
-        copyTextToClipboard(state.roomPin, btnCopyPin, 'Copy PIN & Link');
+        copyTextToClipboard(state.roomPin, btnCopyPin, 'Copy PIN');
       });
     }
     if (btnCopyPinCreative) {
@@ -9921,7 +10397,14 @@ if (typeof module !== 'undefined' && module.exports) {
       parsePlainTextQuestions,
       exportQuestionsToPlainText,
       openPasteModal,
-      closePasteModal
+      closePasteModal,
+      getRoomJoinUrl,
+      generateQrCodeSvg,
+      renderSingleLobbyQrCode,
+      renderDualLobbyQrCodes,
+      openEnlargeQrModal,
+      closeEnlargeQrModal,
+      checkUrlJoinParams
     };
 
   })();
