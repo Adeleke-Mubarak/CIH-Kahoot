@@ -1279,6 +1279,169 @@
       font-size: 14px;
     }
 
+    /* Highest Climber Banner Callout */
+    .highest-climber-callout {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.15));
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.2);
+      animation: climberSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes climberSlideIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .climber-icon-badge {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
+    .climber-details {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      flex: 1;
+    }
+    .climber-badge-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #34d399;
+    }
+    .climber-message {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+    .climber-highlight-name {
+      color: var(--cih-cyan);
+    }
+    .climber-highlight-jump {
+      color: #34d399;
+      font-weight: 900;
+    }
+
+    /* Rank Delta Indicators */
+    .rank-delta-pill {
+      font-size: 10px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+    }
+    .rank-delta-pill.delta-up {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .rank-delta-pill.delta-down {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .rank-delta-pill.delta-flat {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* "On Fire" Streak Effects */
+    .streak-flame-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      animation: flameGlowPulse 1.8s infinite ease-in-out;
+    }
+    .streak-flame-badge.streak-tier-1 {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(234, 88, 12, 0.3));
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+    .streak-flame-badge.streak-tier-2 {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(249, 115, 22, 0.35));
+      color: #f97316;
+      border: 1px solid rgba(239, 68, 68, 0.6);
+      box-shadow: 0 0 14px rgba(249, 115, 22, 0.45);
+    }
+    .streak-flame-badge.streak-tier-3 {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(236, 72, 153, 0.35));
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.7);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.5);
+    }
+    @keyframes flameGlowPulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.04); filter: brightness(1.2); }
+    }
+
+    /* Student On-Fire Aura on Feedback Card */
+    .round-result-card.is-on-fire {
+      box-shadow: 0 0 28px rgba(245, 158, 11, 0.4), inset 0 0 16px rgba(234, 88, 12, 0.2);
+      border-color: rgba(245, 158, 11, 0.7) !important;
+      animation: flameCardPulse 1.5s infinite ease-in-out;
+    }
+    @keyframes flameCardPulse {
+      0%, 100% { box-shadow: 0 0 24px rgba(245, 158, 11, 0.35); }
+      50% { box-shadow: 0 0 36px rgba(249, 115, 22, 0.6); }
+    }
+    .streak-fire-title {
+      background: linear-gradient(90deg, #f59e0b, #ef4444, #f59e0b);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textShine 2s linear infinite;
+      font-weight: 900;
+    }
+    @keyframes textShine {
+      to { background-position: 200% center; }
+    }
+    .round-feedback-pill.streak-fire-pill {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.3));
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 800;
+    }
+
+    /* Urgent Timer Pulse (Last 5 Seconds) */
+    .timer-digit-box.timer-urgent-pulse {
+      color: #ef4444 !important;
+      text-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important;
+      animation: timerBeepPulse 0.5s infinite ease-in-out;
+      border-color: #ef4444 !important;
+    }
+    @keyframes timerBeepPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
     /* Screen 6: Final Podium */
     .podium-section-wrap {
       position: relative;
@@ -3959,6 +4122,7 @@
 
       <!-- Intermediate Live Top 5 Scoreboard -->
       <div class="round-scoreboard-card">
+        <div id="round-highest-climber-callout" class="highest-climber-callout" style="display: none;"></div>
         <div class="scoreboard-header-row">
           <span id="round-scoreboard-title" class="scoreboard-header-title">Round 1 Scoreboard</span>
           <span id="round-my-standing" class="my-standing-pill">Your Rank: #1</span>
@@ -4466,6 +4630,9 @@ D) E"></textarea>
             </div>
           </form>
         </div>
+      </div>
+    </div>
+
     <!-- ==========================================
          MODAL: ENLARGE QR CODE ON BIG SCREEN
          ========================================== -->
@@ -6260,6 +6427,91 @@ if (typeof module !== 'undefined' && module.exports) {
         osc.start(now);
         osc.stop(now + 0.06);
       }
+
+      playUrgentTick(secRemaining) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const freqMap = { 5: 580, 4: 660, 3: 750, 2: 880, 1: 1040 };
+        const freq = freqMap[secRemaining] || 700;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.26, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(gain);
+        gain.connect(this.masterGain || this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      }
+
+      playTimesUpGong() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(140, now);
+        osc1.frequency.exponentialRampToValueAtTime(80, now + 0.8);
+        gain1.gain.setValueAtTime(0.35, now);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+        osc1.connect(gain1);
+        gain1.connect(this.masterGain || this.ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.85);
+
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(280, now);
+        osc2.frequency.exponentialRampToValueAtTime(110, now + 0.4);
+        gain2.gain.setValueAtTime(0.22, now);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+        osc2.connect(gain2);
+        gain2.connect(this.masterGain || this.ctx.destination);
+        osc2.start(now);
+        osc2.stop(now + 0.45);
+      }
+
+      playStreakPowerupSound(streak) {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = streak >= 5 
+          ? [523.25, 659.25, 783.99, 1046.5, 1318.51] 
+          : [523.25, 659.25, 783.99, 1046.5];
+        const step = 0.055;
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * step);
+          gain.gain.setValueAtTime(0.28, now + idx * step);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * step + 0.28);
+          osc.connect(gain);
+          gain.connect(this.masterGain || this.ctx.destination);
+          osc.start(now + idx * step);
+          osc.stop(now + idx * step + 0.28);
+        });
+      }
+
+      playLeaderboardRevealSound() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const chord = [392.00, 493.88, 587.33, 783.99];
+        chord.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+          gain.gain.setValueAtTime(0.22, now + idx * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 0.6);
+          osc.connect(gain);
+          gain.connect(this.masterGain || this.ctx.destination);
+          osc.start(now + idx * 0.04);
+          osc.stop(now + idx * 0.04 + 0.6);
+        });
+      }
     }
     const sound = new SoundEngine();
 
@@ -6330,6 +6582,7 @@ if (typeof module !== 'undefined' && module.exports) {
       questionTimerInterval: null,
       questionTimeRemaining: 20,
       roomScores: [],
+      previousRanks: {}, // Map: playerId -> rankNumber from previous round
 
       // Animated Podium & Participant Quiz Records
       podiumRevealTimers: [],
@@ -6626,11 +6879,20 @@ if (typeof module !== 'undefined' && module.exports) {
 
     /* Sound Toggle Header Button */
     const btnSoundToggle = document.getElementById('btn-sound-toggle');
+    function updateSoundToggleBtnUI(isAudible) {
+      if (!btnSoundToggle) return;
+      btnSoundToggle.classList.toggle('muted', !isAudible);
+      if (isAudible) {
+        btnSoundToggle.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> Sound: ON';
+      } else {
+        btnSoundToggle.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg> Sound: OFF';
+      }
+    }
     if (btnSoundToggle) {
+      updateSoundToggleBtnUI(!sound.muted);
       btnSoundToggle.addEventListener('click', () => {
         const isAudible = sound.toggleMute();
-        btnSoundToggle.textContent = isAudible ? 'Sound: ON' : 'Sound: OFF';
-        btnSoundToggle.classList.toggle('muted', !isAudible);
+        updateSoundToggleBtnUI(isAudible);
       });
     }
 
@@ -8743,6 +9005,7 @@ if (typeof module !== 'undefined' && module.exports) {
             state.currentStreak = 0;
             state.highestStreak = 0;
             state.currentQuestionIndex = 0;
+            state.previousRanks = {};
             renderQuestion(0);
           }, 800);
         }
@@ -8852,11 +9115,15 @@ if (typeof module !== 'undefined' && module.exports) {
       if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
       state.questionTimeRemaining = seconds;
 
-      if (questionTimerDigit) questionTimerDigit.textContent = `${seconds}s`;
+      if (questionTimerDigit) {
+        questionTimerDigit.textContent = `${seconds}s`;
+        questionTimerDigit.classList.remove('timer-urgent-pulse');
+      }
       if (questionTimerFill) questionTimerFill.style.width = '100%';
 
       const totalMs = seconds * 1000;
       const startTime = Date.now();
+      let lastUrgentBeepSec = -1;
 
       state.questionTimerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
@@ -8875,8 +9142,20 @@ if (typeof module !== 'undefined' && module.exports) {
           }
         }
 
+        // Dynamic Tension Escalation during the final 5 seconds
+        if (remSec <= 5 && remSec > 0) {
+          if (questionTimerDigit) questionTimerDigit.classList.add('timer-urgent-pulse');
+          if (remSec !== lastUrgentBeepSec) {
+            lastUrgentBeepSec = remSec;
+            sound.playUrgentTick(remSec);
+          }
+        } else {
+          if (questionTimerDigit) questionTimerDigit.classList.remove('timer-urgent-pulse');
+        }
+
         if (remSec <= 0) {
           clearInterval(state.questionTimerInterval);
+          if (questionTimerDigit) questionTimerDigit.classList.remove('timer-urgent-pulse');
           handleQuestionTimeout();
         }
       }, 100);
@@ -8907,7 +9186,11 @@ if (typeof module !== 'undefined' && module.exports) {
           if (state.currentStreak > state.highestStreak) {
             state.highestStreak = state.currentStreak;
           }
-          sound.playCorrect();
+          if (state.currentStreak >= 3) {
+            sound.playStreakPowerupSound(state.currentStreak);
+          } else {
+            sound.playCorrect();
+          }
         } else {
           state.currentStreak = 0;
           sound.playIncorrect();
@@ -9006,6 +9289,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
     function handleQuestionTimeout() {
       if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
+      sound.playTimesUpGong();
       if (state.role !== 'host') {
         if (!state.hasAnsweredCurrent) {
           state.hasAnsweredCurrent = true;
@@ -9190,13 +9474,32 @@ if (typeof module !== 'undefined' && module.exports) {
               roundStreakPill.style.color = 'var(--cih-cyan)';
             }
           } else if (isCorrect) {
-            roundFeedbackCard.className = 'round-result-card correct';
-            if (roundFeedbackTitle) roundFeedbackTitle.textContent = 'CORRECT!';
+            roundFeedbackCard.className = 'round-result-card correct' + (state.currentStreak >= 3 ? ' is-on-fire' : '');
+            if (roundFeedbackTitle) {
+              if (state.currentStreak >= 7) {
+                roundFeedbackTitle.innerHTML = '<span class="streak-fire-title"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> GODLIKE STREAK! ' + state.currentStreak + ' IN A ROW!</span>';
+              } else if (state.currentStreak >= 5) {
+                roundFeedbackTitle.innerHTML = '<span class="streak-fire-title"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> UNSTOPPABLE! ' + state.currentStreak + ' IN A ROW!</span>';
+              } else if (state.currentStreak >= 3) {
+                roundFeedbackTitle.innerHTML = '<span class="streak-fire-title"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> ON FIRE! ' + state.currentStreak + ' IN A ROW!</span>';
+              } else {
+                roundFeedbackTitle.textContent = 'CORRECT!';
+              }
+            }
             if (roundPointsPill) {
               roundPointsPill.textContent = `+${state.score} pts total`;
               roundPointsPill.style.color = '#4ade80';
             }
-            if (roundStreakPill) roundStreakPill.textContent = `Streak: ${state.currentStreak}`;
+            if (roundStreakPill) {
+              if (state.currentStreak >= 3) {
+                roundStreakPill.className = 'round-points-pill streak-fire-pill';
+                roundStreakPill.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> ' + state.currentStreak + ' Answer Streak!';
+              } else {
+                roundStreakPill.className = 'round-points-pill';
+                roundStreakPill.textContent = `Streak: ${state.currentStreak}`;
+                roundStreakPill.style.color = '#fbbf24';
+              }
+            }
           } else {
             roundFeedbackCard.className = 'round-result-card incorrect';
             if (roundFeedbackTitle) roundFeedbackTitle.textContent = 'INCORRECT!';
@@ -9204,7 +9507,11 @@ if (typeof module !== 'undefined' && module.exports) {
               roundPointsPill.textContent = `${state.score} pts total`;
               roundPointsPill.style.color = '#f87171';
             }
-            if (roundStreakPill) roundStreakPill.textContent = `Streak: ${state.currentStreak}`;
+            if (roundStreakPill) {
+              roundStreakPill.className = 'round-points-pill';
+              roundStreakPill.textContent = `Streak: ${state.currentStreak}`;
+              roundStreakPill.style.color = '#fbbf24';
+            }
           }
         }
 
@@ -9247,9 +9554,12 @@ if (typeof module !== 'undefined' && module.exports) {
         }
 
         showScreen('roundResult');
+        sound.playLeaderboardRevealSound();
         startRoundAutoAdvance(5);
       }, 1000);
     }
+
+    const roundHighestClimberCallout = document.getElementById('round-highest-climber-callout');
 
     function renderRoundScoreboard() {
       if (roundScoreboardTitle) {
@@ -9261,6 +9571,7 @@ if (typeof module !== 'undefined' && module.exports) {
         const myData = {
           id: state.playerId,
           name: state.playerName,
+          avatar: state.playerAvatar || 'robot',
           score: state.score,
           correctCount: state.correctCount,
           streak: state.currentStreak
@@ -9273,6 +9584,44 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       state.roomScores.sort((a, b) => b.score - a.score);
+
+      // Compute Rank Changes & Identify Highest Climber
+      let highestClimber = null;
+      let maxClimb = 0;
+      const currentRankMap = {};
+
+      state.roomScores.forEach((p, idx) => {
+        const currentRank = idx + 1;
+        currentRankMap[p.id] = currentRank;
+        const prevRank = state.previousRanks[p.id];
+        if (typeof prevRank === 'number') {
+          const delta = prevRank - currentRank; // Positive = climbed up
+          if (delta > maxClimb) {
+            maxClimb = delta;
+            highestClimber = { player: p, delta: delta, currentRank: currentRank, prevRank: prevRank };
+          }
+        }
+      });
+
+      // Render Highest Climber Banner
+      if (roundHighestClimberCallout) {
+        if (highestClimber && maxClimb >= 2) {
+          roundHighestClimberCallout.style.display = 'flex';
+          roundHighestClimberCallout.innerHTML = `
+            <div class="climber-icon-badge">
+              <svg class="ui-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="climber-details">
+              <span class="climber-badge-label">Highest Climber</span>
+              <div class="climber-message">
+                <span class="climber-highlight-name">${escapeHtml(highestClimber.player.name)}</span> leaped <strong class="climber-highlight-jump">+${highestClimber.delta} spots</strong> to #${highestClimber.currentRank}!
+              </div>
+            </div>
+          `;
+        } else {
+          roundHighestClimberCallout.style.display = 'none';
+        }
+      }
 
       if (roundMyStanding) {
         if (state.role === 'host') {
@@ -9293,13 +9642,40 @@ if (typeof module !== 'undefined' && module.exports) {
         } else {
           top5.forEach((p, idx) => {
             const medal = idx === 0 ? '1st' : idx === 1 ? '2nd' : idx === 2 ? '3rd' : `#${idx + 1}`;
+            const currentRank = idx + 1;
+            const prevRank = state.previousRanks[p.id];
+            let deltaHtml = '';
+            if (typeof prevRank === 'number') {
+              const delta = prevRank - currentRank;
+              if (delta > 0) {
+                deltaHtml = `<span class="rank-delta-pill delta-up" title="Climbed ${delta} spots"><svg class="ui-icon" style="width:10px;height:10px;" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>+${delta}</span>`;
+              } else if (delta < 0) {
+                deltaHtml = `<span class="rank-delta-pill delta-down" title="Dropped ${Math.abs(delta)} spots"><svg class="ui-icon" style="width:10px;height:10px;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>${delta}</span>`;
+              } else {
+                deltaHtml = `<span class="rank-delta-pill delta-flat" title="Position unchanged">-</span>`;
+              }
+            }
+
+            let streakHtml = '';
+            if (p.streak >= 7) {
+              streakHtml = `<span class="streak-flame-badge streak-tier-3" title="Godlike Streak!"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> ${p.streak} Streak</span>`;
+            } else if (p.streak >= 5) {
+              streakHtml = `<span class="streak-flame-badge streak-tier-2" title="Unstoppable Streak!"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> ${p.streak} Streak</span>`;
+            } else if (p.streak >= 3) {
+              streakHtml = `<span class="streak-flame-badge streak-tier-1" title="On Fire Streak!"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg> ${p.streak} Streak</span>`;
+            } else if (p.streak >= 2) {
+              streakHtml = `<span style="font-size: 11px; color: var(--cih-amber);">Streak: ${p.streak}</span>`;
+            }
+
             const row = document.createElement('div');
             row.className = `scoreboard-row ${p.id === state.playerId ? 'is-me' : ''}`;
             row.innerHTML = `
               <div class="scoreboard-rank-name">
                 <span style="font-weight: 700; color: var(--cih-cyan); min-width: 32px;">${medal}</span>
+                ${deltaHtml}
+                <div class="chip-avatar-icon" style="width:24px; height:24px; min-width:24px;">${getAvatarSvg(p.avatar || 'robot', 24)}</div>
                 <span>${escapeHtml(p.name)}</span>
-                ${p.streak >= 2 ? `<span style="font-size: 11px; color: var(--cih-amber);">Streak: ${p.streak}</span>` : ''}
+                ${streakHtml}
               </div>
               <div class="scoreboard-pts">${p.score} pts</div>
             `;
@@ -9307,6 +9683,9 @@ if (typeof module !== 'undefined' && module.exports) {
           });
         }
       }
+
+      // Update previous ranks for next round
+      state.previousRanks = currentRankMap;
     }
 
     /* Host advances to next question (Single Track) */
@@ -10292,8 +10671,8 @@ if (typeof module !== 'undefined' && module.exports) {
 
             // If all innovators in both tracks have answered, automatically reveal round scoreboard
             if (cAnswered >= cExp && pAnswered >= pExp && cExp > 0 && pExp > 0) {
-              hubNet.publishToPin(state.pinCreative, { type: 'SHOW_ROUND_SCOREBOARD' });
-              hubNet.publishToPin(state.pinProgramming, { type: 'SHOW_ROUND_SCOREBOARD' });
+              hubNet.publishToPin(state.pinCreative, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresCreative, previousRanks: state.previousRanks });
+              hubNet.publishToPin(state.pinProgramming, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresProgramming, previousRanks: state.previousRanks });
               endQuestionAndShowRoundScoreboard();
             }
           } else {
@@ -10315,7 +10694,7 @@ if (typeof module !== 'undefined' && module.exports) {
             }
 
             if (state.role === 'host' && answeredCount >= expectedCount && participants.length > 0) {
-              hubNet.publish({ type: 'SHOW_ROUND_SCOREBOARD' });
+              hubNet.publish({ type: 'SHOW_ROUND_SCOREBOARD', scores: state.roomScores, previousRanks: state.previousRanks });
               endQuestionAndShowRoundScoreboard();
             }
           }
@@ -10324,6 +10703,12 @@ if (typeof module !== 'undefined' && module.exports) {
         case 'SHOW_ROUND_SCOREBOARD':
           if (state.role === 'player') {
             if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
+            if (Array.isArray(data.scores)) {
+              state.roomScores = data.scores;
+            }
+            if (data.previousRanks) {
+              state.previousRanks = data.previousRanks;
+            }
             endQuestionAndShowRoundScoreboard();
           }
           break;
@@ -10353,6 +10738,7 @@ if (typeof module !== 'undefined' && module.exports) {
       startSynchronizedCountdown,
       renderQuestion,
       endQuestionAndShowRoundScoreboard,
+      renderRoundScoreboard,
       advanceToNextRoundOrPodium,
       showFinalResults,
       animatePodiumReveal,
