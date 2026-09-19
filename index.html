@@ -5246,8 +5246,8 @@
         </div>
       </div>
 
-      <!-- Mentor Hub Classroom Analytics -->
-      <div id="mentor-classroom-analytics-card" class="mentor-analytics-card" style="opacity: 0; transition: opacity 0.6s ease;">
+      <!-- Mentor Hub Classroom Analytics (Organizer only) -->
+      <div id="mentor-classroom-analytics-card" class="mentor-analytics-card" style="display: none; opacity: 0; transition: opacity 0.6s ease;">
         <div class="mentor-analytics-header">
           <div>
             <div class="mentor-analytics-title">
@@ -5276,8 +5276,8 @@
         </div>
       </div>
 
-      <!-- Stage 2 / Grand Finale Banner: General Knowledge for Everyone -->
-      <div style="background: rgba(168, 85, 247, 0.14); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; text-align: center;">
+      <!-- Stage 2 / Grand Finale Banner: General Knowledge for Everyone (Organizer only) -->
+      <div id="banner-finale-general-quiz" style="display: none; background: rgba(168, 85, 247, 0.14); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; text-align: center;">
         <div style="font-size: 11px; font-weight: 800; color: #f472b6; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px;">Next Up</div>
         <div style="font-family: var(--font-heading); font-size: 17px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">Grand Finale: General Knowledge Quiz!</div>
         <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">
@@ -5290,30 +5290,25 @@
 
       <!-- Action Buttons -->
       <div class="final-actions-row">
-        <!-- Prominent Organizer Quiz Logs Button -->
-        <button id="btn-view-logs" class="btn btn-organizer-logs">
+        <!-- Prominent Organizer Quiz Logs Button (Organizer only) -->
+        <button id="btn-view-logs" class="btn btn-organizer-logs" style="display: none;">
           View Participant Quiz Logs &amp; Export Records
         </button>
 
-        <!-- Direct 1-Click CSV Export for Mentors -->
-        <button id="btn-podium-export-csv" class="btn btn-secondary" style="font-weight: 700; border-color: rgba(6, 182, 212, 0.4); color: var(--cih-cyan);">
+        <!-- Direct 1-Click CSV Export for Mentors (Organizer only) -->
+        <button id="btn-podium-export-csv" class="btn btn-secondary" style="display: none; font-weight: 700; border-color: rgba(6, 182, 212, 0.4); color: var(--cih-cyan);">
           Download Mentor CSV Report
         </button>
 
+        <!-- Player & Organizer Actions -->
         <button id="btn-share-whatsapp" class="btn btn-whatsapp">
-          Share Score &amp; Rank to WhatsApp
-        </button>
-        <button id="btn-share-native" class="btn btn-secondary" style="display: none;">
-          More Share Options (Telegram, Slack, etc.)
-        </button>
-        <button id="btn-copy-result" class="btn btn-copy-score">
-          Copy Score for Group Chat
+          Share to WhatsApp
         </button>
         <button id="btn-play-again" class="btn btn-primary">
-          Play Another Showdown
+          Join Hub Showdown
         </button>
         <button id="btn-new-game" class="btn btn-secondary">
-          Return to Main Menu
+          Main Menu
         </button>
       </div>
     </section>
@@ -11756,10 +11751,9 @@ if (typeof module !== 'undefined' && module.exports) {
     const btnPodiumExportCsv = document.getElementById('btn-podium-export-csv');
     const btnPodiumAnalyticsExportCsv = document.getElementById('btn-podium-analytics-export-csv');
     const mentorClassroomAnalyticsCard = document.getElementById('mentor-classroom-analytics-card');
+    const bannerFinaleGeneralQuiz = document.getElementById('banner-finale-general-quiz');
     const btnViewLogs = document.getElementById('btn-view-logs');
     const btnShareWhatsapp = document.getElementById('btn-share-whatsapp');
-    const btnShareNative = document.getElementById('btn-share-native');
-    const btnCopyResult = document.getElementById('btn-copy-result');
     const btnPlayAgain = document.getElementById('btn-play-again');
     const btnNewGame = document.getElementById('btn-new-game');
 
@@ -11823,7 +11817,7 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
-      if (mentorClassroomAnalyticsCard) mentorClassroomAnalyticsCard.style.opacity = '1';
+      if (mentorClassroomAnalyticsCard && state.role === 'host') mentorClassroomAnalyticsCard.style.opacity = '1';
       triggerConfetti();
     }
 
@@ -11893,7 +11887,7 @@ if (typeof module !== 'undefined' && module.exports) {
       // Step 5 (8.5s): Reveal standings & actions smoothly
       const t5 = setTimeout(() => {
         if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
-        if (mentorClassroomAnalyticsCard) mentorClassroomAnalyticsCard.style.opacity = '1';
+        if (mentorClassroomAnalyticsCard && state.role === 'host') mentorClassroomAnalyticsCard.style.opacity = '1';
       }, 8500);
 
       state.podiumRevealTimers = [t1, t2, t3, t4, t5];
@@ -12012,13 +12006,33 @@ if (typeof module !== 'undefined' && module.exports) {
         }
       }
 
-      if (btnShareNative) {
-        btnShareNative.style.display = (typeof navigator !== 'undefined' && navigator.share) ? 'inline-flex' : 'none';
+      const isHost = (state.role === 'host');
+      if (bannerFinaleGeneralQuiz) {
+        bannerFinaleGeneralQuiz.style.display = isHost ? 'block' : 'none';
       }
       if (mentorClassroomAnalyticsCard) {
+        mentorClassroomAnalyticsCard.style.display = isHost ? 'block' : 'none';
         mentorClassroomAnalyticsCard.style.opacity = '0';
       }
-      renderClassroomAnalytics();
+      if (btnViewLogs) {
+        btnViewLogs.style.display = isHost ? 'inline-flex' : 'none';
+      }
+      if (btnPodiumExportCsv) {
+        btnPodiumExportCsv.style.display = isHost ? 'inline-flex' : 'none';
+      }
+      if (btnPlayAgain) {
+        btnPlayAgain.textContent = isHost ? 'Host Another Showdown' : 'Join Hub Showdown';
+      }
+      if (btnNewGame) {
+        btnNewGame.textContent = 'Main Menu';
+      }
+      if (btnShareWhatsapp) {
+        btnShareWhatsapp.textContent = 'Share to WhatsApp';
+      }
+
+      if (isHost) {
+        renderClassroomAnalytics();
+      }
 
       showScreen('finalResults');
       sound.stopBGM();
@@ -12616,13 +12630,24 @@ if (typeof module !== 'undefined' && module.exports) {
 
       const trackName = (state.track === 'creative') ? 'Creative Track (Blender 3D)' : (state.track === 'programming') ? 'Programming Track (JavaScript)' : (state.isDualHost ? 'Dual Track Showdown' : 'General Knowledge (Everyone United)');
 
+      let currentSiteUrl = 'https://astounding-chaja-cdf9e7.netlify.app/';
+      try {
+        if (typeof window !== 'undefined' && window.location) {
+          if (window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file')) {
+            currentSiteUrl = window.location.origin + window.location.pathname;
+          } else if (window.location.href && !window.location.href.startsWith('file:')) {
+            currentSiteUrl = window.location.href.split('?')[0].split('#')[0];
+          }
+        }
+      } catch (_) {}
+
       return `Community Innovation Hub - Friday Quiz Showdown\n` +
         `Track: ${trackName}\n` +
         `Innovator: ${state.playerName}\n` +
         `Rank: ${rankText}\n` +
         `Score: ${state.score} pts (${state.correctCount}/${state.totalQuestions} correct - ${pct}%)\n` +
         `Time: ${timeStr} | Best Streak: ${state.highestStreak}\n\n` +
-        `Join the next Friday battle: https://astounding-chaja-cdf9e7.netlify.app/`;
+        `Join the next Friday battle: ${currentSiteUrl}`;
     }
 
     /* WhatsApp Share */
@@ -12660,47 +12685,18 @@ if (typeof module !== 'undefined' && module.exports) {
       });
     }
 
-    /* Native Share API */
-    if (btnShareNative) {
-      btnShareNative.addEventListener('click', async () => {
-        const text = getShareText();
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).catch(() => {});
-        }
-        try {
-          await navigator.share({
-            title: 'Community Innovation Hub Friday Showdown',
-            text: text
-          });
-        } catch (_) {}
-      });
-    }
-
-    /* Copy to Clipboard */
-    if (btnCopyResult) {
-      btnCopyResult.addEventListener('click', () => {
-        const text = getShareText();
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            btnCopyResult.textContent = 'Copied to Clipboard!';
-            setTimeout(() => { btnCopyResult.textContent = 'Copy Score for Group Chat'; }, 2000);
-          });
-        } else {
-          window.prompt('Copy score to share:', text);
-        }
-      });
-    }
-
-    /* Play Again & Return */
+    /* Join Hub Showdown / Play Again */
     if (btnPlayAgain) {
       btnPlayAgain.addEventListener('click', () => {
+        clearActiveSessionState();
         if (state.role === 'host') {
           showScreen('lobby');
         } else if (state.role === 'player') {
-          showScreen('lobby');
+          setActiveTab('join');
+          showScreen('welcome');
         } else {
-          prepareDeck(state.track, state.totalQuestions);
-          startSynchronizedCountdown(Date.now() + 3000);
+          setActiveTab('solo');
+          showScreen('welcome');
         }
       });
     }
