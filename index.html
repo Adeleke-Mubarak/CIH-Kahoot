@@ -536,6 +536,64 @@
       transform: translateY(-1px);
     }
 
+    /* Presenter Dual Track Spotlight Switcher */
+    .dual-track-spotlight-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.7);
+      padding: 3px 6px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      margin-left: 6px;
+    }
+    .btn-dual-spotlight {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-dual-spotlight:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .btn-dual-spotlight.is-active-creative {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fcd34d;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+    }
+    .btn-dual-spotlight.is-active-programming {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: rgba(6, 182, 212, 0.5);
+      color: #67e8f9;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+    }
+    .spotlight-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .spotlight-dot.dot-creative {
+      background: #f59e0b;
+      box-shadow: 0 0 6px #f59e0b;
+    }
+    .spotlight-dot.dot-programming {
+      background: #06b6d4;
+      box-shadow: 0 0 6px #06b6d4;
+    }
+
 
     /* Dual Track Lobby Command Center */
     .dual-lobby-container {
@@ -4663,6 +4721,14 @@
           <span id="question-index-badge" class="question-index-pill">Question 1 of 15</span>
           <span id="question-track-pill" class="track-badge-pill track-badge-creative" style="margin-bottom:0; padding:3px 8px; font-size:11px;">Creative</span>
           <span id="question-presenter-badge" class="badge-presenter" style="display:none;">Presenter View</span>
+          <div id="dual-host-track-switcher" class="dual-track-spotlight-switch" style="display:none;">
+            <button id="btn-dual-spotlight-creative" class="btn-dual-spotlight" type="button" title="View Creative Track (Blender 3D)">
+              <span class="spotlight-dot dot-creative"></span> Creative (Blender)
+            </button>
+            <button id="btn-dual-spotlight-programming" class="btn-dual-spotlight" type="button" title="View Programming Track (JavaScript)">
+              <span class="spotlight-dot dot-programming"></span> Programming (JS)
+            </button>
+          </div>
           <span id="question-custom-timer-badge" class="badge-custom-timer" style="display:none;"><svg class="ui-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <span id="question-custom-timer-label">30s</span></span>
         </div>
         <span id="question-answers-tally" class="answers-tally-pill">Answers: 0 / 0</span>
@@ -7499,6 +7565,8 @@ if (typeof module !== 'undefined' && module.exports) {
           isDualHost: !!state.isDualHost,
           pinCreative: state.pinCreative || '',
           pinProgramming: state.pinProgramming || '',
+          deckCreative: state.deckCreative || [],
+          deckProgramming: state.deckProgramming || [],
           score: state.score || 0,
           correctCount: state.correctCount || 0,
           currentStreak: state.currentStreak || 0,
@@ -7581,6 +7649,8 @@ if (typeof module !== 'undefined' && module.exports) {
         state.isDualHost = !!saved.isDualHost;
         state.pinCreative = saved.pinCreative || '';
         state.pinProgramming = saved.pinProgramming || '';
+        state.deckCreative = saved.deckCreative || [];
+        state.deckProgramming = saved.deckProgramming || [];
         state.score = saved.score || 0;
         state.correctCount = saved.correctCount || 0;
         state.currentStreak = saved.currentStreak || 0;
@@ -9869,7 +9939,48 @@ if (typeof module !== 'undefined' && module.exports) {
 
         state.deckCreative = deckC;
         state.deckProgramming = deckP;
-        state.activeDeck = deckC; // Default host deck for rendering
+
+        // Construct interleaved host presentation deck:
+        // Alternates questions round by round between Creative and Programming!
+        // Round 1 (index 0): Creative (deckC[0])
+        // Round 2 (index 1): Programming (deckP[1])
+        // Round 3 (index 2): Creative (deckC[2])
+        // Round 4 (index 3): Programming (deckP[3])
+        // Both cohorts continue their full questions sequentially via their dedicated MQTT PINs!
+        const interleavedHostDeck = [];
+        const maxLen = Math.max(deckC.length, deckP.length);
+        for (let i = 0; i < maxLen; i++) {
+          if (i % 2 === 0) {
+            if (deckC[i]) {
+              interleavedHostDeck.push(Object.assign({}, deckC[i], {
+                dualTrack: 'creative',
+                dualRound: i + 1,
+                dualTrackName: 'Creative Spotlight (Blender 3D)'
+              }));
+            } else if (deckP[i]) {
+              interleavedHostDeck.push(Object.assign({}, deckP[i], {
+                dualTrack: 'programming',
+                dualRound: i + 1,
+                dualTrackName: 'Programming Spotlight (JavaScript)'
+              }));
+            }
+          } else {
+            if (deckP[i]) {
+              interleavedHostDeck.push(Object.assign({}, deckP[i], {
+                dualTrack: 'programming',
+                dualRound: i + 1,
+                dualTrackName: 'Programming Spotlight (JavaScript)'
+              }));
+            } else if (deckC[i]) {
+              interleavedHostDeck.push(Object.assign({}, deckC[i], {
+                dualTrack: 'creative',
+                dualRound: i + 1,
+                dualTrackName: 'Creative Spotlight (Blender 3D)'
+              }));
+            }
+          }
+        }
+        state.activeDeck = interleavedHostDeck;
         state.qIndexCreative = 0;
         state.qIndexProgramming = 0;
 
@@ -9994,6 +10105,9 @@ if (typeof module !== 'undefined' && module.exports) {
     const questionIndexBadge = document.getElementById('question-index-badge');
     const questionTrackPill = document.getElementById('question-track-pill');
     const questionPresenterBadge = document.getElementById('question-presenter-badge');
+    const dualHostTrackSwitcher = document.getElementById('dual-host-track-switcher');
+    const btnDualSpotlightCreative = document.getElementById('btn-dual-spotlight-creative');
+    const btnDualSpotlightProgramming = document.getElementById('btn-dual-spotlight-programming');
     const questionCustomTimerBadge = document.getElementById('question-custom-timer-badge');
     const questionCustomTimerLabel = document.getElementById('question-custom-timer-label');
     const questionAnswersTally = document.getElementById('question-answers-tally');
@@ -10094,14 +10208,14 @@ if (typeof module !== 'undefined' && module.exports) {
 
     if (btnZoomQuestionImage) {
       btnZoomQuestionImage.addEventListener('click', () => {
-        const q = state.activeDeck[state.currentQuestionIndex];
+        const q = state.currentDisplayedQuestion || state.activeDeck[state.currentQuestionIndex];
         if (q && q.image) openImageZoomModal(q.image);
       });
     }
 
     if (questionImageElement) {
       questionImageElement.addEventListener('click', () => {
-        const q = state.activeDeck[state.currentQuestionIndex];
+        const q = state.currentDisplayedQuestion || state.activeDeck[state.currentQuestionIndex];
         if (q && q.image) openImageZoomModal(q.image);
       });
     }
@@ -10119,7 +10233,7 @@ if (typeof module !== 'undefined' && module.exports) {
     /* Copy Code Snippet Handler */
     if (btnCopyQuestionCode) {
       btnCopyQuestionCode.addEventListener('click', async () => {
-        const q = state.activeDeck[state.currentQuestionIndex];
+        const q = state.currentDisplayedQuestion || state.activeDeck[state.currentQuestionIndex];
         if (!q || !q.codeSnippet) return;
         try {
           if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -10214,11 +10328,22 @@ if (typeof module !== 'undefined' && module.exports) {
       const q = state.activeDeck[qIdx];
       const isHost = (state.role === 'host');
 
+      state.currentDisplayedQuestion = q;
+
       if (questionIndexBadge) {
         questionIndexBadge.textContent = `Question ${qIdx + 1} of ${state.activeDeck.length}`;
       }
       if (questionTrackPill) {
-        if (state.isDualHost) {
+        if (state.isDualHost && isHost) {
+          const activeSpotlight = q.dualTrack || (qIdx % 2 === 0 ? 'creative' : 'programming');
+          if (activeSpotlight === 'creative') {
+            questionTrackPill.className = 'track-badge-pill track-badge-creative';
+            questionTrackPill.innerHTML = '<span class="spotlight-dot dot-creative"></span> Creative Spotlight (Blender 3D)';
+          } else {
+            questionTrackPill.className = 'track-badge-pill track-badge-programming';
+            questionTrackPill.innerHTML = '<span class="spotlight-dot dot-programming"></span> Programming Spotlight (JavaScript)';
+          }
+        } else if (state.isDualHost) {
           questionTrackPill.className = 'track-badge-pill track-badge-dual';
           questionTrackPill.textContent = 'Dual Showdown';
         } else if (state.track === 'creative') {
@@ -10237,6 +10362,20 @@ if (typeof module !== 'undefined' && module.exports) {
       }
       if (questionPresenterBadge) {
         questionPresenterBadge.style.display = isHost ? 'inline-flex' : 'none';
+      }
+      if (dualHostTrackSwitcher) {
+        if (state.isDualHost && isHost) {
+          dualHostTrackSwitcher.style.display = 'inline-flex';
+          const activeSpotlight = q.dualTrack || (qIdx % 2 === 0 ? 'creative' : 'programming');
+          if (btnDualSpotlightCreative) {
+            btnDualSpotlightCreative.className = 'btn-dual-spotlight' + (activeSpotlight === 'creative' ? ' is-active-creative' : '');
+          }
+          if (btnDualSpotlightProgramming) {
+            btnDualSpotlightProgramming.className = 'btn-dual-spotlight' + (activeSpotlight === 'programming' ? ' is-active-programming' : '');
+          }
+        } else {
+          dualHostTrackSwitcher.style.display = 'none';
+        }
       }
 
       // Question Custom Timer Duration & Badge
@@ -10322,6 +10461,75 @@ if (typeof module !== 'undefined' && module.exports) {
       showScreen('question');
       sound.startBattleTheme();
       startQuestionTimer(qDuration);
+    }
+
+    function updatePresenterQuestionDisplay(qTarget, spotlightTrack) {
+      if (!qTarget) return;
+      state.currentDisplayedQuestion = qTarget;
+
+      if (questionTrackPill) {
+        if (spotlightTrack === 'creative') {
+          questionTrackPill.className = 'track-badge-pill track-badge-creative';
+          questionTrackPill.innerHTML = '<span class="spotlight-dot dot-creative"></span> Creative Spotlight (Blender 3D)';
+        } else {
+          questionTrackPill.className = 'track-badge-pill track-badge-programming';
+          questionTrackPill.innerHTML = '<span class="spotlight-dot dot-programming"></span> Programming Spotlight (JavaScript)';
+        }
+      }
+
+      if (btnDualSpotlightCreative) {
+        btnDualSpotlightCreative.className = 'btn-dual-spotlight' + (spotlightTrack === 'creative' ? ' is-active-creative' : '');
+      }
+      if (btnDualSpotlightProgramming) {
+        btnDualSpotlightProgramming.className = 'btn-dual-spotlight' + (spotlightTrack === 'programming' ? ' is-active-programming' : '');
+      }
+
+      if (questionText) questionText.textContent = qTarget.question;
+
+      qTarget.options.forEach((optStr, i) => {
+        if (optTexts[i]) optTexts[i].textContent = optStr;
+      });
+
+      let hasMedia = false;
+      if (qTarget.image && questionImageWrap && questionImageElement) {
+        questionImageElement.src = qTarget.image;
+        questionImageWrap.style.display = 'flex';
+        hasMedia = true;
+      } else if (questionImageWrap) {
+        questionImageWrap.style.display = 'none';
+        if (questionImageElement) questionImageElement.src = '';
+      }
+
+      if (qTarget.codeSnippet && questionCodeWrap && questionCodeContent) {
+        const lang = qTarget.codeLang || 'javascript';
+        if (questionCodeLang) questionCodeLang.textContent = lang.toUpperCase();
+        questionCodeContent.innerHTML = highlightCode(qTarget.codeSnippet, lang);
+        questionCodeWrap.style.display = 'block';
+        hasMedia = true;
+      } else if (questionCodeWrap) {
+        questionCodeWrap.style.display = 'none';
+        if (questionCodeContent) questionCodeContent.textContent = '';
+      }
+
+      if (questionMediaContainer) {
+        questionMediaContainer.style.display = hasMedia ? 'flex' : 'none';
+      }
+    }
+
+    if (btnDualSpotlightCreative) {
+      btnDualSpotlightCreative.addEventListener('click', () => {
+        if (state.role !== 'host' || !state.isDualHost) return;
+        const qC = (state.deckCreative && state.deckCreative[state.currentQuestionIndex]) || null;
+        if (qC) updatePresenterQuestionDisplay(qC, 'creative');
+      });
+    }
+
+    if (btnDualSpotlightProgramming) {
+      btnDualSpotlightProgramming.addEventListener('click', () => {
+        if (state.role !== 'host' || !state.isDualHost) return;
+        const qP = (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) || null;
+        if (qP) updatePresenterQuestionDisplay(qP, 'programming');
+      });
     }
 
     function startQuestionTimer(seconds) {
@@ -10658,7 +10866,7 @@ if (typeof module !== 'undefined' && module.exports) {
       sound.stopBGM();
       saveActiveSessionState('roundResult');
 
-      const q = state.activeDeck[state.currentQuestionIndex];
+      const q = state.currentDisplayedQuestion || state.activeDeck[state.currentQuestionIndex];
       const isCorrect = (state.selectedOptionIndex === q.answer);
 
       if (state.role === 'host' && q) {
@@ -10670,13 +10878,18 @@ if (typeof module !== 'undefined' && module.exports) {
           initParticipantAudit(p.id, p.name);
           const hasAnswered = state.participantAuditLog[p.id].answers.some(a => a.qIndex === state.currentQuestionIndex);
           if (!hasAnswered) {
+            let studentQ = q;
+            if (state.isDualHost) {
+              const isProg = p.track === 'programming' || state.lobbyProgramming.some(lp => lp.id === p.id);
+              studentQ = (isProg ? (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) : (state.deckCreative && state.deckCreative[state.currentQuestionIndex])) || q;
+            }
             recordParticipantAnswer(
               p.id,
               state.currentQuestionIndex,
               -1,
               'Timed Out / No Answer',
-              q.answer,
-              q.options[q.answer],
+              studentQ.answer,
+              studentQ.options[studentQ.answer],
               false,
               0
             );
@@ -10700,7 +10913,12 @@ if (typeof module !== 'undefined' && module.exports) {
         if (roundFeedbackCard) {
           if (state.role === 'host') {
             roundFeedbackCard.className = 'round-result-card presenter';
-            if (roundFeedbackTitle) roundFeedbackTitle.textContent = `Question ${state.currentQuestionIndex + 1} Review`;
+            let trackSuffix = '';
+            if (state.isDualHost && q) {
+              const reviewTrack = q.dualTrack || (state.currentQuestionIndex % 2 === 0 ? 'creative' : 'programming');
+              trackSuffix = reviewTrack === 'creative' ? ' (Creative Track)' : ' (Programming Track)';
+            }
+            if (roundFeedbackTitle) roundFeedbackTitle.textContent = `Question ${state.currentQuestionIndex + 1} Review${trackSuffix}`;
             if (roundPointsPill) {
               roundPointsPill.textContent = `Correct Answer: ${q.options[q.answer]}`;
               roundPointsPill.style.color = '#a5b4fc';
