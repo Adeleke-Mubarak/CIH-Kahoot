@@ -1683,6 +1683,206 @@
       50% { transform: scale(1.12); }
     }
 
+    /* ==========================================================================
+       MENTOR HUB CLASSROOM ANALYTICS & ACCORDION (SCREEN 6)
+       ========================================================================== */
+    .mentor-analytics-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .mentor-analytics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mentor-analytics-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-podium-export-csv {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(32, 62, 232, 0.3));
+      border: 1px solid var(--cih-cyan);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-podium-export-csv:hover {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.35), rgba(32, 62, 232, 0.5));
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.4);
+      transform: translateY(-1px);
+    }
+    .toughest-summary-box {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      transition: all 0.3s ease;
+    }
+    .toughest-summary-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #f87171;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .toughest-summary-desc {
+      font-size: 13px;
+      color: #fca5a5;
+      line-height: 1.45;
+    }
+    .q-accuracy-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .q-accuracy-item {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+    }
+    .q-accuracy-item:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      background: rgba(30, 41, 59, 0.85);
+    }
+    .q-accuracy-summary-row {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .q-acc-num {
+      min-width: 32px;
+      font-weight: 800;
+      font-size: 12px;
+      color: var(--cih-cyan);
+    }
+    .q-acc-prompt {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .q-acc-bar-wrap {
+      width: 100px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .q-acc-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .q-acc-bar-fill.acc-high {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+    .q-acc-bar-fill.acc-med {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+    .q-acc-bar-fill.acc-low {
+      background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+    .q-acc-pct-pill {
+      min-width: 44px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .q-acc-pct-pill.acc-high {
+      color: #34d399;
+    }
+    .q-acc-pct-pill.acc-med {
+      color: #fbbf24;
+    }
+    .q-acc-pct-pill.acc-low {
+      color: #f87171;
+    }
+    .q-acc-drawer-toggle-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+      margin-left: 2px;
+    }
+    .q-accuracy-item.is-expanded .q-acc-drawer-toggle-icon {
+      transform: rotate(180deg);
+    }
+    .q-accuracy-drawer {
+      display: none;
+      padding: 12px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.65);
+    }
+    .q-accuracy-item.is-expanded .q-accuracy-drawer {
+      display: block;
+    }
+    .drawer-section {
+      margin-bottom: 8px;
+    }
+    .drawer-section:last-child {
+      margin-bottom: 0;
+    }
+    .drawer-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 3px;
+    }
+    .drawer-correct {
+      color: #34d399;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .drawer-trap {
+      color: #f87171;
+      font-size: 12px;
+    }
+    .drawer-explanation {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
     /* Screen 6: Final Podium */
     .podium-section-wrap {
       position: relative;
@@ -4559,6 +4759,36 @@
         </div>
       </div>
 
+      <!-- Mentor Hub Classroom Analytics -->
+      <div id="mentor-classroom-analytics-card" class="mentor-analytics-card" style="opacity: 0; transition: opacity 0.6s ease;">
+        <div class="mentor-analytics-header">
+          <div>
+            <div class="mentor-analytics-title">
+              <span class="mentor-icon" style="color: var(--cih-cyan);">&bull;</span> Mentor Debrief &amp; Learning Gaps
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
+              Real-time room accuracy, misconception traps, and question breakdown for coaches.
+            </div>
+          </div>
+          <button id="btn-podium-analytics-export-csv" class="btn-podium-export-csv" title="Download detailed CSV report with classroom analytics">
+            Download Mentor CSV Report
+          </button>
+        </div>
+
+        <!-- Toughest Question Summary Callout -->
+        <div id="toughest-questions-summary" class="toughest-summary-box">
+          <!-- Populated dynamically via renderClassroomAnalytics() -->
+        </div>
+
+        <!-- Question-by-Question Accuracy Breakdown -->
+        <div style="font-size: 12px; font-weight: 700; color: var(--cih-cyan); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+          Question-by-Question Accuracy &amp; Traps (Click to Expand)
+        </div>
+        <div id="question-accuracy-breakdown-list" class="q-accuracy-list">
+          <!-- Populated dynamically via renderClassroomAnalytics() -->
+        </div>
+      </div>
+
       <!-- Stage 2 / Grand Finale Banner: General Knowledge for Everyone -->
       <div style="background: rgba(168, 85, 247, 0.14); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; text-align: center;">
         <div style="font-size: 11px; font-weight: 800; color: #f472b6; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px;">Next Up</div>
@@ -4576,6 +4806,11 @@
         <!-- Prominent Organizer Quiz Logs Button -->
         <button id="btn-view-logs" class="btn btn-organizer-logs">
           View Participant Quiz Logs &amp; Export Records
+        </button>
+
+        <!-- Direct 1-Click CSV Export for Mentors -->
+        <button id="btn-podium-export-csv" class="btn btn-secondary" style="font-weight: 700; border-color: rgba(6, 182, 212, 0.4); color: var(--cih-cyan);">
+          Download Mentor CSV Report
         </button>
 
         <button id="btn-share-whatsapp" class="btn btn-whatsapp">
@@ -10404,6 +10639,9 @@ if (typeof module !== 'undefined' && module.exports) {
     const btnSkipPodiumAnim = document.getElementById('btn-skip-podium-anim');
     const podium1stSpotlight = document.getElementById('podium-1st-spotlight');
 
+    const btnPodiumExportCsv = document.getElementById('btn-podium-export-csv');
+    const btnPodiumAnalyticsExportCsv = document.getElementById('btn-podium-analytics-export-csv');
+    const mentorClassroomAnalyticsCard = document.getElementById('mentor-classroom-analytics-card');
     const btnViewLogs = document.getElementById('btn-view-logs');
     const btnShareWhatsapp = document.getElementById('btn-share-whatsapp');
     const btnShareNative = document.getElementById('btn-share-native');
@@ -10471,6 +10709,7 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
+      if (mentorClassroomAnalyticsCard) mentorClassroomAnalyticsCard.style.opacity = '1';
       triggerConfetti();
     }
 
@@ -10540,6 +10779,7 @@ if (typeof module !== 'undefined' && module.exports) {
       // Step 5 (8.5s): Reveal standings & actions smoothly
       const t5 = setTimeout(() => {
         if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
+        if (mentorClassroomAnalyticsCard) mentorClassroomAnalyticsCard.style.opacity = '1';
       }, 8500);
 
       state.podiumRevealTimers = [t1, t2, t3, t4, t5];
@@ -10660,6 +10900,10 @@ if (typeof module !== 'undefined' && module.exports) {
       if (btnShareNative) {
         btnShareNative.style.display = (typeof navigator !== 'undefined' && navigator.share) ? 'inline-flex' : 'none';
       }
+      if (mentorClassroomAnalyticsCard) {
+        mentorClassroomAnalyticsCard.style.opacity = '0';
+      }
+      renderClassroomAnalytics();
 
       showScreen('finalResults');
       sound.stopBGM();
@@ -10670,6 +10914,210 @@ if (typeof module !== 'undefined' && module.exports) {
     /* ==========================================================================
        ORGANIZER QUIZ LOGS & CSV EXPORT CONTROLLER
        ========================================================================== */
+    function computeClassroomAnalytics() {
+      const records = Object.values(state.participantAuditLog || {});
+      const totalParticipants = records.length;
+      const totalQ = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 0);
+
+      if (totalQ === 0) {
+        return {
+          totalParticipants: 0,
+          classAveragePct: 0,
+          toughestQuestions: [],
+          questionStats: []
+        };
+      }
+
+      const questionStats = [];
+      for (let qIdx = 0; qIdx < totalQ; qIdx++) {
+        let answeredCount = 0;
+        let correctCount = 0;
+        const optionCounts = {};
+        let questionText = 'Question ' + (qIdx + 1);
+        let correctText = '';
+        let explanationText = '';
+
+        if (state.activeDeck && state.activeDeck[qIdx]) {
+          const qObj = state.activeDeck[qIdx];
+          questionText = qObj.question || questionText;
+          if (qObj.options && qObj.options[qObj.correct] !== undefined) {
+            correctText = qObj.options[qObj.correct];
+          }
+          explanationText = qObj.explanation || '';
+        }
+
+        records.forEach(rec => {
+          if (!rec.answers) return;
+          const ans = rec.answers.find(a => a.qIndex === qIdx);
+          if (ans) {
+            answeredCount++;
+            if (ans.questionText && !questionText) questionText = ans.questionText;
+            if (ans.correctOptionText && !correctText) correctText = ans.correctOptionText;
+            if (ans.explanation && !explanationText) explanationText = ans.explanation;
+
+            if (ans.isCorrect) {
+              correctCount++;
+            } else {
+              const optKey = ans.selectedOptionText || ('Option ' + ans.selectedOptionIndex);
+              optionCounts[optKey] = (optionCounts[optKey] || 0) + 1;
+            }
+          }
+        });
+
+        const accPct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+
+        let commonTrap = null;
+        let maxTrapCount = 0;
+        for (const [opt, count] of Object.entries(optionCounts)) {
+          if (count > maxTrapCount) {
+            maxTrapCount = count;
+            commonTrap = { text: opt, count: count, pct: answeredCount > 0 ? Math.round((count / answeredCount) * 100) : 0 };
+          }
+        }
+
+        questionStats.push({
+          qIndex: qIdx,
+          questionText: questionText,
+          correctText: correctText,
+          explanationText: explanationText,
+          answeredCount: answeredCount,
+          correctCount: correctCount,
+          accPct: accPct,
+          commonTrap: commonTrap
+        });
+      }
+
+      let totalCorrectSum = 0;
+      let totalAnsweredSum = 0;
+      questionStats.forEach(q => {
+        totalCorrectSum += q.correctCount;
+        totalAnsweredSum += q.answeredCount;
+      });
+      const classAveragePct = totalAnsweredSum > 0 ? Math.round((totalCorrectSum / totalAnsweredSum) * 100) : 0;
+
+      const sortedByAcc = [...questionStats].sort((a, b) => a.accPct - b.accPct);
+      const toughestQuestions = sortedByAcc.slice(0, Math.min(3, sortedByAcc.length));
+
+      return {
+        totalParticipants,
+        classAveragePct,
+        toughestQuestions,
+        questionStats
+      };
+    }
+
+    function renderClassroomAnalytics() {
+      const summaryBox = document.getElementById('toughest-questions-summary');
+      const breakdownList = document.getElementById('question-accuracy-breakdown-list');
+
+      if (!summaryBox || !breakdownList) return;
+
+      const data = computeClassroomAnalytics();
+
+      if (data.totalParticipants === 0 || data.questionStats.length === 0) {
+        summaryBox.style.background = 'rgba(239, 68, 68, 0.12)';
+        summaryBox.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+        summaryBox.innerHTML = `
+          <div class="toughest-summary-title">Classroom Analytics Pending</div>
+          <div class="toughest-summary-desc" style="color: var(--text-secondary);">
+            No student response records collected for this session yet. Records will populate as innovators answer showdown questions.
+          </div>
+        `;
+        breakdownList.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; text-align: center; padding: 12px;">No question responses recorded.</div>';
+        return;
+      }
+
+      // Populate Toughest Question Summary Box
+      const primaryToughest = data.toughestQuestions[0];
+      if (primaryToughest && primaryToughest.accPct < 100) {
+        let trapHtml = '';
+        if (primaryToughest.commonTrap) {
+          trapHtml = ` &bull; Common trap: <span style="color:#ffffff; font-weight:600;">"${escapeHtml(primaryToughest.commonTrap.text)}"</span> (${primaryToughest.commonTrap.pct}% of room)`;
+        }
+        summaryBox.style.background = 'rgba(239, 68, 68, 0.12)';
+        summaryBox.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+        summaryBox.innerHTML = `
+          <div class="toughest-summary-title">
+            Toughest Challenge: Q${primaryToughest.qIndex + 1} (${primaryToughest.accPct}% Room Accuracy)
+          </div>
+          <div class="toughest-summary-desc">
+            <strong>${escapeHtml(primaryToughest.questionText)}</strong><br/>
+            <span style="font-size:12px;">Class Avg: <strong>${data.classAveragePct}%</strong> &bull; Correct: <span style="color:#34d399; font-weight:600;">${escapeHtml(primaryToughest.correctText || 'N/A')}</span>${trapHtml}</span>
+          </div>
+        `;
+      } else {
+        summaryBox.style.background = 'rgba(16, 185, 129, 0.12)';
+        summaryBox.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+        summaryBox.innerHTML = `
+          <div class="toughest-summary-title" style="color:#34d399;">
+            Outstanding Performance! (100% Room Mastery)
+          </div>
+          <div class="toughest-summary-desc" style="color:#a7f3d0;">
+            All innovators achieved flawless accuracy across all questions. No significant learning gaps detected.
+          </div>
+        `;
+      }
+
+      // Populate Question Breakdown
+      breakdownList.innerHTML = '';
+      data.questionStats.forEach(q => {
+        const accClass = q.accPct >= 70 ? 'acc-high' : q.accPct >= 40 ? 'acc-med' : 'acc-low';
+        const item = document.createElement('div');
+        item.className = 'q-accuracy-item';
+        item.setAttribute('data-qidx', q.qIndex);
+
+        let trapDetail = 'None (no wrong answers)';
+        if (q.commonTrap) {
+          trapDetail = `<span style="color:#fca5a5; font-weight:600;">"${escapeHtml(q.commonTrap.text)}"</span> (${q.commonTrap.count} students, ${q.commonTrap.pct}% of room)`;
+        }
+
+        item.innerHTML = `
+          <div class="q-accuracy-summary-row">
+            <div class="q-acc-num">Q${q.qIndex + 1}</div>
+            <div class="q-acc-prompt" title="${escapeHtml(q.questionText)}">${escapeHtml(q.questionText)}</div>
+            <div class="q-acc-bar-wrap">
+              <div class="q-acc-bar-fill ${accClass}" style="width: ${q.accPct}%;"></div>
+            </div>
+            <div class="q-acc-pct-pill ${accClass}">${q.accPct}%</div>
+            <div class="q-acc-drawer-toggle-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="q-accuracy-drawer">
+            <div class="drawer-section">
+              <div class="drawer-label">Full Question Prompt</div>
+              <div style="color:#ffffff; font-size:13px; font-weight:600;">${escapeHtml(q.questionText)}</div>
+            </div>
+            <div class="drawer-section" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div>
+                <div class="drawer-label">Correct Solution</div>
+                <div class="drawer-correct">${escapeHtml(q.correctText || 'N/A')}</div>
+              </div>
+              <div>
+                <div class="drawer-label">Most Frequent Trap Answer</div>
+                <div class="drawer-trap">${trapDetail}</div>
+              </div>
+            </div>
+            ${q.explanationText ? `
+              <div class="drawer-section" style="margin-top:6px;">
+                <div class="drawer-label">Mentor Debrief Notes / Explanation</div>
+                <div class="drawer-explanation">${escapeHtml(q.explanationText)}</div>
+              </div>
+            ` : ''}
+            <div style="font-size:11px; color:var(--text-secondary); margin-top:4px;">
+              Attempts: ${q.answeredCount} &bull; Correct: ${q.correctCount} &bull; Missed: ${q.answeredCount - q.correctCount}
+            </div>
+          </div>
+        `;
+
+        item.addEventListener('click', () => {
+          item.classList.toggle('is-expanded');
+        });
+
+        breakdownList.appendChild(item);
+      });
+    }
+
     function exportQuizResultsCSV() {
       const records = Object.values(state.participantAuditLog);
       if (records.length === 0) {
@@ -10695,6 +11143,22 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       const rows = [];
+      const analytics = computeClassroomAnalytics();
+      const trackLabel = state.isDualHost ? 'Dual Track (Creative & Programming)' : 
+        (state.track === 'creative' ? 'Creative Track (Blender 3D)' : 
+        (state.track === 'programming' ? 'Programming Track (JavaScript)' : 
+        (state.track === 'general' ? 'General Knowledge Showdown' : 'Custom Quiz Showdown')));
+
+      const hardestQ = analytics.toughestQuestions[0];
+      const hardestLabel = hardestQ ? ('Q' + (hardestQ.qIndex + 1) + ' (' + hardestQ.accPct + '% accuracy)') : 'N/A';
+
+      // Mentor Classroom Summary Metadata
+      rows.push([escapeCsv('CIH SHOWDOWN CLASSROOM RESULTS & MENTOR DEBRIEF REPORT')]);
+      rows.push([escapeCsv('Track: ' + trackLabel), escapeCsv('Session Date: ' + new Date().toLocaleString()), escapeCsv('Room PIN: ' + (state.roomPin || 'Solo/Local'))].join(','));
+      rows.push([escapeCsv('Total Innovators: ' + records.length), escapeCsv('Class Average Accuracy: ' + analytics.classAveragePct + '%'), escapeCsv('Toughest Question: ' + hardestLabel)].join(','));
+      rows.push(['']);
+
+      // Main Table Rows
       rows.push(headers.map(escapeCsv).join(','));
 
       records.forEach((rec, idx) => {
@@ -10973,6 +11437,12 @@ if (typeof module !== 'undefined' && module.exports) {
     /* Podium and Logs Event Listeners */
     if (btnSkipPodiumAnim) {
       btnSkipPodiumAnim.addEventListener('click', completePodiumInstantly);
+    }
+    if (btnPodiumExportCsv) {
+      btnPodiumExportCsv.addEventListener('click', exportQuizResultsCSV);
+    }
+    if (btnPodiumAnalyticsExportCsv) {
+      btnPodiumAnalyticsExportCsv.addEventListener('click', exportQuizResultsCSV);
     }
     if (btnViewLogs) {
       btnViewLogs.addEventListener('click', openOrganizerLogsModal);
@@ -11431,6 +11901,8 @@ if (typeof module !== 'undefined' && module.exports) {
       showFinalResults,
       animatePodiumReveal,
       completePodiumInstantly,
+      computeClassroomAnalytics,
+      renderClassroomAnalytics,
       openOrganizerLogsModal,
       exportQuizResultsCSV,
       copyQuizSummaryWhatsApp,
