@@ -1359,6 +1359,18 @@
       border-radius: 6px;
       background: rgba(0, 0, 0, 0.25);
     }
+    .opt-label {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+      z-index: 2;
+      position: relative;
+      transition: padding-right 0.3s ease;
+    }
+    .kahoot-opt-btn.is-revealed-correct .opt-label,
+    .kahoot-opt-btn.is-revealed-wrong .opt-label {
+      padding-right: 90px;
+    }
 
     /* Kahoot 4 Colors */
     .opt-red {
@@ -1379,13 +1391,20 @@
       box-shadow: 0 4px 14px rgba(38, 137, 12, 0.35);
     }
 
+    /* Option button interaction states */
+    .kahoot-opt-btn {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.25s ease;
+    }
     .kahoot-opt-btn.is-selected {
-      border-color: #ffffff !important;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6) !important;
+      border: 3px solid #ffffff !important;
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.8) !important;
       transform: scale(1.02);
+      z-index: 2;
     }
     .kahoot-opt-btn.is-dimmed {
-      opacity: 0.45;
+      opacity: 0.4;
       filter: grayscale(40%);
     }
     .kahoot-opt-btn.is-correct {
@@ -1403,6 +1422,244 @@
       cursor: default !important;
       pointer-events: none;
       transform: none !important;
+    }
+
+    /* Kahoot Poll Bar inside option button */
+    .poll-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+    .poll-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      background: rgba(255, 255, 255, 0.24);
+      transition: width 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 0;
+      border-right: 2px solid rgba(255, 255, 255, 0.55);
+    }
+    .poll-bar-count {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      white-space: nowrap;
+    }
+    .poll-verdict-badge {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
+    .poll-verdict-badge.tag-correct {
+      background: #22c55e;
+      color: #ffffff;
+      border: 1px solid #4ade80;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.7);
+      animation: pulseCorrect 1.2s infinite alternate;
+    }
+    .poll-verdict-badge.tag-wrong {
+      background: #ef4444;
+      color: #ffffff;
+      border: 1px solid #f87171;
+    }
+
+    /* Option button reveal states */
+    .kahoot-opt-btn.is-revealed-correct {
+      border: 3px solid #4ade80 !important;
+      box-shadow: 0 0 32px rgba(34, 197, 94, 0.85) !important;
+      transform: scale(1.02);
+      opacity: 1 !important;
+      animation: popCorrect 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .kahoot-opt-btn.is-revealed-wrong {
+      opacity: 0.35 !important;
+      filter: grayscale(60%);
+    }
+
+    @keyframes popCorrect {
+      0% { transform: scale(0.95); }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1.02); }
+    }
+    @keyframes pulseCorrect {
+      from { box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
+      to { box-shadow: 0 0 20px rgba(34, 197, 94, 0.9); }
+    }
+
+    /* Kahoot Answer Reveal Review Bar */
+    .question-reveal-bar {
+      margin-top: 16px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      animation: fadeInUp 0.4s ease;
+    }
+    .reveal-info-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .reveal-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--cih-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .reveal-explanation-card {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--cih-cyan);
+    }
+    .reveal-action-col {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-reveal-advance {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+      cursor: pointer;
+      border: none;
+    }
+    .reveal-timer-pill {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .student-reveal-notice {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* Student Personal Verdict Splash Card */
+    .student-verdict-splash {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    .student-verdict-card {
+      max-width: 420px;
+      width: 100%;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      animation: zoomIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .student-verdict-card.verdict-correct {
+      background: linear-gradient(135deg, rgba(21, 128, 61, 0.95) 0%, rgba(6, 78, 59, 0.95) 100%);
+      border: 2px solid #4ade80;
+    }
+    .student-verdict-card.verdict-incorrect {
+      background: linear-gradient(135deg, rgba(153, 27, 27, 0.95) 0%, rgba(69, 10, 10, 0.95) 100%);
+      border: 2px solid #f87171;
+    }
+    .student-verdict-card.verdict-timeout {
+      background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+      border: 2px solid #94a3b8;
+    }
+    .verdict-icon-wrap {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .verdict-headline {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: #ffffff;
+      letter-spacing: 0.04em;
+    }
+    .verdict-points-pill {
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 6px 18px;
+      border-radius: 9999px;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    .verdict-streak-pill {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cih-amber);
+      margin-bottom: 6px;
+    }
+    .verdict-subtext {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 6px;
     }
 
     /* Auto-Advance Countdown Bar */
@@ -3951,14 +4208,14 @@
     /* ==========================================================================
        VECTOR UI ICONS (Crisp Feather/Lucide Style)
        ========================================================================== */
-    .ui-icon {
+    .ui-icon, .ui-icon-svg {
       display: inline-block;
       width: 1em;
       height: 1em;
       vertical-align: -0.15em;
       fill: none;
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
       flex-shrink: 0;
@@ -4792,18 +5049,38 @@
         <button id="opt-btn-0" class="kahoot-opt-btn opt-red" data-index="0">
           <span class="opt-shape"><svg class="ui-shape-icon" viewBox="0 0 24 24"><polygon points="12 3 22 21 2 21"></polygon></svg></span>
           <span id="opt-text-0" class="opt-label">Option A</span>
+          <div id="poll-bar-container-0" class="poll-bar-container" style="display:none;">
+            <div id="poll-bar-fill-0" class="poll-bar-fill"></div>
+            <span id="poll-bar-count-0" class="poll-bar-count">0 votes</span>
+          </div>
+          <span id="poll-verdict-icon-0" class="poll-verdict-badge" style="display:none;"></span>
         </button>
         <button id="opt-btn-1" class="kahoot-opt-btn opt-blue" data-index="1">
           <span class="opt-shape"><svg class="ui-shape-icon" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"></polygon></svg></span>
           <span id="opt-text-1" class="opt-label">Option B</span>
+          <div id="poll-bar-container-1" class="poll-bar-container" style="display:none;">
+            <div id="poll-bar-fill-1" class="poll-bar-fill"></div>
+            <span id="poll-bar-count-1" class="poll-bar-count">0 votes</span>
+          </div>
+          <span id="poll-verdict-icon-1" class="poll-verdict-badge" style="display:none;"></span>
         </button>
         <button id="opt-btn-2" class="kahoot-opt-btn opt-yellow" data-index="2">
           <span class="opt-shape"><svg class="ui-shape-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle></svg></span>
           <span id="opt-text-2" class="opt-label">Option C</span>
+          <div id="poll-bar-container-2" class="poll-bar-container" style="display:none;">
+            <div id="poll-bar-fill-2" class="poll-bar-fill"></div>
+            <span id="poll-bar-count-2" class="poll-bar-count">0 votes</span>
+          </div>
+          <span id="poll-verdict-icon-2" class="poll-verdict-badge" style="display:none;"></span>
         </button>
         <button id="opt-btn-3" class="kahoot-opt-btn opt-green" data-index="3">
           <span class="opt-shape"><svg class="ui-shape-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg></span>
           <span id="opt-text-3" class="opt-label">Option D</span>
+          <div id="poll-bar-container-3" class="poll-bar-container" style="display:none;">
+            <div id="poll-bar-fill-3" class="poll-bar-fill"></div>
+            <span id="poll-bar-count-3" class="poll-bar-count">0 votes</span>
+          </div>
+          <span id="poll-verdict-icon-3" class="poll-verdict-badge" style="display:none;"></span>
         </button>
       </div>
 
@@ -4811,6 +5088,37 @@
       <div id="question-locked-overlay" class="locked-in-banner">
         <div class="locked-in-title">Answer Locked In</div>
         <div id="locked-in-tally-text" class="locked-in-sub">Waiting for all innovators or timer to expire...</div>
+      </div>
+
+      <!-- Kahoot Answer Reveal Review & Next Scoreboard Bar -->
+      <div id="question-reveal-bar" class="question-reveal-bar" style="display:none;">
+        <div class="reveal-info-col">
+          <div class="reveal-status-badge">
+            <svg class="ui-icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span id="reveal-status-title">Answer Breakdown</span>
+          </div>
+          <div id="reveal-explanation-box" class="reveal-explanation-card"></div>
+        </div>
+        <div class="reveal-action-col">
+          <button id="btn-reveal-to-scoreboard" class="btn btn-emerald btn-reveal-advance" type="button" style="display:none;">
+            <span>Next: View Scoreboard -&gt;</span>
+            <span id="reveal-countdown-timer" class="reveal-timer-pill">5s</span>
+          </button>
+          <div id="student-reveal-notice" class="student-reveal-notice" style="display:none;">
+            Scoreboard showing in a moment...
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Personal Verdict Splash (Kahoot-style personal card) -->
+      <div id="student-verdict-splash" class="student-verdict-splash" style="display:none;">
+        <div id="student-verdict-box" class="student-verdict-card verdict-correct">
+          <div id="student-verdict-icon" class="verdict-icon-wrap"></div>
+          <h3 id="student-verdict-headline" class="verdict-headline">CORRECT!</h3>
+          <div id="student-verdict-points" class="verdict-points-pill">+850 pts</div>
+          <div id="student-verdict-streak" class="verdict-streak-pill" style="display:none;"></div>
+          <div id="student-verdict-subtext" class="verdict-subtext"></div>
+        </div>
       </div>
     </section>
 
@@ -7336,6 +7644,13 @@ if (typeof module !== 'undefined' && module.exports) {
       qIndexProgramming: 0,
       answersCreativeThisRound: {},
       answersProgrammingThisRound: {},
+      pendingPointsEarned: 0,
+      pendingIsCorrect: false,
+      roundOptionCounts: [0, 0, 0, 0],
+      pollCountsCreative: [0, 0, 0, 0],
+      pollCountsProgramming: [0, 0, 0, 0],
+      isRevealedThisRound: false,
+      revealAutoAdvanceInterval: null,
       scoresCreative: [],
       scoresProgramming: [],
 
@@ -10138,6 +10453,19 @@ if (typeof module !== 'undefined' && module.exports) {
 
     const questionLockedOverlay = document.getElementById('question-locked-overlay');
     const lockedInTallyText = document.getElementById('locked-in-tally-text');
+    const questionRevealBar = document.getElementById('question-reveal-bar');
+    const revealStatusTitle = document.getElementById('reveal-status-title');
+    const revealExplanationBox = document.getElementById('reveal-explanation-box');
+    const btnRevealToScoreboard = document.getElementById('btn-reveal-to-scoreboard');
+    const revealCountdownTimer = document.getElementById('reveal-countdown-timer');
+    const studentRevealNotice = document.getElementById('student-reveal-notice');
+    const studentVerdictSplash = document.getElementById('student-verdict-splash');
+    const studentVerdictBox = document.getElementById('student-verdict-box');
+    const studentVerdictIcon = document.getElementById('student-verdict-icon');
+    const studentVerdictHeadline = document.getElementById('student-verdict-headline');
+    const studentVerdictPoints = document.getElementById('student-verdict-points');
+    const studentVerdictStreak = document.getElementById('student-verdict-streak');
+    const studentVerdictSubtext = document.getElementById('student-verdict-subtext');
 
     const optBtns = [
       document.getElementById('opt-btn-0'),
@@ -10320,10 +10648,38 @@ if (typeof module !== 'undefined' && module.exports) {
       state.currentQuestionIndex = qIdx;
       state.hasAnsweredCurrent = false;
       state.selectedOptionIndex = null;
+      state.pendingPointsEarned = 0;
+      state.pendingIsCorrect = false;
+      state.isRevealedThisRound = false;
+      state.roundOptionCounts = [0, 0, 0, 0];
+      state.pollCountsCreative = [0, 0, 0, 0];
+      state.pollCountsProgramming = [0, 0, 0, 0];
+      if (state.revealAutoAdvanceInterval) {
+        clearInterval(state.revealAutoAdvanceInterval);
+        state.revealAutoAdvanceInterval = null;
+      }
       state.answersSubmittedThisRound = {};
       state.answersCreativeThisRound = {};
       state.answersProgrammingThisRound = {};
       saveActiveSessionState('question');
+
+      if (questionRevealBar) questionRevealBar.style.display = 'none';
+      if (studentVerdictSplash) studentVerdictSplash.style.display = 'none';
+      if (btnRevealToScoreboard) btnRevealToScoreboard.style.display = 'none';
+
+      for (let bi = 0; bi < 4; bi++) {
+        const cEl = document.getElementById('poll-bar-container-' + bi);
+        const fEl = document.getElementById('poll-bar-fill-' + bi);
+        const cntEl = document.getElementById('poll-bar-count-' + bi);
+        const vEl = document.getElementById('poll-verdict-icon-' + bi);
+        if (cEl) cEl.style.display = 'none';
+        if (fEl) fEl.style.width = '0%';
+        if (cntEl) cntEl.textContent = '0 votes';
+        if (vEl) vEl.style.display = 'none';
+        if (optBtns[bi]) {
+          optBtns[bi].classList.remove('is-selected', 'is-dimmed', 'is-revealed-correct', 'is-revealed-wrong', 'is-correct', 'is-wrong');
+        }
+      }
 
       const q = state.activeDeck[qIdx];
       const isHost = (state.role === 'host');
@@ -10603,7 +10959,7 @@ if (typeof module !== 'undefined' && module.exports) {
       }, 100);
     }
 
-    /* Option Click Handling (Answer Lock-In) */
+    /* Option Click Handling: Neutral Lock-In (Zero Early Spoilers!) */
     optBtns.forEach((btn, index) => {
       if (!btn) return;
       btn.addEventListener('click', () => {
@@ -10613,7 +10969,7 @@ if (typeof module !== 'undefined' && module.exports) {
         state.selectedOptionIndex = index;
         saveActiveSessionState('question');
 
-        const q = state.activeDeck[state.currentQuestionIndex];
+        const q = state.currentDisplayedQuestion || state.activeDeck[state.currentQuestionIndex];
         const isCorrect = (index === q.answer);
 
         let pointsEarned = 0;
@@ -10623,26 +10979,35 @@ if (typeof module !== 'undefined' && module.exports) {
           const speedBonus = Math.round(timeRatio * 400);
           const streakBonus = Math.min(state.currentStreak * 50, 200);
           pointsEarned = 600 + speedBonus + streakBonus;
+        }
 
-          state.score += pointsEarned;
-          state.correctCount++;
-          state.currentStreak++;
-          if (state.currentStreak > state.highestStreak) {
-            state.highestStreak = state.currentStreak;
-          }
-          if (state.currentStreak >= 3) {
-            sound.playStreakPowerupSound(state.currentStreak);
+        // Store pending points & correctness - DO NOT apply score or play victory sound yet!
+        state.pendingPointsEarned = pointsEarned;
+        state.pendingIsCorrect = isCorrect;
+
+        // Play crisp neutral lock-in chime - NO spoiler sounds!
+        sound.playPlayerBloop();
+
+        // Lock button visually into neutral selected state
+        optBtns.forEach((b, i) => {
+          if (!b) return;
+          b.disabled = true;
+          if (i === index) {
+            b.classList.add('is-selected');
           } else {
-            sound.playCorrect();
+            b.classList.add('is-dimmed');
           }
-        } else {
-          state.currentStreak = 0;
-          sound.playIncorrect();
+        });
+
+        if (questionLockedOverlay) questionLockedOverlay.classList.add('active');
+        if (lockedInTallyText) {
+          lockedInTallyText.textContent = 'Answer Locked In! Waiting for all innovators or timer to expire...';
         }
 
         if (state.role === 'solo') {
-          // SOLO PRACTICE: Instant feedback, zero waiting, rapid advance to next question
+          // Solo Practice: Pause briefly with suspense then reveal poll and verdict!
           if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
+          state.roundOptionCounts[index] = (state.roundOptionCounts[index] || 0) + 1;
 
           recordParticipantAnswer(
             state.playerId,
@@ -10655,32 +11020,13 @@ if (typeof module !== 'undefined' && module.exports) {
             pointsEarned
           );
 
-          optBtns.forEach((b, i) => {
-            if (!b) return;
-            b.disabled = true;
-            if (i === q.answer) {
-              b.classList.add('is-correct');
-            } else if (i === index) {
-              b.classList.add('is-wrong');
-            } else {
-              b.classList.add('is-dimmed');
-            }
-          });
-
-          if (questionLockedOverlay) questionLockedOverlay.classList.remove('active');
-
           setTimeout(() => {
-            const nextIdx = state.currentQuestionIndex + 1;
-            if (nextIdx >= state.activeDeck.length) {
-              showFinalResults();
-            } else {
-              renderQuestion(nextIdx);
-            }
-          }, 650);
+            triggerQuestionReveal();
+          }, 450);
           return;
         }
 
-        // Multiplayer / Student Lock-in Flow
+        // Multiplayer: Record audit and send SUBMIT_ANSWER packet
         recordParticipantAnswer(
           state.playerId,
           state.currentQuestionIndex,
@@ -10693,24 +11039,6 @@ if (typeof module !== 'undefined' && module.exports) {
           state.playerName,
           state.playerAvatar
         );
-
-        optBtns.forEach((b, i) => {
-          if (!b) return;
-          b.disabled = true;
-          if (i === index) {
-            b.classList.add('is-selected');
-          } else {
-            b.classList.add('is-dimmed');
-          }
-        });
-
-        if (questionLockedOverlay) questionLockedOverlay.classList.add('active');
-        const participants = state.lobbyPlayers.filter(p => !p.isHost);
-        const expected = Math.max(1, participants.length);
-        const answeredCount = Object.keys(state.answersSubmittedThisRound).length + 1;
-        if (lockedInTallyText) {
-          lockedInTallyText.textContent = `Waiting for all innovators or timer to expire... (${answeredCount}/${expected} answered)`;
-        }
 
         hubNet.publish({
           type: 'SUBMIT_ANSWER',
@@ -10725,20 +11053,24 @@ if (typeof module !== 'undefined' && module.exports) {
           correctOptionText: q.options[q.answer],
           isCorrect: isCorrect,
           pointsEarned: pointsEarned,
-          totalScore: state.score,
-          streak: state.currentStreak
+          totalScore: state.score + pointsEarned,
+          streak: isCorrect ? (state.currentStreak + 1) : 0
         });
       });
     });
 
     function handleQuestionTimeout() {
-      if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
-      sound.playTimesUpGong();
+      if (state.questionTimerInterval) {
+        clearInterval(state.questionTimerInterval);
+        state.questionTimerInterval = null;
+      }
+
       if (state.role !== 'host') {
         if (!state.hasAnsweredCurrent) {
           state.hasAnsweredCurrent = true;
-          state.currentStreak = 0;
-          sound.playIncorrect();
+          state.selectedOptionIndex = -1;
+          state.pendingPointsEarned = 0;
+          state.pendingIsCorrect = false;
           optBtns.forEach(b => {
             if (b) {
               b.disabled = true;
@@ -10748,35 +11080,266 @@ if (typeof module !== 'undefined' && module.exports) {
         }
       }
 
-      if (state.role === 'solo') {
-        const q = state.activeDeck[state.currentQuestionIndex];
-        recordParticipantAnswer(
-          state.playerId,
-          state.currentQuestionIndex,
-          -1,
-          'Timed Out / No Answer',
-          q.answer,
-          q.options[q.answer],
-          false,
-          0
-        );
+      triggerQuestionReveal();
+    }
 
-        if (optBtns[q.answer]) {
-          optBtns[q.answer].classList.add('is-correct');
-          optBtns[q.answer].classList.remove('is-dimmed');
+    /* Kahoot Answer Reveal & Poll Distribution Trigger */
+    function triggerQuestionReveal() {
+      if (state.isRevealedThisRound) return;
+      state.isRevealedThisRound = true;
+
+      if (state.questionTimerInterval) {
+        clearInterval(state.questionTimerInterval);
+        state.questionTimerInterval = null;
+      }
+      sound.playTimesUpGong();
+
+      if (state.role === 'host') {
+        if (state.isDualHost) {
+          const cCorrect = (state.deckCreative && state.deckCreative[state.currentQuestionIndex]) ? state.deckCreative[state.currentQuestionIndex].answer : 0;
+          const cExp = (state.deckCreative && state.deckCreative[state.currentQuestionIndex]) ? (state.deckCreative[state.currentQuestionIndex].explanation || '') : '';
+          const pCorrect = (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) ? state.deckProgramming[state.currentQuestionIndex].answer : 0;
+          const pExp = (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) ? (state.deckProgramming[state.currentQuestionIndex].explanation || '') : '';
+
+          hubNet.publishToPin(state.pinCreative, {
+            type: 'REVEAL_QUESTION_ANSWER',
+            questionIndex: state.currentQuestionIndex,
+            optionCounts: state.pollCountsCreative,
+            correctOptionIndex: cCorrect,
+            explanation: cExp,
+            scores: state.scoresCreative,
+            previousRanks: state.previousRanks
+          });
+
+          hubNet.publishToPin(state.pinProgramming, {
+            type: 'REVEAL_QUESTION_ANSWER',
+            questionIndex: state.currentQuestionIndex,
+            optionCounts: state.pollCountsProgramming,
+            correctOptionIndex: pCorrect,
+            explanation: pExp,
+            scores: state.scoresProgramming,
+            previousRanks: state.previousRanks
+          });
+        } else {
+          const q = state.activeDeck[state.currentQuestionIndex];
+          hubNet.publish({
+            type: 'REVEAL_QUESTION_ANSWER',
+            questionIndex: state.currentQuestionIndex,
+            optionCounts: state.roundOptionCounts,
+            correctOptionIndex: q ? q.answer : 0,
+            explanation: q ? (q.explanation || '') : '',
+            scores: state.roomScores,
+            previousRanks: state.previousRanks
+          });
         }
-        setTimeout(() => {
-          const nextIdx = state.currentQuestionIndex + 1;
-          if (nextIdx >= state.activeDeck.length) {
-            showFinalResults();
+      }
+
+      revealAnswerAndShowPoll();
+    }
+
+    /* Reveal Answer, Animate Poll Bars & Deliver Student Verdict */
+    function revealAnswerAndShowPoll(revealData) {
+      if (questionLockedOverlay) questionLockedOverlay.classList.remove('active');
+
+      const q = state.currentDisplayedQuestion || state.activeDeck[state.currentQuestionIndex];
+      if (!q) return;
+
+      const isHost = (state.role === 'host');
+      let correctIdx = q.answer;
+      if (revealData && revealData.correctOptionIndex !== undefined) {
+        correctIdx = revealData.correctOptionIndex;
+      }
+
+      // Determine vote distribution counts
+      let counts = [0, 0, 0, 0];
+      if (revealData && Array.isArray(revealData.optionCounts)) {
+        counts = revealData.optionCounts;
+      } else if (state.isDualHost && isHost) {
+        const activeTrack = q.dualTrack || (state.currentQuestionIndex % 2 === 0 ? 'creative' : 'programming');
+        counts = (activeTrack === 'creative') ? state.pollCountsCreative : state.pollCountsProgramming;
+      } else {
+        counts = state.roundOptionCounts || [0, 0, 0, 0];
+      }
+
+      const totalVotes = counts.reduce((sum, val) => sum + (val || 0), 0);
+      const maxVotes = Math.max(1, Math.max(...counts));
+
+      // 1. Animate Poll Bars & Highlight Options
+      for (let i = 0; i < 4; i++) {
+        const count = counts[i] || 0;
+        const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+        const barWidthPct = totalVotes > 0 ? Math.round((count / maxVotes) * 100) : 0;
+
+        const container = document.getElementById('poll-bar-container-' + i);
+        const fill = document.getElementById('poll-bar-fill-' + i);
+        const countLabel = document.getElementById('poll-bar-count-' + i);
+        const verdictBadge = document.getElementById('poll-verdict-icon-' + i);
+
+        if (container) container.style.display = 'flex';
+        if (fill) {
+          fill.style.width = '0%';
+          setTimeout(() => {
+            fill.style.width = barWidthPct + '%';
+          }, 80);
+        }
+        if (countLabel) {
+          countLabel.textContent = totalVotes > 0 ? (count + ' (' + pct + '%)') : String(count);
+        }
+
+        if (optBtns[i]) {
+          optBtns[i].disabled = true;
+          optBtns[i].classList.remove('is-selected', 'is-dimmed');
+
+          if (i === correctIdx) {
+            optBtns[i].classList.add('is-revealed-correct');
+            if (verdictBadge) {
+              verdictBadge.className = 'poll-verdict-badge tag-correct';
+              verdictBadge.innerHTML = '<svg class="ui-icon-svg" style="width:12px;height:12px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Correct';
+              verdictBadge.style.display = 'inline-flex';
+            }
           } else {
-            renderQuestion(nextIdx);
+            optBtns[i].classList.add('is-revealed-wrong');
+            if (verdictBadge) {
+              verdictBadge.className = 'poll-verdict-badge tag-wrong';
+              verdictBadge.innerHTML = '<svg class="ui-icon-svg" style="width:12px;height:12px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+              verdictBadge.style.display = count > 0 ? 'inline-flex' : 'none';
+            }
           }
-        }, 750);
-        return;
+        }
+      }
+
+      // 2. Personal Verdict & Audio on Student Devices
+      if (state.role !== 'host') {
+        const userSelected = state.selectedOptionIndex;
+        const isCorrect = (userSelected === correctIdx);
+
+        if (isCorrect) {
+          state.score += (state.pendingPointsEarned || 0);
+          state.correctCount++;
+          state.currentStreak++;
+          if (state.currentStreak > state.highestStreak) {
+            state.highestStreak = state.currentStreak;
+          }
+
+          if (state.currentStreak >= 3) {
+            sound.playStreakPowerupSound(state.currentStreak);
+          } else {
+            sound.playCorrect();
+          }
+
+          try {
+            confetti({ particleCount: 65, spread: 70, origin: { y: 0.6 } });
+          } catch (e) {}
+
+          if (studentVerdictBox) studentVerdictBox.className = 'student-verdict-card verdict-correct';
+          if (studentVerdictIcon) {
+            studentVerdictIcon.innerHTML = '<svg class="ui-icon-svg" style="width:36px;height:36px;color:#4ade80;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          }
+          if (studentVerdictHeadline) studentVerdictHeadline.textContent = 'CORRECT!';
+          if (studentVerdictPoints) studentVerdictPoints.textContent = '+' + (state.pendingPointsEarned || 0) + ' pts';
+          if (studentVerdictStreak) {
+            if (state.currentStreak >= 3) {
+              studentVerdictStreak.style.display = 'block';
+              studentVerdictStreak.textContent = state.currentStreak + ' in a row! On Fire!';
+            } else {
+              studentVerdictStreak.style.display = 'none';
+            }
+          }
+          if (studentVerdictSubtext) {
+            studentVerdictSubtext.textContent = 'Total Score: ' + state.score + ' pts';
+          }
+        } else {
+          state.currentStreak = 0;
+          sound.playIncorrect();
+
+          const timedOut = (userSelected === null || userSelected === undefined || userSelected < 0);
+          if (studentVerdictBox) {
+            studentVerdictBox.className = timedOut ? 'student-verdict-card verdict-timeout' : 'student-verdict-card verdict-incorrect';
+          }
+          if (studentVerdictIcon) {
+            studentVerdictIcon.innerHTML = '<svg class="ui-icon-svg" style="width:36px;height:36px;color:#f87171;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+          }
+          if (studentVerdictHeadline) {
+            studentVerdictHeadline.textContent = timedOut ? "TIME'S UP!" : 'INCORRECT!';
+          }
+          if (studentVerdictPoints) studentVerdictPoints.textContent = '+0 pts';
+          if (studentVerdictStreak) studentVerdictStreak.style.display = 'none';
+          if (studentVerdictSubtext) {
+            studentVerdictSubtext.textContent = 'Correct Answer: ' + q.options[correctIdx];
+          }
+        }
+
+        if (studentVerdictSplash) {
+          studentVerdictSplash.style.display = 'flex';
+          setTimeout(() => {
+            if (studentVerdictSplash) studentVerdictSplash.style.display = 'none';
+          }, 3200);
+        }
+      } else {
+        if (studentVerdictSplash) studentVerdictSplash.style.display = 'none';
+      }
+
+      // 3. Question Explanation & Action Bar
+      if (questionRevealBar) questionRevealBar.style.display = 'flex';
+      if (revealExplanationBox) {
+        revealExplanationBox.textContent = (revealData && revealData.explanation) || q.explanation || 'Review the correct concept highlighted above.';
+      }
+
+      if (revealStatusTitle) {
+        if (state.isDualHost && isHost) {
+          const trackLabel = (q.dualTrack === 'creative') ? 'Creative Track Breakdown' : 'Programming Track Breakdown';
+          revealStatusTitle.textContent = trackLabel + ' (' + totalVotes + ' answered)';
+        } else {
+          revealStatusTitle.textContent = 'Answer Breakdown (' + totalVotes + ' answered)';
+        }
+      }
+
+      if (isHost || state.role === 'solo') {
+        if (btnRevealToScoreboard) btnRevealToScoreboard.style.display = 'inline-flex';
+        if (studentRevealNotice) studentRevealNotice.style.display = 'none';
+
+        // Auto-advance to scoreboard after 6s review period
+        let remSeconds = 6;
+        if (revealCountdownTimer) revealCountdownTimer.textContent = remSeconds + 's';
+        if (state.revealAutoAdvanceInterval) clearInterval(state.revealAutoAdvanceInterval);
+        state.revealAutoAdvanceInterval = setInterval(() => {
+          remSeconds--;
+          if (revealCountdownTimer) revealCountdownTimer.textContent = remSeconds + 's';
+          if (remSeconds <= 0) {
+            clearInterval(state.revealAutoAdvanceInterval);
+            state.revealAutoAdvanceInterval = null;
+            advanceFromRevealToScoreboard();
+          }
+        }, 1000);
+      } else {
+        if (btnRevealToScoreboard) btnRevealToScoreboard.style.display = 'none';
+        if (studentRevealNotice) studentRevealNotice.style.display = 'block';
+      }
+    }
+
+    function advanceFromRevealToScoreboard() {
+      if (state.revealAutoAdvanceInterval) {
+        clearInterval(state.revealAutoAdvanceInterval);
+        state.revealAutoAdvanceInterval = null;
+      }
+      if (studentVerdictSplash) studentVerdictSplash.style.display = 'none';
+
+      if (state.role === 'host') {
+        if (state.isDualHost) {
+          hubNet.publishToPin(state.pinCreative, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresCreative, previousRanks: state.previousRanks });
+          hubNet.publishToPin(state.pinProgramming, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresProgramming, previousRanks: state.previousRanks });
+        } else {
+          hubNet.publish({ type: 'SHOW_ROUND_SCOREBOARD', scores: state.roomScores, previousRanks: state.previousRanks });
+        }
       }
 
       endQuestionAndShowRoundScoreboard();
+    }
+
+    if (btnRevealToScoreboard) {
+      btnRevealToScoreboard.addEventListener('click', () => {
+        advanceFromRevealToScoreboard();
+      });
     }
 
     /* Screen 5: Round Result & Intermediate Scoreboard */
@@ -10909,8 +11472,7 @@ if (typeof module !== 'undefined' && module.exports) {
         }
       });
 
-      setTimeout(() => {
-        if (roundFeedbackCard) {
+      if (roundFeedbackCard) {
           if (state.role === 'host') {
             roundFeedbackCard.className = 'round-result-card presenter';
             let trackSuffix = '';
@@ -11011,7 +11573,6 @@ if (typeof module !== 'undefined' && module.exports) {
         showScreen('roundResult');
         sound.playLeaderboardRevealSound();
         startRoundAutoAdvance(5);
-      }, 1000);
     }
 
     const roundHighestClimberCallout = document.getElementById('round-highest-climber-callout');
@@ -12461,11 +13022,19 @@ if (typeof module !== 'undefined' && module.exports) {
               questionAnswersTally.textContent = `Creative: ${cAnswered}/${cExp} | Prog: ${pAnswered}/${pExp}`;
             }
 
-            // If all innovators in both tracks have answered, automatically reveal round scoreboard
+            const selIdx = parseInt(data.selectedOptionIndex, 10);
+            if (selIdx >= 0 && selIdx < 4) {
+              state.roundOptionCounts[selIdx] = (state.roundOptionCounts[selIdx] || 0) + 1;
+              if (isFromCreative) {
+                state.pollCountsCreative[selIdx] = (state.pollCountsCreative[selIdx] || 0) + 1;
+              } else if (isFromProgramming) {
+                state.pollCountsProgramming[selIdx] = (state.pollCountsProgramming[selIdx] || 0) + 1;
+              }
+            }
+
+            // If all innovators in both tracks have answered, trigger Kahoot answer reveal & poll!
             if (cAnswered >= cExp && pAnswered >= pExp && cExp > 0 && pExp > 0) {
-              hubNet.publishToPin(state.pinCreative, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresCreative, previousRanks: state.previousRanks });
-              hubNet.publishToPin(state.pinProgramming, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresProgramming, previousRanks: state.previousRanks });
-              endQuestionAndShowRoundScoreboard();
+              triggerQuestionReveal();
             }
           } else {
             state.answersSubmittedThisRound[data.id] = data;
@@ -12473,6 +13042,11 @@ if (typeof module !== 'undefined' && module.exports) {
             const scoreEntry = { id: data.id, name: data.name, avatar: data.avatar || 'robot', score: data.totalScore, streak: data.streak };
             if (existingIdx >= 0) state.roomScores[existingIdx] = scoreEntry;
             else state.roomScores.push(scoreEntry);
+
+            const selIdx = parseInt(data.selectedOptionIndex, 10);
+            if (selIdx >= 0 && selIdx < 4) {
+              state.roundOptionCounts[selIdx] = (state.roundOptionCounts[selIdx] || 0) + 1;
+            }
 
             const participants = state.lobbyPlayers.filter(p => !p.isHost);
             const answeredCount = Object.keys(state.answersSubmittedThisRound).length;
@@ -12486,9 +13060,16 @@ if (typeof module !== 'undefined' && module.exports) {
             }
 
             if (state.role === 'host' && answeredCount >= expectedCount && participants.length > 0) {
-              hubNet.publish({ type: 'SHOW_ROUND_SCOREBOARD', scores: state.roomScores, previousRanks: state.previousRanks });
-              endQuestionAndShowRoundScoreboard();
+              triggerQuestionReveal();
             }
+          }
+          break;
+
+        case 'REVEAL_QUESTION_ANSWER':
+          if (state.role === 'player') {
+            if (Array.isArray(data.scores)) state.roomScores = data.scores;
+            if (data.previousRanks) state.previousRanks = data.previousRanks;
+            revealAnswerAndShowPoll(data);
           }
           break;
 
@@ -12550,6 +13131,9 @@ if (typeof module !== 'undefined' && module.exports) {
       prepareDeck,
       startSynchronizedCountdown,
       renderQuestion,
+      triggerQuestionReveal,
+      revealAnswerAndShowPoll,
+      advanceFromRevealToScoreboard,
       endQuestionAndShowRoundScoreboard,
       renderRoundScoreboard,
       advanceToNextRoundOrPodium,
