@@ -1883,6 +1883,104 @@
       line-height: 1.4;
     }
 
+    /* ==========================================================================
+       SESSION RECONNECT PROTECTION & ANTI-DISCONNECT TOAST BANNER
+       ========================================================================== */
+    .reconnect-toast-banner {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      max-width: 92%;
+      width: 520px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--cih-cyan);
+      box-shadow: 0 10px 35px rgba(6, 182, 212, 0.35), 0 0 20px rgba(0, 0, 0, 0.6);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      z-index: 10000;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .reconnect-toast-banner.is-active {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .reconnect-toast-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+    .reconnect-pulse-dot {
+      width: 10px;
+      height: 10px;
+      min-width: 10px;
+      border-radius: 50%;
+      background: var(--cih-cyan);
+      box-shadow: 0 0 10px var(--cih-cyan);
+      animation: reconnectDotPulse 1.4s infinite ease-in-out;
+    }
+    @keyframes reconnectDotPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+    .reconnect-toast-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .reconnect-toast-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .reconnect-toast-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn-reconnect-action {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .btn-reconnect-resume {
+      background: var(--cih-cyan);
+      color: #050816;
+    }
+    .btn-reconnect-resume:hover {
+      background: #22d3ee;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+    .btn-reconnect-leave {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: var(--text-secondary);
+    }
+    .btn-reconnect-leave:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ffffff;
+    }
+
     /* Screen 6: Final Podium */
     .podium-section-wrap {
       position: relative;
@@ -3842,6 +3940,21 @@
   </style>
 </head>
 <body>
+  <!-- Persistent Session Reconnect Toast Banner -->
+  <div id="reconnect-toast-banner" class="reconnect-toast-banner" role="alert" aria-live="assertive">
+    <div class="reconnect-toast-content">
+      <div class="reconnect-pulse-dot"></div>
+      <div style="min-width: 0;">
+        <div id="reconnect-toast-title" class="reconnect-toast-title">Showdown Reconnected!</div>
+        <div id="reconnect-toast-desc" class="reconnect-toast-desc">Resuming room...</div>
+      </div>
+    </div>
+    <div class="reconnect-toast-actions">
+      <button type="button" id="btn-reconnect-resume" class="btn-reconnect-action btn-reconnect-resume">Resume</button>
+      <button type="button" id="btn-reconnect-leave" class="btn-reconnect-action btn-reconnect-leave" title="Leave and start fresh">Leave</button>
+    </div>
+  </div>
+
 
   <!-- ==========================================================================
        INTRO SPLASH SCREEN & "CLICK TO ENTER" SEQUENCE
@@ -7136,6 +7249,8 @@ if (typeof module !== 'undefined' && module.exports) {
        ========================================================================== */
     const state = {
       role: 'solo', // 'host' | 'player' | 'solo'
+      currentScreenKey: 'welcome',
+      reconnectBannerTimer: null,
       playerId: 'user_' + Math.random().toString(36).substr(2, 9),
       playerName: '',
       track: 'dual', // 'dual' | 'creative' | 'programming'
@@ -7365,6 +7480,221 @@ if (typeof module !== 'undefined' && module.exports) {
     const hubNet = new HubNetwork();
 
     /* ==========================================================================
+       5B. SESSION PERSISTENCE & ANTI-DISCONNECT RECOVERY
+       ========================================================================== */
+    function saveActiveSessionState(screenOverride) {
+      try {
+        if (!state.role || (!state.roomPin && state.role !== 'solo')) return;
+        const scr = screenOverride || state.currentScreenKey || 'lobby';
+        if (scr === 'welcome') return;
+
+        const sessionPayload = {
+          timestamp: Date.now(),
+          role: state.role,
+          playerId: state.playerId,
+          playerName: state.playerName,
+          playerAvatar: state.playerAvatar,
+          roomPin: state.roomPin,
+          track: state.track,
+          isDualHost: !!state.isDualHost,
+          pinCreative: state.pinCreative || '',
+          pinProgramming: state.pinProgramming || '',
+          score: state.score || 0,
+          correctCount: state.correctCount || 0,
+          currentStreak: state.currentStreak || 0,
+          highestStreak: state.highestStreak || 0,
+          currentQuestionIndex: state.currentQuestionIndex || 0,
+          hasAnsweredCurrent: !!state.hasAnsweredCurrent,
+          selectedOptionIndex: state.selectedOptionIndex,
+          activeDeck: state.activeDeck || [],
+          totalQuestions: state.totalQuestions || 15,
+          timerSeconds: state.timerSeconds || 20,
+          currentScreenKey: scr,
+          roomScores: state.roomScores || [],
+          lobbyPlayers: state.lobbyPlayers || [],
+          participantAuditLog: state.participantAuditLog || {}
+        };
+
+        const str = JSON.stringify(sessionPayload);
+        sessionStorage.setItem('cih_active_showdown_session', str);
+        localStorage.setItem('cih_active_showdown_session', str);
+      } catch (e) {
+        console.warn('[RECONNECT] Could not save session state:', e);
+      }
+    }
+
+    function clearActiveSessionState() {
+      try {
+        sessionStorage.removeItem('cih_active_showdown_session');
+        localStorage.removeItem('cih_active_showdown_session');
+      } catch (e) {}
+    }
+
+    function showReconnectBanner(title, desc, durationMs = 4500) {
+      const banner = document.getElementById('reconnect-toast-banner');
+      const tTitle = document.getElementById('reconnect-toast-title');
+      const tDesc = document.getElementById('reconnect-toast-desc');
+      if (!banner) return;
+
+      if (tTitle && title) tTitle.textContent = title;
+      if (tDesc && desc) tDesc.textContent = desc;
+
+      banner.classList.add('is-active');
+
+      if (state.reconnectBannerTimer) clearTimeout(state.reconnectBannerTimer);
+      if (durationMs > 0) {
+        state.reconnectBannerTimer = setTimeout(() => {
+          hideReconnectBanner();
+        }, durationMs);
+      }
+    }
+
+    function hideReconnectBanner() {
+      const banner = document.getElementById('reconnect-toast-banner');
+      if (banner) banner.classList.remove('is-active');
+    }
+
+    function initSessionRecovery() {
+      try {
+        let raw = sessionStorage.getItem('cih_active_showdown_session');
+        if (!raw) raw = localStorage.getItem('cih_active_showdown_session');
+        if (!raw) return false;
+
+        const saved = JSON.parse(raw);
+        if (!saved || !saved.role || !saved.timestamp) return false;
+
+        const age = Date.now() - saved.timestamp;
+        if (age > 45 * 60 * 1000) {
+          clearActiveSessionState();
+          return false;
+        }
+
+        console.log('[RECONNECT] Restoring active showdown session:', saved.role, saved.roomPin, saved.playerName);
+
+        // 1. Restore identity & core state
+        state.playerId = saved.playerId || state.playerId;
+        state.playerName = saved.playerName || '';
+        state.playerAvatar = saved.playerAvatar || 'robot';
+        state.role = saved.role;
+        state.roomPin = saved.roomPin || '';
+        state.track = saved.track || 'dual';
+        state.isDualHost = !!saved.isDualHost;
+        state.pinCreative = saved.pinCreative || '';
+        state.pinProgramming = saved.pinProgramming || '';
+        state.score = saved.score || 0;
+        state.correctCount = saved.correctCount || 0;
+        state.currentStreak = saved.currentStreak || 0;
+        state.highestStreak = saved.highestStreak || 0;
+        state.currentQuestionIndex = saved.currentQuestionIndex || 0;
+        state.hasAnsweredCurrent = !!saved.hasAnsweredCurrent;
+        state.selectedOptionIndex = saved.selectedOptionIndex;
+        state.activeDeck = saved.activeDeck || [];
+        state.totalQuestions = saved.totalQuestions || 15;
+        state.timerSeconds = saved.timerSeconds || 20;
+        state.roomScores = saved.roomScores || [];
+        state.lobbyPlayers = saved.lobbyPlayers || [];
+        state.participantAuditLog = saved.participantAuditLog || {};
+
+        // 2. Dismiss intro screen
+        dismissIntroSplash(false);
+        const introSplash = document.getElementById('intro-splash-screen');
+        if (introSplash) {
+          introSplash.style.display = 'none';
+          introSplash.classList.add('dismissed');
+        }
+
+        // 3. Connect to network
+        if (saved.role === 'host') {
+          const pins = state.isDualHost ? [state.pinCreative, state.pinProgramming].filter(Boolean) : [state.roomPin];
+          hubNet.connect(pins, 'host', () => {
+            hubNet.publish({
+              type: 'HOST_SYNC',
+              hostId: state.playerId,
+              roomPin: state.roomPin,
+              currentQuestionIndex: state.currentQuestionIndex,
+              totalQuestions: state.totalQuestions,
+              track: state.track,
+              roomScores: state.roomScores,
+              lobbyPlayers: state.lobbyPlayers
+            });
+          });
+        } else if (saved.role === 'player') {
+          hubNet.connect([state.roomPin], 'player', () => {
+            hubNet.publish({
+              type: 'PLAYER_RECONNECT',
+              id: state.playerId,
+              name: state.playerName,
+              avatar: state.playerAvatar,
+              track: state.track,
+              score: state.score,
+              streak: state.currentStreak,
+              questionIndex: state.currentQuestionIndex,
+              hasAnsweredCurrent: state.hasAnsweredCurrent,
+              selectedOptionIndex: state.selectedOptionIndex
+            });
+          });
+        }
+
+        // 4. Restore Screen State
+        const targetScreen = saved.currentScreenKey || 'lobby';
+        if (targetScreen === 'question' && state.activeDeck.length > 0) {
+          const savedAnswered = saved.hasAnsweredCurrent;
+          const savedOption = saved.selectedOptionIndex;
+          renderQuestion(state.currentQuestionIndex);
+          if (savedAnswered && savedOption !== null && savedOption !== undefined) {
+            state.hasAnsweredCurrent = true;
+            state.selectedOptionIndex = savedOption;
+            optBtns.forEach((b, i) => {
+              if (!b) return;
+              b.disabled = true;
+              if (i === savedOption) b.classList.add('is-selected');
+              else b.classList.add('is-dimmed');
+            });
+            if (questionLockedOverlay) questionLockedOverlay.classList.add('active');
+          }
+        } else if (targetScreen === 'roundResult') {
+          endQuestionAndShowRoundScoreboard();
+        } else if (targetScreen === 'finalResults') {
+          showFinalResults();
+          completePodiumInstantly();
+        } else {
+          // Lobby or default
+          if (state.role === 'player') {
+            if (lobbyPinDisplay) lobbyPinDisplay.textContent = state.roomPin;
+            if (lobbyStudentPinDisplay) lobbyStudentPinDisplay.textContent = state.roomPin;
+            if (lobbyHostPinShowcase) lobbyHostPinShowcase.style.display = 'none';
+            if (lobbyStudentPinShowcase) lobbyStudentPinShowcase.style.display = 'block';
+            if (lobbyHostControls) lobbyHostControls.style.display = 'none';
+            if (lobbyStudentWaiting) lobbyStudentWaiting.style.display = 'block';
+            renderSingleLobbyRoster();
+            updateLobbyStudentCard();
+            showScreen('lobby');
+          } else if (state.role === 'host') {
+            if (lobbyPinDisplay) lobbyPinDisplay.textContent = state.roomPin;
+            if (lobbyHostControls) lobbyHostControls.style.display = 'block';
+            if (lobbyStudentWaiting) lobbyStudentWaiting.style.display = 'none';
+            renderSingleLobbyRoster();
+            showScreen('lobby');
+          } else {
+            showScreen('lobby');
+          }
+        }
+
+        // 5. Show Reconnect Toast
+        const roleDesc = state.role === 'host' ? 'Presenter' : (state.playerName || 'Innovator');
+        showReconnectBanner(
+          'Showdown Session Reconnected!',
+          `Resumed Room ${state.roomPin || 'Solo'} as ${roleDesc} (${state.score} pts)`
+        );
+
+        return true;
+      } catch (e) {
+        console.warn('[RECONNECT] Error restoring session:', e);
+        return false;
+      }
+    }
+
+    /* ==========================================================================
        6. SCREEN NAVIGATION & UTILITIES
        ========================================================================== */
     const appShellMain = document.getElementById('app-shell-main');
@@ -7378,6 +7708,7 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 
     function showScreen(screenKey) {
+      state.currentScreenKey = screenKey;
       Object.values(screens).forEach(s => {
         if (s) {
           s.classList.remove('active-screen');
@@ -7390,6 +7721,7 @@ if (typeof module !== 'undefined' && module.exports) {
         target.style.display = 'flex';
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      saveActiveSessionState(screenKey);
     }
 
     function escapeHtml(str) {
@@ -9877,6 +10209,7 @@ if (typeof module !== 'undefined' && module.exports) {
       state.answersSubmittedThisRound = {};
       state.answersCreativeThisRound = {};
       state.answersProgrammingThisRound = {};
+      saveActiveSessionState('question');
 
       const q = state.activeDeck[qIdx];
       const isHost = (state.role === 'host');
@@ -10070,6 +10403,7 @@ if (typeof module !== 'undefined' && module.exports) {
         if (state.hasAnsweredCurrent) return;
         state.hasAnsweredCurrent = true;
         state.selectedOptionIndex = index;
+        saveActiveSessionState('question');
 
         const q = state.activeDeck[state.currentQuestionIndex];
         const isCorrect = (index === q.answer);
@@ -10322,6 +10656,7 @@ if (typeof module !== 'undefined' && module.exports) {
     function endQuestionAndShowRoundScoreboard() {
       if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
       sound.stopBGM();
+      saveActiveSessionState('roundResult');
 
       const q = state.activeDeck[state.currentQuestionIndex];
       const isCorrect = (state.selectedOptionIndex === q.answer);
@@ -10786,6 +11121,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 
     function showFinalResults() {
+      saveActiveSessionState('finalResults');
       state.totalElapsedTime = Math.max(1, Math.round((Date.now() - (state.startTime || Date.now())) / 1000));
       const mins = Math.floor(state.totalElapsedTime / 60);
       const secs = state.totalElapsedTime % 60;
@@ -11619,9 +11955,41 @@ if (typeof module !== 'undefined' && module.exports) {
 
     if (btnNewGame) {
       btnNewGame.addEventListener('click', () => {
+        clearActiveSessionState();
         showScreen('welcome');
       });
     }
+
+    const btnReconnectResume = document.getElementById('btn-reconnect-resume');
+    const btnReconnectLeave = document.getElementById('btn-reconnect-leave');
+
+    if (btnReconnectResume) {
+      btnReconnectResume.addEventListener('click', () => {
+        hideReconnectBanner();
+      });
+    }
+
+    if (btnReconnectLeave) {
+      btnReconnectLeave.addEventListener('click', () => {
+        clearActiveSessionState();
+        hideReconnectBanner();
+        state.role = 'solo';
+        state.roomPin = '';
+        state.score = 0;
+        state.activeDeck = [];
+        showScreen('welcome');
+      });
+    }
+
+    /* Accidental Reload Guard */
+    window.addEventListener('beforeunload', (e) => {
+      const activeScreens = ['question', 'countdown'];
+      if (state.role && activeScreens.includes(state.currentScreenKey)) {
+        e.preventDefault();
+        e.returnValue = 'You have a live showdown in progress. Are you sure you want to leave?';
+        return e.returnValue;
+      }
+    });
 
     /* Update connection status UI */
     function updateConnectionStatus(isOnline) {
@@ -11639,6 +12007,75 @@ if (typeof module !== 'undefined' && module.exports) {
       const isFromProgramming = state.pinProgramming && topic.endsWith(state.pinProgramming);
 
       switch (data.type) {
+        case 'PLAYER_RECONNECT':
+          if (data && data.id) {
+            console.log('[NETWORK] Player reconnected:', data.name, data.id, 'score:', data.score);
+            if (state.isDualHost) {
+              const cr = state.lobbyCreative.find(p => p.id === data.id);
+              if (cr) { cr.name = data.name; if (data.avatar) cr.avatar = data.avatar; }
+              const pr = state.lobbyProgramming.find(p => p.id === data.id);
+              if (pr) { pr.name = data.name; if (data.avatar) pr.avatar = data.avatar; }
+              renderDualLobbyRosters();
+            } else {
+              const existing = state.lobbyPlayers.find(p => p.id === data.id);
+              if (existing) {
+                existing.name = data.name;
+                if (data.avatar) existing.avatar = data.avatar;
+              } else {
+                state.lobbyPlayers.push({ id: data.id, name: data.name, avatar: data.avatar || 'robot', isHost: false });
+              }
+              renderSingleLobbyRoster();
+            }
+
+            const scoreIdx = state.roomScores.findIndex(p => p.id === data.id);
+            if (scoreIdx >= 0) {
+              state.roomScores[scoreIdx].score = Math.max(state.roomScores[scoreIdx].score || 0, data.score || 0);
+              state.roomScores[scoreIdx].streak = data.streak || state.roomScores[scoreIdx].streak;
+            } else if (data.score > 0) {
+              state.roomScores.push({
+                id: data.id,
+                name: data.name,
+                avatar: data.avatar || 'robot',
+                score: data.score,
+                streak: data.streak || 0
+              });
+            }
+
+            if (state.role === 'host') {
+              const targetPin = topic.split('/').pop();
+              hubNet.publishToPin(targetPin, {
+                type: 'HOST_SYNC',
+                targetPlayerId: data.id,
+                currentQuestionIndex: state.currentQuestionIndex,
+                questionTimeRemaining: state.questionTimeRemaining,
+                isTimerPaused: state.isTimerPaused,
+                currentScreenKey: state.currentScreenKey,
+                roomScores: state.roomScores,
+                lobbyPlayers: state.lobbyPlayers,
+                totalQuestions: state.totalQuestions,
+                track: state.track
+              });
+            }
+          }
+          break;
+
+        case 'HOST_SYNC':
+          if (state.role === 'player') {
+            if (!data.targetPlayerId || data.targetPlayerId === state.playerId) {
+              console.log('[NETWORK] Received HOST_SYNC state from presenter:', data);
+              if (Array.isArray(data.roomScores)) state.roomScores = data.roomScores;
+              if (Array.isArray(data.lobbyPlayers)) {
+                state.lobbyPlayers = data.lobbyPlayers;
+                renderSingleLobbyRoster();
+              }
+              if (data.totalQuestions) state.totalQuestions = data.totalQuestions;
+              if (data.currentQuestionIndex !== undefined && data.currentQuestionIndex !== state.currentQuestionIndex) {
+                renderQuestion(data.currentQuestionIndex);
+              }
+            }
+          }
+          break;
+
         case 'HOST_HELLO':
           if (state.role === 'player') {
             state.track = data.track;
@@ -11903,6 +12340,11 @@ if (typeof module !== 'undefined' && module.exports) {
       completePodiumInstantly,
       computeClassroomAnalytics,
       renderClassroomAnalytics,
+      saveActiveSessionState,
+      clearActiveSessionState,
+      initSessionRecovery,
+      showReconnectBanner,
+      hideReconnectBanner,
       openOrganizerLogsModal,
       exportQuizResultsCSV,
       copyQuizSummaryWhatsApp,
@@ -11952,6 +12394,11 @@ if (typeof module !== 'undefined' && module.exports) {
       closeEnlargeQrModal,
       checkUrlJoinParams
     };
+
+    // Auto-detect and restore interrupted showdown session
+    setTimeout(() => {
+      initSessionRecovery();
+    }, 150);
 
   })();
   </script>
