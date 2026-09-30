@@ -4748,7 +4748,7 @@
                 Questions in this bank will be played when you host "Custom Quiz"
               </p>
             </div>
-            <button type="button" id="btn-creator-host-now" class="btn-mini-action" style="color: #4ade80; border-color: rgba(74, 222, 128, 0.4); font-weight: 700;">
+            <button type="button" id="btn-creator-host-now-bottom" class="btn-mini-action" style="color: #4ade80; border-color: rgba(74, 222, 128, 0.4); font-weight: 700;">
               <svg class="ui-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Host Custom Quiz Now
             </button>
           </div>
@@ -8536,7 +8536,7 @@ if (typeof module !== 'undefined' && module.exports) {
       const chosen = pool[Math.floor(Math.random() * pool.length)] || AVATARS_REGISTRY[0];
       if (applyImmediately) {
         state.playerAvatar = chosen.id;
-        localStorage.setItem('cih_avatar', chosen.id);
+        try { localStorage.setItem('cih_avatar', chosen.id); } catch (_) {}
         updateJoinAvatarPreview();
         updateLobbyStudentCard();
         if (state.role === 'player' && state.roomPin) {
@@ -8551,7 +8551,7 @@ if (typeof module !== 'undefined' && module.exports) {
       sound.init();
       sound.playAvatarSelectClick();
       state.playerAvatar = state.pickerSelectedAvatar;
-      localStorage.setItem('cih_avatar', state.playerAvatar);
+      try { localStorage.setItem('cih_avatar', state.playerAvatar); } catch (_) {}
       updateJoinAvatarPreview();
       updateLobbyStudentCard();
       const meInLobby = state.lobbyPlayers.find(p => p.id === state.playerId);
@@ -8714,6 +8714,7 @@ if (typeof module !== 'undefined' && module.exports) {
     const customQuestionsList = document.getElementById('custom-questions-list');
     const customQuestionsEmpty = document.getElementById('custom-questions-empty');
     const btnCreatorHostNow = document.getElementById('btn-creator-host-now');
+    const btnCreatorHostNowBottom = document.getElementById('btn-creator-host-now-bottom');
 
     /* Passcode Authentication & Security Methods */
     function getStoredPasscode() {
@@ -9627,17 +9628,21 @@ if (typeof module !== 'undefined' && module.exports) {
       });
     }
 
+    function handleHostFromStudio() {
+      const activeDeck = state.trackDecks[state.currentStudioTrack] || [];
+      if (activeDeck.length === 0) {
+        alert("Add at least one question before hosting!");
+        return;
+      }
+      sound.init();
+      setActiveTab('host');
+      setHostTrackSelection(state.currentStudioTrack);
+    }
     if (btnCreatorHostNow) {
-      btnCreatorHostNow.addEventListener('click', () => {
-        const activeDeck = state.trackDecks[state.currentStudioTrack] || [];
-        if (activeDeck.length === 0) {
-          alert("Add at least one question before hosting!");
-          return;
-        }
-        sound.init();
-        setActiveTab('host');
-        setHostTrackSelection(state.currentStudioTrack);
-      });
+      btnCreatorHostNow.addEventListener('click', handleHostFromStudio);
+    }
+    if (btnCreatorHostNowBottom) {
+      btnCreatorHostNowBottom.addEventListener('click', handleHostFromStudio);
     }
 
     // Paste Modal Handlers
