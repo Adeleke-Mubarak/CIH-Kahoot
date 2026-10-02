@@ -4412,7 +4412,7 @@
             <div id="host-track-programming" class="track-card" data-track="programming">
               <span class="track-card-icon" style="font-weight: 800; font-size: 20px; color: var(--cih-amber);">[JS]</span>
               <span class="track-card-title">Programming</span>
-              <span class="track-card-sub">JavaScript &amp; Web</span>
+              <span class="track-card-sub">Python &amp; JavaScript</span>
             </div>
             <div id="host-track-general" class="track-card" data-track="general">
               <span class="track-card-icon" style="font-weight: 800; font-size: 20px; color: #f472b6;">[ALL]</span>
@@ -4477,7 +4477,7 @@
             <div id="solo-track-programming" class="track-card" data-track="programming">
               <span class="track-card-icon" style="font-weight: 800; font-size: 20px; color: var(--cih-amber);">[JS]</span>
               <span class="track-card-title">Programming</span>
-              <span class="track-card-sub">JavaScript &amp; Web</span>
+              <span class="track-card-sub">Python &amp; JavaScript</span>
             </div>
             <div id="solo-track-general" class="track-card" data-track="general">
               <span class="track-card-icon" style="font-weight: 800; font-size: 20px; color: #f472b6;">[ALL]</span>
@@ -4824,7 +4824,7 @@
           <!-- Card 2: Programming Track -->
           <div class="dual-track-card programming-border">
             <div class="dual-card-header">
-              <span class="track-badge-pill track-badge-programming" style="margin-bottom:0; font-size:11px;">[JS] Programming Track</span>
+              <span class="track-badge-pill track-badge-programming" style="margin-bottom:0; font-size:11px;">[CODE] Programming (Python &amp; JS)</span>
               <button id="btn-copy-pin-programming" class="pin-copy-pill" style="padding: 4px 10px; font-size: 11px;">Copy PIN</button>
             </div>
             <div style="text-align: center; margin: 4px 0;">
@@ -4835,7 +4835,7 @@
             <div class="dual-qr-wrapper">
               <div id="dual-qr-programming" class="dual-qr-svg-wrap"></div>
               <div class="qr-code-prompt" style="font-size:10px; margin-top:3px;">
-                <svg class="ui-icon" viewBox="0 0 24 24" style="width:11px; height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg> Scan for JS
+                <svg class="ui-icon" viewBox="0 0 24 24" style="width:11px; height:11px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg> Scan for Python &amp; JS
               </div>
             </div>
             <div class="dual-qr-actions-row">
@@ -6107,365 +6107,363 @@ const QUESTIONS_CREATIVE = [
 const QUESTIONS_PROGRAMMING = [
   {
     id: "p01",
-    question: "Which keyword should you use to declare a variable whose value should NEVER be reassigned?",
-    options: ["const", "var", "let", "static"],
+    question: "Which built-in Python function is used to display output or text on the screen?",
+    options: ["print()","console.log()","echo()","display()"],
     answer: 0,
-    explanation: "'const' creates an immutable reference; attempting to reassign a const variable throws a TypeError."
+    explanation: "'print()' is Python's standard built-in function to output messages, variables, and calculations to the terminal or console."
   },
   {
     id: "p02",
-    question: "What is the key difference between 'let' and 'var' in modern JavaScript?",
-    options: ["'var' cannot be reassigned", "'let' has block scope; 'var' has function scope", "'let' is only for numbers", "'var' is not supported in modern browsers"],
+    question: "What is the standard file extension used for Python source code files?",
+    options: [".python",".py",".pt",".pyt"],
     answer: 1,
-    explanation: "'let' is block-scoped (confined to code blocks), preventing accidental leaks, whereas 'var' is function-scoped and hoisted."
+    explanation: "Python files are saved with the '.py' extension (for example, 'app.py' or 'main.py')."
   },
   {
     id: "p03",
-    question: "Which method is used to print messages or debug output to the browser's developer console?",
-    options: ["console.print()", "print()", "console.log()", "system.out.println()"],
+    question: "In JavaScript, which keyword declares a variable whose value can NEVER be reassigned?",
+    options: ["let","var","const","static"],
     answer: 2,
-    explanation: "'console.log()' is the standard JavaScript method for outputting information to the browser console."
+    explanation: "'const' creates an immutable variable binding in JavaScript; attempting to reassign it triggers a TypeError."
   },
   {
     id: "p04",
-    question: "How do you write a single-line comment in JavaScript?",
-    options: ["# This is a comment", "<!-- This is a comment -->", "/* This is a comment", "// This is a comment"],
-    answer: 3,
-    explanation: "Double slashes '//' denote single-line comments in JavaScript. '/* */' is used for multi-line comments."
+    question: "How do you start a single-line comment in Python?",
+    options: ["// comment","/* comment */","# comment","<!-- comment -->"],
+    answer: 2,
+    explanation: "In Python, the hash symbol '#' denotes a single-line comment. Everything after '#' on that line is ignored by the interpreter."
   },
   {
     id: "p05",
-    question: "What will typeof ",
-    options: ["'string'", "'text'", "'char'", "'object'"],
-    answer: 0,
-    explanation: "In JavaScript, string literals have the primitive type `'string'`."
+    question: "How does Python define code blocks for if-statements, loops, and functions instead of curly braces {}?",
+    options: ["Square brackets []","Indentation (whitespace)","Semicolons at line ends","Parentheses ()"],
+    answer: 1,
+    explanation: "Python uses indentation (standard 4 spaces) to define code blocks and scope. Clean indentation is mandatory in Python syntax!"
   },
   {
     id: "p06",
-    question: "What will typeof 42 evaluate to in JavaScript?",
-    options: ["'integer'", "'number'", "'float'", "'decimal'"],
+    question: "What is the standard method used to print debug messages to the browser console in JavaScript?",
+    options: ["print()","console.log()","document.write()","terminal.output()"],
     answer: 1,
-    explanation: "JavaScript does not separate integers from floats; all numbers are of type `'number'`."
+    explanation: "'console.log()' outputs messages, variables, and debug data to the browser's developer tools console."
   },
   {
     id: "p07",
-    question: "What is the famous quirk result of typeof null in JavaScript?",
-    options: ["'null'", "'undefined'", "'object'", "'boolean'"],
-    answer: 2,
-    explanation: "typeof null returns `'object'`. This is a historic bug from the original 1995 JavaScript implementation preserved for backward compatibility."
+    question: "How do you create a variable named 'score' with the integer value 100 in Python?",
+    options: ["score = 100","int score = 100;","let score = 100","var score = 100;"],
+    answer: 0,
+    explanation: "Python uses dynamic typing and simple assignment: 'score = 100'. No variable declaration keywords (like let or var) are used."
   },
   {
     id: "p08",
-    question: "What value does an uninitialized variable declared with let score; hold?",
-    options: ["null", "0", "NaN", "undefined"],
-    answer: 3,
-    explanation: "Variables declared without an initial value automatically default to `undefined`."
+    question: "What is the key difference between 'let' and 'var' in modern JavaScript?",
+    options: ["'var' cannot be changed","'let' has block scope; 'var' has function scope","'let' is only for numbers","'var' is not supported in modern browsers"],
+    answer: 1,
+    explanation: "'let' is block-scoped (confined to its enclosing curly braces {}), preventing variable leakage, while 'var' is function-scoped."
   },
   {
     id: "p09",
-    question: "What is the difference between == (loose equality) and === (strict equality)?",
-    options: ["=== compares both value and type without type coercion", "== is faster than ===", "=== converts both sides to numbers", "There is no difference"],
-    answer: 0,
-    explanation: "=== checks both value AND data type without converting types (e.g. `5 === '5'` is false, whereas `5 == '5'` is true)."
+    question: "Which of the following is an INVALID variable name in Python?",
+    options: ["user_name","_private_key","2nd_place","studentScore"],
+    answer: 2,
+    explanation: "In Python, variable names cannot start with a number. '2nd_place' is invalid syntax, whereas letters and underscores are allowed."
   },
   {
     id: "p10",
-    question: "What will Boolean(0) or Boolean(",
-    options: ["true", "false", "undefined", "NaN"],
+    question: "Which built-in Python function returns the data type of an object or variable?",
+    options: ["typeof()","type()","dataType()","check()"],
     answer: 1,
-    explanation: "`0`, `''` (empty string), `null`, `undefined`, `NaN`, and `false` are JavaScript's 6 falsy values."
+    explanation: "The 'type()' function returns the data type class of an object (for example, 'type(5)' returns '<class int>')."
   },
   {
     id: "p11",
-    question: "What is the console output of this remainder (modulo) operation in JavaScript?",
-    options: ["3.4", "3", "2", "1"],
-    answer: 2,
-    codeSnippet: "const dividend = 17;\nconst divisor = 5;\nconst remainder = dividend % divisor;\nconsole.log(remainder);",
-    codeLang: "javascript",
-    timerSeconds: 30,
-    explanation: "17 divided by 5 equals 3 with a remainder of 2 (5 * 3 = 15; 17 - 15 = 2)."
+    question: "What will the Python expression 'type(3.14)' evaluate to?",
+    options: ["<class 'int'>","<class 'float'>","<class 'decimal'>","<class 'number'>"],
+    answer: 1,
+    explanation: "Numbers with a decimal point in Python belong to the 'float' (floating-point number) data type."
   },
   {
     id: "p12",
-    question: "Which characters are used to enclose Template Literals in modern JavaScript for string interpolation?",
-    options: ["Single quotes (' ')", "Double quotes (\" \")", "Square brackets ([ ])", "Backticks (` `)"],
-    answer: 3,
-    explanation: "Template literals use backticks (`` ` ``) and allow expressions inside `dollar-sign and curly brackets`."
+    question: "What will 'typeof 42' evaluate to in JavaScript?",
+    options: ["'integer'","'number'","'float'","'int'"],
+    answer: 1,
+    explanation: "JavaScript does not have separate integer and float types; all numerical values have the primitive type 'number'."
   },
   {
     id: "p13",
-    question: "What will `\"Web\".length` evaluate to?",
-    options: ["3", "2", "4", "undefined"],
-    answer: 0,
-    explanation: "The `.length` property on strings returns the total count of characters, so `'Web'.length` is 3."
+    question: "How are Boolean values written in Python?",
+    options: ["true and false (lowercase)","True and False (Capitalized)","TRUE and FALSE (all caps)","1 and 0 only"],
+    answer: 1,
+    explanation: "Python Booleans MUST be capitalized: 'True' and 'False'. Writing 'true' or 'false' in lowercase causes a NameError!"
   },
   {
     id: "p14",
-    question: "Which logical operator represents 'AND' in JavaScript?",
-    options: ["||", "&&", "AND", "&"],
+    question: "Which operator in JavaScript checks both value AND data type for strict equality?",
+    options: ["==","===","!=","="],
     answer: 1,
-    explanation: "'&&' is the logical AND operator; both conditions must be truthy for it to evaluate to true."
+    explanation: "The strict equality operator '===' checks both value and type without performing type coercion (e.g. 5 === '5' is false)."
   },
   {
     id: "p15",
-    question: "Which logical operator represents 'OR' in JavaScript?",
-    options: ["OR", "??", "||", "|"],
-    answer: 2,
-    explanation: "'||' is the logical OR operator; it returns true if at least one condition is truthy."
+    question: "What does the Python function 'input(\"Enter your name: \")' always return by default?",
+    options: ["An integer (int)","A string (str)","A boolean (bool)","None"],
+    answer: 1,
+    explanation: "The 'input()' function pauses execution to prompt the user and ALWAYS returns whatever they type as a text string ('str')."
   },
   {
     id: "p16",
-    question: "What will the following conditional ternary expression log to the console?",
-    options: ["Pass", "Distinction", "85", "true"],
+    question: "How do you convert the text string \"45\" into an integer in Python?",
+    options: ["Integer(\"45\")","int(\"45\")","parse_int(\"45\")","\"45\".toInt()"],
     answer: 1,
-    codeSnippet: "const score = 85;\nconst grade = score >= 70 ? 'Distinction' : 'Pass';\nconsole.log(grade);",
-    codeLang: "javascript",
-    timerSeconds: 30,
-    explanation: "Because score (85) is >= 70, the condition is true and 'Distinction' is returned."
+    explanation: "The 'int()' constructor converts a valid numeric string or float into an integer (e.g., int('45') yields 45)."
   },
   {
     id: "p17",
-    question: "What keyword is used inside a `switch` statement or loop to immediately stop execution and exit?",
-    options: ["break", "exit", "stop", "return"],
-    answer: 0,
-    explanation: "The `break` statement halts the current switch block or loop immediately."
+    question: "In Python 3, what is the result of dividing two numbers with a single slash: '7 / 2'?",
+    options: ["3","3.5","3.0","4"],
+    answer: 1,
+    explanation: "In Python 3, standard division with a single slash '/' always performs true division and returns a float: '7 / 2 = 3.5'."
   },
   {
     id: "p18",
-    question: "What will `'hello'.toUpperCase()` return?",
-    options: ["'Hello'", "'HELLO'", "'hello'", "TypeError"],
-    answer: 1,
-    explanation: "`.toUpperCase()` converts all letters in the string to uppercase."
+    question: "What characters enclose Template Literals in modern JavaScript for string interpolation?",
+    options: ["Double quotes (\"\")","Single quotes ('')","Backticks (``)","Parentheses (())"],
+    answer: 2,
+    explanation: "Template literals are enclosed by backticks (``), enabling embedded expressions via `${variable}` and multi-line strings."
   },
   {
     id: "p19",
-    question: "How do you write a standard for loop that repeats 5 times (from 0 to 4)?",
-    options: ["for (let i = 1; i <= 5)", "loop (5 times)", "for (let i = 0; i < 5; i++)", "for i in range(5)"],
-    answer: 2,
-    explanation: "`for (let i = 0; i < 5; i++)` initializes `i` at 0, runs while `i < 5`, and increments `i` each iteration."
+    question: "Which operator is used for Floor Division (integer quotient, discarding remainder) in Python?",
+    options: ["/","//","%","div"],
+    answer: 1,
+    explanation: "The double slash '//' is Python's floor division operator. For example, '7 // 2' equals '3'."
   },
   {
     id: "p20",
-    question: "What is the index of the FIRST element in a JavaScript array?",
-    options: ["1", "-1", "undefined", "0"],
-    answer: 3,
-    explanation: "JavaScript arrays are zero-indexed, meaning the first item is located at index `0`."
+    question: "What is the console output of this remainder (modulo) operation in JavaScript?",
+    codeSnippet: "const dividend = 17;\nconst divisor = 5;\nconst remainder = dividend % divisor;\nconsole.log(remainder);",
+    codeLang: "javascript",
+    options: ["3","2","3.4","0"],
+    answer: 1,
+    explanation: "The remainder (modulo) operator '%' returns the remainder: 17 divided by 5 is 3 with 2 left over."
   },
   {
     id: "p21",
-    question: "Which array method ADDS one or more elements to the END of an array?",
-    options: [".push()", ".pop()", ".shift()", ".unshift()"],
-    answer: 0,
-    explanation: "`.push()` appends new elements to the end of an array."
+    question: "Which method removes and returns the LAST element from a JavaScript array?",
+    options: ["array.shift()","array.pop()","array.remove()","array.delete()"],
+    answer: 1,
+    explanation: "'array.pop()' removes the last item from an array and returns it, reducing the array length by 1."
   },
   {
     id: "p22",
-    question: "Which array method REMOVES the LAST element from an array?",
-    options: [".splice()", ".pop()", ".shift()", ".remove()"],
+    question: "Which operator calculates exponentiation (powers like 2 to the power 3 = 8) in Python?",
+    codeSnippet: "base = 2\nexponent = 3\nresult = base ** exponent\nprint(result)",
+    codeLang: "python",
+    options: ["^","**","^^","pow"],
     answer: 1,
-    explanation: "`.pop()` removes and returns the final element of an array."
+    explanation: "In Python, '**' is the power/exponent operator: '2 ** 3' equals 8. (Note: '^' is bitwise XOR, not power!)."
   },
   {
     id: "p23",
-    question: "Which array method REMOVES the FIRST element from an array?",
-    options: [".unshift()", ".pop()", ".shift()", ".slice()"],
-    answer: 2,
-    explanation: "`.shift()` removes the first element and shifts all remaining elements down by one index."
+    question: "Which logical operator represents 'AND' in JavaScript?",
+    options: ["and","&&","&","AND"],
+    answer: 1,
+    explanation: "JavaScript uses double ampersand '&&' as the logical AND operator (returns true only if both operands are truthy)."
   },
   {
     id: "p24",
-    question: "Which array method ADDS an element to the START of an array?",
-    options: [".push()", ".prepend()", ".insert()", ".unshift()"],
-    answer: 3,
-    explanation: "`.unshift()` inserts elements at the very beginning of an array."
+    question: "Which logical operator represents 'AND' in Python?",
+    options: ["&&","and","&","AND"],
+    answer: 1,
+    explanation: "Python uses clean English words for logical operations: 'and', 'or', and 'not' (in lowercase)."
   },
   {
     id: "p25",
-    question: "What will `['apple', 'banana'].includes('apple')` return?",
-    options: ["true", "false", "0", "1"],
-    answer: 0,
-    explanation: "`.includes()` returns `true` if the specified value exists in the array."
+    question: "Which logical operator represents 'OR' in JavaScript?",
+    options: ["or","||","|","OR"],
+    answer: 1,
+    explanation: "Double pipe '||' is the logical OR operator in JavaScript (evaluates to true if either operand is truthy)."
   },
   {
     id: "p26",
-    question: "Which array method joins all elements of an array into a single string separated by commas or a delimiter?",
-    options: [".concat()", ".join()", ".merge()", ".toString()"],
+    question: "What will the expression '\"Code\" + \"Hub\"' output in Python?",
+    options: ["'Code Hub'","'CodeHub'","'Code+Hub'","Error: Cannot add strings"],
     answer: 1,
-    explanation: "`.join(', ')` joins array elements into a formatted string."
+    explanation: "The '+' operator on strings performs concatenation (joining them together directly without automatic spaces): 'CodeHub'."
   },
   {
     id: "p27",
-    question: "How do you check how many items are currently in an array named `fruits`?",
-    options: ["fruits.size()", "fruits.count", "fruits.length", "len(fruits)"],
-    answer: 2,
-    explanation: "The `.length` property returns the current number of elements in the array."
+    question: "Which property is used in JavaScript to update or retrieve the visible text inside an HTML element?",
+    options: ["element.textContent","element.textChange","element.modifyText","element.string()"],
+    answer: 0,
+    explanation: "'.textContent' sets or returns the text content of the specified node and all its child elements."
   },
   {
     id: "p28",
-    question: "How do you declare a standard JavaScript function named `add` taking parameters `a` and `b`?",
-    options: ["def add(a, b): return a + b", "func add(a, b) -> a + b", "add = function[a, b]", "function add(a, b) { return a + b; }"],
-    answer: 3,
-    explanation: "function add(a, b) { return a + b; } is the standard function declaration syntax."
+    question: "What is the index of the FIRST element in a JavaScript array?",
+    options: ["0","1","-1","first"],
+    answer: 0,
+    explanation: "Like most programming languages, JavaScript uses zero-based indexing, meaning the first element is at index 0."
   },
   {
     id: "p29",
-    question: "What will be logged to the console by this arrow function and array mapping?",
-    options: ["[2, 4, 6]", "[1, 2, 3, 2]", "6", "undefined"],
-    answer: 0,
-    codeSnippet: "const double = x => x * 2;\nconst result = [1, 2, 3].map(double);\nconsole.log(result);",
-    codeLang: "javascript",
-    timerSeconds: 30,
-    explanation: ".map(double) applies the double function to each element, producing [2, 4, 6]."
+    question: "In Python, which index accesses the LAST character of the string s = \"INNOVATE\"?",
+    options: ["s[last]","s[0]","s[-1]","s[end]"],
+    answer: 2,
+    explanation: "Python supports negative indexing! Index '-1' refers to the last element, '-2' the second to last, and so forth."
   },
   {
     id: "p30",
-    question: "What happens if a function finishes executing without an explicit return statement?",
-    options: ["It returns null", "It returns undefined", "It throws a syntax error", "It returns 0"],
+    question: "Which method adds a new element to the END of a JavaScript array?",
+    options: ["array.append()","array.push()","array.add()","array.insert()"],
     answer: 1,
-    explanation: "Functions without an explicit return return `undefined` by default."
+    explanation: "'array.push()' appends one or more items to the end of an array and returns the new length."
   },
   {
     id: "p31",
-    question: "How do you create an object literal in JavaScript representing a student with a name and age?",
-    options: ["const student = [ name: 'Alex', age: 19 ];", "const student = ( 'name' = 'Alex' );", "const student = { name: 'Alex', age: 19 };", "const student = <name: 'Alex', age: 19>;"],
+    question: "Which built-in function returns the total number of items in a string, list, or tuple in Python?",
+    options: ["size()","length()","len()","count()"],
     answer: 2,
-    explanation: "Objects in JavaScript are declared using curly braces curly braces with key and value."
+    explanation: "The 'len()' function returns the length (count of elements) of a sequence or collection."
   },
   {
     id: "p32",
-    question: "What will be logged to the console by this object property access snippet?",
-    options: ["undefined", "user.name", "{ name: 'Amara' }", "Amara"],
-    answer: 3,
-    codeSnippet: "const user = {\n  name: 'Amara',\n  track: 'Programming',\n  level: 'Advanced'\n};\nconsole.log(user.name);",
-    codeLang: "javascript",
-    timerSeconds: 30,
-    explanation: "Dot notation user.name accesses the string value 'Amara' on the user object."
+    question: "What is the modern, recommended way to format variables inside strings in Python 3.6+?",
+    options: ["f-strings: f\"Hello {name}\"","String concatenation only","printf(\"Hello %s\", name)","\"Hello \".format(name)"],
+    answer: 0,
+    explanation: "f-strings (prefixed with 'f') allow embedding expressions directly inside curly braces: f'Hello {name}'."
   },
   {
     id: "p33",
-    question: "When would you use bracket notation (user[",
-    options: ["When the property name contains spaces or special characters, or is stored in a variable", "Only when accessing numbers", "When the object is frozen", "There is never a reason"],
-    answer: 0,
-    explanation: "Bracket notation allows dynamic property keys and keys with spaces (e.g. `obj['first name']` or `obj[variable]`)."
+    question: "Which JavaScript array property returns the total number of elements in the array?",
+    options: ["array.count","array.size","array.length","array.total"],
+    answer: 2,
+    explanation: "The '.length' property reflects the number of elements in a JavaScript array."
   },
   {
     id: "p34",
-    question: "What is a function stored inside an object called?",
-    options: ["A Variable", "A Method", "A Constructor", "A Property-Function"],
-    answer: 1,
-    explanation: "A function that belongs to an object is known as a method (e.g. `user.greet()`)."
+    question: "Which character MUST follow the condition in a Python if-statement: 'if age >= 18'?",
+    options: ["; (semicolon)","{ (curly brace)",": (colon)","then"],
+    answer: 2,
+    explanation: "In Python, conditional statements, loops, and function headers must end with a colon ':' before the indented block."
   },
   {
     id: "p35",
-    question: "What does the `JSON.stringify(object)` method do?",
-    options: ["Parses a JSON string into an object", "Encrypts the object with a password", "Converts a JavaScript object into a JSON formatted string", "Deletes all properties"],
+    question: "What is the keyword for 'else if' in Python conditional statements?",
+    options: ["elseif","else if","elif","case"],
     answer: 2,
-    explanation: "`JSON.stringify()` serializes a JavaScript object into a text string in JSON format."
+    explanation: "Python uses the concise keyword 'elif' (short for else-if) to check multiple conditions sequentially."
   },
   {
     id: "p36",
-    question: "What does 'DOM' stand for in web development?",
-    options: ["Data Oriented Module", "Digital Operations Manager", "Document Online Method", "Document Object Model"],
-    answer: 3,
-    explanation: "DOM stands for Document Object Model - the browser's object representation of the HTML document."
+    question: "How do you create an object literal in JavaScript representing a student with name 'Ada' and age 18?",
+    options: ["{ name: 'Ada', age: 18 }","[ name: 'Ada', age: 18 ]","( name: 'Ada', age: 18 )","< name: 'Ada', age: 18 >"],
+    answer: 0,
+    explanation: "JavaScript objects are declared using curly braces '{}' containing key-value pairs separated by commas."
   },
   {
     id: "p37",
-    question: "Which JavaScript method selects an HTML element by its unique `id` attribute?",
-    options: ["document.getElementById('title')", "document.selectId('title')", "document.find('title')", "document.getId('title')"],
+    question: "How do you create an empty List in Python?",
+    options: ["my_list = []","my_list = ()","my_list = {}","my_list = set()"],
     answer: 0,
-    explanation: "`document.getElementById('id')` retrieves the DOM element with the specified ID."
+    explanation: "Square brackets '[]' create a List. Parentheses '()' create a Tuple, and curly braces '{}' create a Dictionary or Set."
   },
   {
     id: "p38",
-    question: "Which modern DOM method selects the first element matching any CSS selector (like `.btn` or `#header`)?",
-    options: ["document.findCSS()", "document.querySelector()", "document.getElementByCSS()", "document.search()"],
+    question: "How do you write a standard function named 'greet' in JavaScript?",
+    options: ["def greet() {}","function greet() {}","fn greet() {}","create greet() {}"],
     answer: 1,
-    explanation: "`document.querySelector()` accepts any valid CSS selector string and returns the first matching element."
+    explanation: "Standard function declarations in JavaScript begin with the 'function' keyword: 'function greet() { ... }'."
   },
   {
     id: "p39",
-    question: "How do you safely change the plain text content of a DOM element without parsing HTML tags?",
-    options: ["element.html = 'Hello';", "element.text() = 'Hello';", "element.textContent = 'Hello';", "element.value = 'Hello';"],
+    question: "Which method adds a single item to the END of an existing Python list?",
+    codeSnippet: "hub_tools = ['VS Code', 'Git']\nhub_tools.append('Python')\nprint(hub_tools)",
+    codeLang: "python",
+    options: [".add()",".push()",".append()",".insertEnd()"],
     answer: 2,
-    explanation: "Setting `.textContent` safely updates the text without the security risks of parsing raw HTML."
+    explanation: "In Python, the list method '.append(item)' adds an element to the end of the list. (In JavaScript, it is '.push()')."
   },
   {
     id: "p40",
-    question: "How do you change the background color of an HTML element to blue using JavaScript inline styles?",
-    options: ["element.css.background = 'blue';", "element.color('blue');", "element.style.background-color = 'blue';", "element.style.backgroundColor = 'blue';"],
-    answer: 3,
-    explanation: "CSS properties in JavaScript are camelCased on the `.style` object: `element.style.backgroundColor = 'blue'`."
+    question: "What is the fundamental difference between a Python List and a Python Tuple?",
+    options: ["Lists can store numbers; Tuples cannot","Lists are mutable (can be changed); Tuples are immutable (cannot be changed)","Tuples are slower than Lists","Lists use parentheses; Tuples use brackets"],
+    answer: 1,
+    explanation: "Lists (using []) are mutable and can be modified. Tuples (using ()) are immutable; once created, their elements cannot be changed."
   },
   {
     id: "p41",
-    question: "Which method attaches an event handler (such as a click or keypress) to a button?",
-    options: ["button.addEventListener('click', handler);", "button.attachEvent('click', handler);", "button.onClick(handler);", "button.listen('click');"],
+    question: "What will the following JavaScript code output to the console?",
+    codeSnippet: "const double = x => x * 2;\nconsole.log(double(6));",
+    codeLang: "javascript",
+    options: ["12","6","undefined","NaN"],
     answer: 0,
-    explanation: "`addEventListener(eventType, callback)` is the standard modern method to listen for user interactions."
+    explanation: "The arrow function 'x => x * 2' doubles the input: passing 6 returns 12."
   },
   {
     id: "p42",
-    question: "How do you add a CSS class named 'active' to an element's class list?",
-    options: ["element.classes.push('active');", "element.classList.add('active');", "element.addClass('active');", "element.className += ' active';"],
-    answer: 1,
-    explanation: "`element.classList.add('active')` cleanly adds the class without overwriting existing classes."
+    question: "Which Python data structure stores data in Key-Value pairs using curly braces {}?",
+    options: ["List","Tuple","Dictionary (dict)","Array"],
+    answer: 2,
+    explanation: "A Dictionary ('dict') stores data in key:value associations, like {'name': 'Ada', 'track': 'Programming'}."
   },
   {
     id: "p43",
-    question: "What method on the `event` object prevents a form from submitting and refreshing the page?",
-    options: ["event.stopPropagation()", "event.cancel()", "event.preventDefault()", "event.halt()"],
+    question: "Which of the following is considered a 'falsy' value in JavaScript?",
+    options: ["1","'0' (string with zero)","0 (the number zero)","[] (empty array)"],
     answer: 2,
-    explanation: "`event.preventDefault()` stops the browser's default behavior, such as preventing a page reload on form submit."
+    explanation: "The number 0 is falsy in JavaScript (along with '', null, undefined, NaN, and false). Non-empty strings and arrays are truthy!"
   },
   {
     id: "p44",
-    question: "Which HTML tag is used to embed or link executable JavaScript into a web page?",
-    options: ["<javascript>", "<js>", "<code>", "<script>"],
-    answer: 3,
-    explanation: "The `<script>` tag is used to write inline JavaScript or link an external `.js` file via the `src` attribute."
+    question: "What values will the expression 'list(range(5))' generate in Python?",
+    options: ["[1, 2, 3, 4, 5]","[0, 1, 2, 3, 4]","[0, 1, 2, 3, 4, 5]","[1, 2, 3, 4]"],
+    answer: 1,
+    explanation: "'range(n)' starts at 0 and stops right before n, producing n numbers: [0, 1, 2, 3, 4]."
   },
   {
     id: "p45",
-    question: "Which HTML attribute specifies the destination URL of a hyperlink anchor tag (`<a>`)?",
-    options: ["href", "src", "link", "target"],
-    answer: 0,
-    explanation: "`<a href='https://example.com'>` uses the `href` (Hypertext Reference) attribute to set link destinations."
+    question: "Which loop control keyword immediately STOPS and exits a loop in Python?",
+    options: ["stop","exit","break","continue"],
+    answer: 2,
+    explanation: "'break' immediately terminates the loop execution and jumps to the code following the loop."
   },
   {
     id: "p46",
-    question: "Which HTML attribute provides alternative text description for screen readers and when images fail to load?",
-    options: ["title", "alt", "caption", "desc"],
-    answer: 1,
-    explanation: "`<img src='logo.png' alt='Company Logo'>` uses the `alt` attribute for accessibility and fallback text."
+    question: "What is the famous quirk result of 'typeof null' in JavaScript?",
+    options: ["'null'","'undefined'","'object'","'boolean'"],
+    answer: 2,
+    explanation: "'typeof null' returns 'object'. This was a historic bug in the first 1995 JavaScript engine that was kept for backward compatibility."
   },
   {
     id: "p47",
-    question: "In CSS, which symbol is used to select elements by their CLASS name?",
-    options: ["# (hashtag)", "* (asterisk)", ". (dot)", "@ (at)"],
-    answer: 2,
-    explanation: "A dot `.` selects classes (e.g. `.card`), while `#` selects IDs (e.g. `#header`)."
+    question: "Which keyword is used to declare/define a function in Python?",
+    options: ["function","def","fun","lambda"],
+    answer: 1,
+    explanation: "The 'def' keyword (short for define) is used to create a function in Python (for example: 'def greet():')."
   },
   {
     id: "p48",
-    question: "What are the four layers of the CSS Box Model, from innermost to outermost?",
-    options: ["Content, Margin, Border, Padding", "Padding, Content, Border, Outline", "Margin, Border, Padding, Content", "Content, Padding, Border, Margin"],
-    answer: 3,
-    explanation: "From inside out: Content -> Padding (inside border) -> Border -> Margin (space outside border)."
+    question: "What will this Python function output when executed?",
+    codeSnippet: "def add(a, b):\n    return a + b\n\nresult = add(7, 8)\nprint(result)",
+    codeLang: "python",
+    options: ["15","56","\"78\"","None"],
+    answer: 0,
+    explanation: "The 'add' function takes 7 and 8, computes their sum (15), and returns it to be printed."
   },
   {
     id: "p49",
-    question: "In CSS Flexbox, which property aligns flex items along the MAIN axis (horizontally by default)?",
-    options: ["justify-content", "align-items", "flex-direction", "align-content"],
-    answer: 0,
-    explanation: "`justify-content` controls alignment along the main axis (`flex-start`, `center`, `space-between`, etc.)."
+    question: "Which JavaScript method converts a JavaScript object into a JSON-formatted string?",
+    options: ["JSON.parse()","JSON.stringify()","JSON.toText()","JSON.encode()"],
+    answer: 1,
+    explanation: "'JSON.stringify(object)' serializes a JavaScript object into a JSON string for transmission or storage."
   },
   {
     id: "p50",
-    question: "In CSS Flexbox, which property aligns flex items along the CROSS axis (vertically by default)?",
-    options: ["justify-content", "align-items", "flex-wrap", "text-align"],
+    question: "Who originally designed and created the Python programming language in 1991?",
+    options: ["Brendan Eich","Guido van Rossum","James Gosling","Dennis Ritchie"],
     answer: 1,
-    explanation: "`align-items` aligns flex children perpendicular to the main axis (e.g. vertically centering with `center`)."
+    explanation: "Guido van Rossum created Python in the late 1980s and first released it in 1991, naming it after the British comedy show Monty Python."
   }
 ];
 
@@ -8873,7 +8871,7 @@ if (typeof module !== 'undefined' && module.exports) {
     function loadAllTrackDecksFromStorage() {
       const trackConfigs = [
         { key: 'creative', storageKey: 'cih_deck_creative', defaultDeck: QUESTIONS_CREATIVE },
-        { key: 'programming', storageKey: 'cih_deck_programming', defaultDeck: QUESTIONS_PROGRAMMING },
+        { key: 'programming', storageKey: 'cih_deck_programming_v2', defaultDeck: QUESTIONS_PROGRAMMING },
         { key: 'general', storageKey: 'cih_deck_general', defaultDeck: QUESTIONS_GENERAL },
         { key: 'custom', storageKey: 'cih_custom_questions', defaultDeck: [] }
       ];
@@ -8909,7 +8907,7 @@ if (typeof module !== 'undefined' && module.exports) {
     function saveTrackDeckToStorage(trackKey) {
       const storageKeys = {
         creative: 'cih_deck_creative',
-        programming: 'cih_deck_programming',
+        programming: 'cih_deck_programming_v2',
         general: 'cih_deck_general',
         custom: 'cih_custom_questions'
       };
@@ -8929,7 +8927,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
     function getTrackDisplayName(trackKey) {
       if (trackKey === 'creative') return 'Creative Track (Blender 3D)';
-      if (trackKey === 'programming') return 'Programming Track (JavaScript & Web)';
+      if (trackKey === 'programming') return 'Programming Track (Python & JavaScript)';
       if (trackKey === 'general') return 'General Knowledge (Everyone United)';
       return 'Custom Organizer Deck';
     }
@@ -9830,7 +9828,7 @@ if (typeof module !== 'undefined' && module.exports) {
             if (pill) {
               pill.style.display = 'inline-flex';
               if (track) {
-                const trackName = track === 'creative' ? 'Creative (3D)' : (track === 'programming' ? 'Programming (Web Dev)' : track);
+                const trackName = track === 'creative' ? 'Creative (3D)' : (track === 'programming' ? 'Programming (Python & JS)' : track);
                 if (pillText) pillText.textContent = 'Room PIN ' + pin + ' detected (' + trackName + ') via QR code!';
               } else {
                 if (pillText) pillText.textContent = 'Room PIN ' + pin + ' detected via QR code!';
@@ -9864,7 +9862,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
     if (btnEnlargeQrSingle) {
       btnEnlargeQrSingle.addEventListener('click', () => {
-        const trackTitle = state.track === 'creative' ? 'Creative Track (Blender 3D)' : (state.track === 'programming' ? 'Programming Track (JavaScript)' : (state.track === 'general' ? 'General Knowledge' : 'Custom Quiz'));
+        const trackTitle = state.track === 'creative' ? 'Creative Track (Blender 3D)' : (state.track === 'programming' ? 'Programming Track (Python & JavaScript)' : (state.track === 'general' ? 'General Knowledge' : 'Custom Quiz'));
         openEnlargeQrModal(state.roomPin, trackTitle, state.track);
       });
     }
@@ -9889,7 +9887,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
     if (btnEnlargeQrProgramming) {
       btnEnlargeQrProgramming.addEventListener('click', () => {
-        openEnlargeQrModal(state.pinProgramming, 'Programming Track (JavaScript)', 'programming');
+        openEnlargeQrModal(state.pinProgramming, 'Programming Track (Python & JavaScript)', 'programming');
       });
     }
     if (btnCopyLinkProgramming) {
@@ -10042,7 +10040,7 @@ if (typeof module !== 'undefined' && module.exports) {
               lobbyTrackBadge.textContent = 'Creative Track: Blender 3D Modeling';
             } else if (state.track === 'programming') {
               lobbyTrackBadge.className = 'track-badge-pill track-badge-programming';
-              lobbyTrackBadge.textContent = 'Programming Track: JavaScript & Web';
+              lobbyTrackBadge.textContent = 'Programming Track: Python & JavaScript';
             } else if (state.track === 'general') {
               lobbyTrackBadge.className = 'track-badge-pill track-badge-general';
               lobbyTrackBadge.textContent = 'General Knowledge Showdown: Everyone United';
@@ -10059,7 +10057,7 @@ if (typeof module !== 'undefined' && module.exports) {
           if (lobbyStudentPinShowcase) lobbyStudentPinShowcase.style.display = 'none';
 
           if (lobbyRulesSummary) {
-            const trackTitle = state.track === 'creative' ? 'Blender 3D' : (state.track === 'programming' ? 'JavaScript' : (state.track === 'general' ? 'General Knowledge' : 'Custom Quiz'));
+            const trackTitle = state.track === 'creative' ? 'Blender 3D' : (state.track === 'programming' ? 'Python & JavaScript' : (state.track === 'general' ? 'General Knowledge' : 'Custom Quiz'));
             lobbyRulesSummary.textContent = `${state.totalQuestions} Questions | ${state.timerSeconds}s Timer | ${trackTitle}`;
           }
 
@@ -10273,7 +10271,7 @@ if (typeof module !== 'undefined' && module.exports) {
               interleavedHostDeck.push(Object.assign({}, deckP[i], {
                 dualTrack: 'programming',
                 dualRound: i + 1,
-                dualTrackName: 'Programming Spotlight (JavaScript)'
+                dualTrackName: 'Programming Spotlight (Python & JS)'
               }));
             }
           } else {
@@ -10281,7 +10279,7 @@ if (typeof module !== 'undefined' && module.exports) {
               interleavedHostDeck.push(Object.assign({}, deckP[i], {
                 dualTrack: 'programming',
                 dualRound: i + 1,
-                dualTrackName: 'Programming Spotlight (JavaScript)'
+                dualTrackName: 'Programming Spotlight (Python & JS)'
               }));
             } else if (deckC[i]) {
               interleavedHostDeck.push(Object.assign({}, deckC[i], {
@@ -10694,7 +10692,7 @@ if (typeof module !== 'undefined' && module.exports) {
             questionTrackPill.innerHTML = '<span class="spotlight-dot dot-creative"></span> Creative Spotlight (Blender 3D)';
           } else {
             questionTrackPill.className = 'track-badge-pill track-badge-programming';
-            questionTrackPill.innerHTML = '<span class="spotlight-dot dot-programming"></span> Programming Spotlight (JavaScript)';
+            questionTrackPill.innerHTML = '<span class="spotlight-dot dot-programming"></span> Programming Spotlight (Python & JS)';
           }
         } else if (state.isDualHost) {
           questionTrackPill.className = 'track-badge-pill track-badge-dual';
@@ -10826,7 +10824,7 @@ if (typeof module !== 'undefined' && module.exports) {
           questionTrackPill.innerHTML = '<span class="spotlight-dot dot-creative"></span> Creative Spotlight (Blender 3D)';
         } else {
           questionTrackPill.className = 'track-badge-pill track-badge-programming';
-          questionTrackPill.innerHTML = '<span class="spotlight-dot dot-programming"></span> Programming Spotlight (JavaScript)';
+          questionTrackPill.innerHTML = '<span class="spotlight-dot dot-programming"></span> Programming Spotlight (Python & JS)';
         }
       }
 
@@ -11920,7 +11918,7 @@ if (typeof module !== 'undefined' && module.exports) {
           finalTrackBadge.textContent = 'Creative Track (Blender 3D)';
         } else if (state.track === 'programming') {
           finalTrackBadge.className = 'track-badge-pill track-badge-programming';
-          finalTrackBadge.textContent = 'Programming Track (JavaScript)';
+          finalTrackBadge.textContent = 'Programming Track (Python & JS)';
         } else if (state.track === 'general') {
           finalTrackBadge.className = 'track-badge-pill track-badge-general';
           finalTrackBadge.textContent = 'General Knowledge Showdown (All Tracks)';
@@ -12630,7 +12628,7 @@ if (typeof module !== 'undefined' && module.exports) {
       else if (myRank === 3) rankText = '3rd Place!';
       else rankText = `#${myRank} of ${total} Innovators`;
 
-      const trackName = (state.track === 'creative') ? 'Creative Track (Blender 3D)' : (state.track === 'programming') ? 'Programming Track (JavaScript)' : (state.isDualHost ? 'Dual Track Showdown' : 'General Knowledge (Everyone United)');
+      const trackName = (state.track === 'creative') ? 'Creative Track (Blender 3D)' : (state.track === 'programming') ? 'Programming Track (Python & JavaScript)' : (state.isDualHost ? 'Dual Track Showdown' : 'General Knowledge (Everyone United)');
 
       let currentSiteUrl = 'https://astounding-chaja-cdf9e7.netlify.app/';
       try {
@@ -12864,7 +12862,7 @@ if (typeof module !== 'undefined' && module.exports) {
                 lobbyTrackBadge.textContent = 'Creative Track: Blender 3D Modeling';
               } else if (data.track === 'programming') {
                 lobbyTrackBadge.className = 'track-badge-pill track-badge-programming';
-                lobbyTrackBadge.textContent = 'Programming Track: JavaScript & Web';
+                lobbyTrackBadge.textContent = 'Programming Track: Python & JavaScript';
               } else {
                 lobbyTrackBadge.className = 'track-badge-pill track-badge-general';
                 lobbyTrackBadge.textContent = 'General Knowledge Showdown: Everyone United';
