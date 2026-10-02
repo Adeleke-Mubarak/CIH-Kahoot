@@ -7636,6 +7636,9 @@ if (typeof module !== 'undefined' && module.exports) {
       answersProgrammingThisRound: {},
       pendingPointsEarned: 0,
       pendingIsCorrect: false,
+      pendingBasePoints: 0,
+      pendingSpeedBonus: 0,
+      pendingStreakBonus: 0,
       roundOptionCounts: [0, 0, 0, 0],
       pollCountsCreative: [0, 0, 0, 0],
       pollCountsProgramming: [0, 0, 0, 0],
@@ -7752,6 +7755,51 @@ if (typeof module !== 'undefined' && module.exports) {
 
       log.correctCount = log.answers.filter(a => a.isCorrect).length;
       log.totalQuestions = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : log.answers.length);
+    }
+
+    function resetGameStateForNewQuiz() {
+      state.score = 0;
+      state.correctCount = 0;
+      state.currentStreak = 0;
+      state.highestStreak = 0;
+      state.currentQuestionIndex = 0;
+      state.selectedOptionIndex = null;
+      state.hasAnsweredCurrent = false;
+      state.pendingPointsEarned = 0;
+      state.pendingIsCorrect = false;
+      state.pendingBasePoints = 0;
+      state.pendingSpeedBonus = 0;
+      state.pendingStreakBonus = 0;
+      state.isRevealedThisRound = false;
+      state.roundOptionCounts = [0, 0, 0, 0];
+      state.pollCountsCreative = [0, 0, 0, 0];
+      state.pollCountsProgramming = [0, 0, 0, 0];
+      state.answersSubmittedThisRound = {};
+      state.answersCreativeThisRound = {};
+      state.answersProgrammingThisRound = {};
+      state.qIndexCreative = 0;
+      state.qIndexProgramming = 0;
+      state.scoresCreative = [];
+      state.scoresProgramming = [];
+      state.roomScores = [];
+      state.previousRanks = {};
+      state.participantAuditLog = {};
+      state.startTime = null;
+      state.totalElapsedTime = 0;
+
+      if (state.questionTimerInterval) {
+        clearInterval(state.questionTimerInterval);
+        state.questionTimerInterval = null;
+      }
+      if (state.revealAutoAdvanceInterval) {
+        clearInterval(state.revealAutoAdvanceInterval);
+        state.revealAutoAdvanceInterval = null;
+      }
+      if (Array.isArray(state.podiumRevealTimers)) {
+        state.podiumRevealTimers.forEach(t => clearTimeout(t));
+        state.podiumRevealTimers = [];
+      }
+      clearActiveSessionState();
     }
 
     /* ==========================================================================
@@ -9966,6 +10014,7 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnCreateRoom) {
       btnCreateRoom.addEventListener('click', () => {
         sound.init();
+        resetGameStateForNewQuiz();
         const hostName = (inputHostName ? inputHostName.value : 'Organizer') || 'Organizer';
         state.playerName = hostName.trim();
         state.role = 'host';
@@ -10087,6 +10136,7 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnJoinRoom) {
       btnJoinRoom.addEventListener('click', () => {
         sound.init();
+        resetGameStateForNewQuiz();
         const name = (inputJoinName ? inputJoinName.value : '').trim();
         const pin = (inputJoinPin ? inputJoinPin.value : '').trim().toUpperCase();
 
@@ -10138,6 +10188,7 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnStartSolo) {
       btnStartSolo.addEventListener('click', () => {
         sound.init();
+        resetGameStateForNewQuiz();
         const name = (inputSoloName ? inputSoloName.value : 'Solo Innovator') || 'Solo Innovator';
         state.playerName = name.trim();
         state.role = 'solo';
@@ -10222,6 +10273,7 @@ if (typeof module !== 'undefined' && module.exports) {
     // Host starts single room
     if (btnHostStartCountdown) {
       btnHostStartCountdown.addEventListener('click', () => {
+        resetGameStateForNewQuiz();
         prepareDeck(state.track, state.totalQuestions);
         const questionIds = state.activeDeck.map(q => q.id);
         const targetStartTime = Date.now() + 15000;
@@ -10243,6 +10295,7 @@ if (typeof module !== 'undefined' && module.exports) {
     // Host starts DUAL rooms together
     if (btnHostStartBoth) {
       btnHostStartBoth.addEventListener('click', () => {
+        resetGameStateForNewQuiz();
         const deckC = prepareDeck('creative', state.totalQuestions);
         const deckP = prepareDeck('programming', state.totalQuestions);
         const targetStartTime = Date.now() + 15000;
@@ -10643,6 +10696,9 @@ if (typeof module !== 'undefined' && module.exports) {
       state.currentQuestionIndex = qIdx;
       state.hasAnsweredCurrent = false;
       state.selectedOptionIndex = null;
+      state.pendingBasePoints = 0;
+      state.pendingSpeedBonus = 0;
+      state.pendingStreakBonus = 0;
       state.pendingPointsEarned = 0;
       state.pendingIsCorrect = false;
       state.isRevealedThisRound = false;
@@ -10968,17 +11024,44 @@ if (typeof module !== 'undefined' && module.exports) {
         const isCorrect = (index === q.answer);
 
         let pointsEarned = 0;
+        let basePoints = 0;
+        let speedBonus = 0;
+        let streakBonus = 0;
+
         if (isCorrect) {
+          basePoints = 500;
           const qTotalDur = state.currentQuestionTotalDuration || state.timerSeconds || 20;
-          const timeRatio = Math.max(0, state.questionTimeRemaining / qTotalDur);
-          const speedBonus = Math.round(timeRatio * 400);
-          const streakBonus = Math.min(state.currentStreak * 50, 200);
-          pointsEarned = 600 + speedBonus + streakBonus;
+          const remSec = (typeof state.questionTimeRemaining === 'number') ? state.questionTimeRemaining : 0;
+          const timeRatio = Math.min(1, Math.max(0, remSec / qTotalDur));
+          speedBonus = Math.round(timeRatio * 500);
+
+          // Standardized Streak Bonus Tiers:
+          // Streak 0 (1st correct answer): +0 pts
+          // Streak 1 (2nd consecutive correct): +50 pts
+          // Streak 2 (3rd consecutive correct): +100 pts
+          // Streak 3 (4th consecutive correct): +150 pts
+          // Streak 4+ (5+ consecutive correct): +200 pts max
+          if (state.currentStreak >= 4) {
+            streakBonus = 200;
+          } else if (state.currentStreak === 3) {
+            streakBonus = 150;
+          } else if (state.currentStreak === 2) {
+            streakBonus = 100;
+          } else if (state.currentStreak === 1) {
+            streakBonus = 50;
+          } else {
+            streakBonus = 0;
+          }
+
+          pointsEarned = Math.min(1200, basePoints + speedBonus + streakBonus);
         }
 
         // Store pending points & correctness - DO NOT apply score or play victory sound yet!
         state.pendingPointsEarned = pointsEarned;
         state.pendingIsCorrect = isCorrect;
+        state.pendingBasePoints = basePoints;
+        state.pendingSpeedBonus = speedBonus;
+        state.pendingStreakBonus = streakBonus;
 
         // Play crisp neutral lock-in chime - NO spoiler sounds!
         sound.playPlayerBloop();
@@ -11066,6 +11149,9 @@ if (typeof module !== 'undefined' && module.exports) {
           state.selectedOptionIndex = -1;
           state.pendingPointsEarned = 0;
           state.pendingIsCorrect = false;
+          state.pendingBasePoints = 0;
+          state.pendingSpeedBonus = 0;
+          state.pendingStreakBonus = 0;
           optBtns.forEach(b => {
             if (b) {
               b.disabled = true;
@@ -11233,7 +11319,7 @@ if (typeof module !== 'undefined' && module.exports) {
           if (studentVerdictHeadline) studentVerdictHeadline.textContent = 'CORRECT!';
           if (studentVerdictPoints) studentVerdictPoints.textContent = '+' + (state.pendingPointsEarned || 0) + ' pts';
           if (studentVerdictStreak) {
-            if (state.currentStreak >= 3) {
+            if (state.currentStreak >= 2) {
               studentVerdictStreak.style.display = 'block';
               studentVerdictStreak.textContent = state.currentStreak + ' in a row! On Fire!';
             } else {
@@ -11241,7 +11327,12 @@ if (typeof module !== 'undefined' && module.exports) {
             }
           }
           if (studentVerdictSubtext) {
-            studentVerdictSubtext.textContent = 'Total Score: ' + state.score + ' pts';
+            const base = state.pendingBasePoints || 500;
+            const spd = state.pendingSpeedBonus || 0;
+            const strk = state.pendingStreakBonus || 0;
+            let breakdown = 'Base: ' + base + ' | Speed: +' + spd;
+            if (strk > 0) breakdown += ' | Streak: +' + strk;
+            studentVerdictSubtext.innerHTML = '<span>' + breakdown + '</span><br><strong style="color:var(--text-primary);font-size:1.05rem;display:inline-block;margin-top:4px;">Total Score: ' + state.score + ' pts</strong>';
           }
         } else {
           state.currentStreak = 0;
@@ -11260,7 +11351,7 @@ if (typeof module !== 'undefined' && module.exports) {
           if (studentVerdictPoints) studentVerdictPoints.textContent = '+0 pts';
           if (studentVerdictStreak) studentVerdictStreak.style.display = 'none';
           if (studentVerdictSubtext) {
-            studentVerdictSubtext.textContent = 'Correct Answer: ' + q.options[correctIdx];
+            studentVerdictSubtext.innerHTML = '<span>' + (timedOut ? 'No Answer Submitted' : 'Incorrect Answer') + '</span><br><strong style="color:var(--text-primary);font-size:1.05rem;display:inline-block;margin-top:4px;">Total Score: ' + state.score + ' pts</strong>';
           }
         }
 
@@ -11499,7 +11590,7 @@ if (typeof module !== 'undefined' && module.exports) {
               }
             }
             if (roundPointsPill) {
-              roundPointsPill.textContent = `+${state.score} pts total`;
+              roundPointsPill.textContent = `+${state.pendingPointsEarned || 0} pts (${state.score} total)`;
               roundPointsPill.style.color = '#4ade80';
             }
             if (roundStreakPill) {
@@ -11516,7 +11607,7 @@ if (typeof module !== 'undefined' && module.exports) {
             roundFeedbackCard.className = 'round-result-card incorrect';
             if (roundFeedbackTitle) roundFeedbackTitle.textContent = 'INCORRECT!';
             if (roundPointsPill) {
-              roundPointsPill.textContent = `${state.score} pts total`;
+              roundPointsPill.textContent = `+0 pts (${state.score} total)`;
               roundPointsPill.style.color = '#f87171';
             }
             if (roundStreakPill) {
@@ -12688,7 +12779,7 @@ if (typeof module !== 'undefined' && module.exports) {
     /* Join Hub Showdown / Play Again */
     if (btnPlayAgain) {
       btnPlayAgain.addEventListener('click', () => {
-        clearActiveSessionState();
+        resetGameStateForNewQuiz();
         if (state.role === 'host') {
           showScreen('lobby');
         } else if (state.role === 'player') {
@@ -12705,6 +12796,7 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnGotoGeneralQuiz) {
       btnGotoGeneralQuiz.addEventListener('click', () => {
         sound.init();
+        resetGameStateForNewQuiz();
         if (state.role === 'host') {
           setHostTrackSelection('general');
           hostQuestionsCount = 35;
@@ -12730,7 +12822,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
     if (btnNewGame) {
       btnNewGame.addEventListener('click', () => {
-        clearActiveSessionState();
+        resetGameStateForNewQuiz();
         showScreen('welcome');
       });
     }
@@ -12746,11 +12838,10 @@ if (typeof module !== 'undefined' && module.exports) {
 
     if (btnReconnectLeave) {
       btnReconnectLeave.addEventListener('click', () => {
-        clearActiveSessionState();
+        resetGameStateForNewQuiz();
         hideReconnectBanner();
         state.role = 'solo';
         state.roomPin = '';
-        state.score = 0;
         state.activeDeck = [];
         showScreen('welcome');
       });
@@ -12802,17 +12893,21 @@ if (typeof module !== 'undefined' && module.exports) {
               renderSingleLobbyRoster();
             }
 
+            const maxAllowedScore = Math.max(0, (state.currentQuestionIndex + 1) * 1200);
+            const safeScore = Math.min(maxAllowedScore, Math.max(0, parseInt(data.score, 10) || 0));
+            const safeStreak = Math.min(50, Math.max(0, parseInt(data.streak, 10) || 0));
+
             const scoreIdx = state.roomScores.findIndex(p => p.id === data.id);
             if (scoreIdx >= 0) {
-              state.roomScores[scoreIdx].score = Math.max(state.roomScores[scoreIdx].score || 0, data.score || 0);
-              state.roomScores[scoreIdx].streak = data.streak || state.roomScores[scoreIdx].streak;
-            } else if (data.score > 0) {
+              state.roomScores[scoreIdx].score = Math.max(state.roomScores[scoreIdx].score || 0, safeScore);
+              state.roomScores[scoreIdx].streak = safeStreak || state.roomScores[scoreIdx].streak;
+            } else if (safeScore > 0) {
               state.roomScores.push({
                 id: data.id,
                 name: data.name,
                 avatar: data.avatar || 'robot',
-                score: data.score,
-                streak: data.streak || 0
+                score: safeScore,
+                streak: safeStreak
               });
             }
 
@@ -12959,6 +13054,7 @@ if (typeof module !== 'undefined' && module.exports) {
           break;
 
         case 'START_GAME':
+          resetGameStateForNewQuiz();
           state.track = data.track;
           state.totalQuestions = data.totalQuestions;
           state.timerSeconds = data.timerSeconds;
@@ -12974,6 +13070,15 @@ if (typeof module !== 'undefined' && module.exports) {
           break;
 
         case 'SUBMIT_ANSWER':
+          const qIdx = Math.max(0, parseInt(data.questionIndex, 10) || 0);
+          const maxQPoints = (qIdx === 0) ? 1000 : 1200;
+          const sanitizedPointsEarned = data.isCorrect ? Math.min(maxQPoints, Math.max(0, parseInt(data.pointsEarned, 10) || 0)) : 0;
+          const maxTotalScoreAllowed = (qIdx + 1) * 1200;
+          const sanitizedTotalScore = Math.min(maxTotalScoreAllowed, Math.max(0, parseInt(data.totalScore, 10) || 0));
+          data.pointsEarned = sanitizedPointsEarned;
+          data.totalScore = sanitizedTotalScore;
+          data.streak = Math.min(50, Math.max(0, parseInt(data.streak, 10) || 0));
+
           recordParticipantAnswer(
             data.id,
             data.questionIndex,
@@ -13116,6 +13221,7 @@ if (typeof module !== 'undefined' && module.exports) {
     /* Global Game API for test harness */
     window.CIH_GAME = {
       state,
+      resetGameStateForNewQuiz,
       sound,
       QUESTIONS_CREATIVE,
       QUESTIONS_PROGRAMMING,
