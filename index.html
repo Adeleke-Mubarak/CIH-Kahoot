@@ -7667,6 +7667,7 @@ if (typeof module !== 'undefined' && module.exports) {
       questionTimerInterval: null,
       questionTimeRemaining: 20,
       roomScores: [],
+      totalParticipants: 0,
       previousRanks: {}, // Map: playerId -> rankNumber from previous round
 
       // Animated Podium & Participant Quiz Records
@@ -7786,6 +7787,7 @@ if (typeof module !== 'undefined' && module.exports) {
       state.scoresCreative = [];
       state.scoresProgramming = [];
       state.roomScores = [];
+      state.totalParticipants = 0;
       state.previousRanks = {};
       state.participantAuditLog = {};
       state.startTime = null;
@@ -10377,6 +10379,149 @@ if (typeof module !== 'undefined' && module.exports) {
       return state.activeDeck;
     }
 
+    /* Deterministic Multi-Tier Tie-Breaker for Leaderboards */
+    function compareLeaderboardEntries(a, b) {
+      // Tier 1: Total score descending
+      const scoreA = Number(a && a.score) || 0;
+      const scoreB = Number(b && b.score) || 0;
+      if (scoreB !== scoreA) return scoreB - scoreA;
+
+      // Tier 2: Correct answer count descending
+      const correctA = Number(a && a.correctCount) || 0;
+      const correctB = Number(b && b.correctCount) || 0;
+      if (correctB !== correctA) return correctB - correctA;
+
+      // Tier 3: Highest streak descending
+      const streakA = Math.max(Number(a && a.highestStreak) || 0, Number(a && a.streak) || 0);
+      const streakB = Math.max(Number(b && b.highestStreak) || 0, Number(b && b.streak) || 0);
+      if (streakB !== streakA) return streakB - streakA;
+
+      // Tier 4: Deterministic stable tie-breaker on player ID
+      const idA = String((a && a.id) || '');
+      const idB = String((b && b.id) || '');
+      return idA.localeCompare(idB);
+    }
+
+    /* Authoritative Leaderboard Generator (Host & Solo Single Source of Truth) */
+    function buildAuthoritativeScoreboard(cohortTrack = 'all') {
+      let rawList = [];
+      let roster = [];
+
+      if (state.isDualHost) {
+        if (cohortTrack === 'creative') {
+          roster = state.lobbyCreative || [];
+          rawList = state.scoresCreative || [];
+        } else if (cohortTrack === 'programming') {
+          roster = state.lobbyProgramming || [];
+          rawList = state.scoresProgramming || [];
+        } else {
+          roster = [...(state.lobbyCreative || []), ...(state.lobbyProgramming || [])];
+          rawList = [...(state.scoresCreative || []), ...(state.scoresProgramming || [])];
+        }
+      } else if (state.role === 'solo') {
+        const soloEntry = {
+          id: state.playerId,
+          name: state.playerName || 'Solo Innovator',
+          avatar: state.playerAvatar || 'robot',
+          track: state.track || 'general',
+          score: state.score || 0,
+          correctCount: state.correctCount || 0,
+          streak: state.currentStreak || 0,
+          highestStreak: state.highestStreak || 0,
+          rank: 1,
+          totalParticipants: 1
+        };
+        return [soloEntry];
+      } else {
+        roster = (state.lobbyPlayers || []).filter(p => !p.isHost);
+        rawList = state.roomScores || [];
+      }
+
+      const map = new Map();
+
+      // Seed map with all known participants from lobby roster
+      roster.forEach(p => {
+        if (!p || !p.id || p.isHost) return;
+        const audit = state.participantAuditLog ? state.participantAuditLog[p.id] : null;
+        map.set(p.id, {
+          id: p.id,
+          name: p.name || 'Innovator',
+          avatar: p.avatar || 'robot',
+          track: p.track || cohortTrack,
+          score: audit ? (audit.score || 0) : 0,
+          correctCount: audit ? (audit.correctCount || 0) : 0,
+          streak: audit ? (audit.streak || 0) : 0,
+          highestStreak: audit ? (audit.highestStreak || 0) : 0
+        });
+      });
+
+      // Incorporate any participants in participantAuditLog
+      if (state.participantAuditLog) {
+        Object.values(state.participantAuditLog).forEach(audit => {
+          if (!audit || !audit.id) return;
+          if (cohortTrack === 'creative' && audit.track && audit.track !== 'creative') return;
+          if (cohortTrack === 'programming' && audit.track && audit.track !== 'programming') return;
+          if (!map.has(audit.id)) {
+            map.set(audit.id, {
+              id: audit.id,
+              name: audit.name || 'Innovator',
+              avatar: audit.avatar || 'robot',
+              track: audit.track || cohortTrack,
+              score: audit.score || 0,
+              correctCount: audit.correctCount || 0,
+              streak: audit.streak || 0,
+              highestStreak: audit.highestStreak || 0
+            });
+          } else {
+            const cur = map.get(audit.id);
+            cur.score = Math.max(cur.score, audit.score || 0);
+            cur.correctCount = Math.max(cur.correctCount, audit.correctCount || 0);
+            cur.highestStreak = Math.max(cur.highestStreak, audit.highestStreak || 0);
+            if (audit.name) cur.name = audit.name;
+            if (audit.avatar) cur.avatar = audit.avatar;
+          }
+        });
+      }
+
+      // Overlay latest scores and streaks from rawList
+      rawList.forEach(entry => {
+        if (!entry || !entry.id) return;
+        if (cohortTrack === 'creative' && entry.track && entry.track !== 'creative') return;
+        if (cohortTrack === 'programming' && entry.track && entry.track !== 'programming') return;
+        const existing = map.get(entry.id);
+        if (existing) {
+          existing.score = Math.max(existing.score, entry.score || 0);
+          if (entry.correctCount !== undefined) existing.correctCount = Math.max(existing.correctCount, entry.correctCount || 0);
+          if (entry.streak !== undefined) existing.streak = entry.streak;
+          if (entry.highestStreak !== undefined) existing.highestStreak = Math.max(existing.highestStreak, entry.highestStreak || 0);
+          if (entry.avatar) existing.avatar = entry.avatar;
+          if (entry.name) existing.name = entry.name;
+        } else {
+          map.set(entry.id, {
+            id: entry.id,
+            name: entry.name || 'Innovator',
+            avatar: entry.avatar || 'robot',
+            track: entry.track || cohortTrack,
+            score: entry.score || 0,
+            correctCount: entry.correctCount || 0,
+            streak: entry.streak || 0,
+            highestStreak: entry.highestStreak || entry.streak || 0
+          });
+        }
+      });
+
+      const fullList = Array.from(map.values());
+      fullList.sort(compareLeaderboardEntries);
+
+      const totalCount = fullList.length;
+      fullList.forEach((entry, idx) => {
+        entry.rank = idx + 1;
+        entry.totalParticipants = totalCount;
+      });
+
+      return fullList;
+    }
+
     /* ==========================================================================
        9. SYNCHRONIZED TURN-BY-TURN KAHOOT GAME LOOP
        ========================================================================== */
@@ -10392,6 +10537,10 @@ if (typeof module !== 'undefined' && module.exports) {
         prepareDeck(state.track, state.totalQuestions);
         const questionIds = state.activeDeck.map(q => q.id);
         const targetStartTime = Date.now() + 15000;
+
+        // Initialize authoritative room scores with all players currently in lobby
+        state.roomScores = buildAuthoritativeScoreboard('all');
+        state.totalParticipants = state.roomScores.length;
 
         hubNet.publish({
           type: 'START_GAME',
@@ -10417,6 +10566,12 @@ if (typeof module !== 'undefined' && module.exports) {
 
         state.deckCreative = deckC;
         state.deckProgramming = deckP;
+
+        // Initialize authoritative track scores with all players currently in dual lobbies
+        state.scoresCreative = buildAuthoritativeScoreboard('creative');
+        state.scoresProgramming = buildAuthoritativeScoreboard('programming');
+        state.roomScores = buildAuthoritativeScoreboard('all');
+        state.totalParticipants = state.roomScores.length;
 
         // Construct interleaved host presentation deck:
         // Alternates questions round by round between Creative and Programming!
@@ -10846,6 +11001,9 @@ if (typeof module !== 'undefined' && module.exports) {
         }
       }
 
+      const cohortTrack = isFromCreative ? 'creative' : isFromProgramming ? 'programming' : 'all';
+      const authoritativeScores = buildAuthoritativeScoreboard(cohortTrack);
+
       const syncPacket = {
         type: 'GAME_IN_PROGRESS_SYNC',
         targetPlayerId: targetPlayerId || null,
@@ -10860,7 +11018,8 @@ if (typeof module !== 'undefined' && module.exports) {
         timerSeconds: state.timerSeconds,
         questions: relevantDeck,
         currentQuestion: relevantQuestion,
-        roomScores: state.roomScores,
+        roomScores: authoritativeScores,
+        totalParticipants: authoritativeScores.length,
         scoresCreative: state.scoresCreative,
         scoresProgramming: state.scoresProgramming
       };
@@ -10869,18 +11028,24 @@ if (typeof module !== 'undefined' && module.exports) {
         hubNet.publishToPin(targetPin, syncPacket);
       } else if (isDual) {
         if (state.pinCreative) {
+          const cScores = buildAuthoritativeScoreboard('creative');
           const syncC = Object.assign({}, syncPacket, {
             track: 'creative',
             questions: state.deckCreative || [],
-            currentQuestion: (state.deckCreative && state.deckCreative[state.currentQuestionIndex]) || relevantQuestion
+            currentQuestion: (state.deckCreative && state.deckCreative[state.currentQuestionIndex]) || relevantQuestion,
+            roomScores: cScores,
+            totalParticipants: cScores.length
           });
           hubNet.publishToPin(state.pinCreative, syncC);
         }
         if (state.pinProgramming) {
+          const pScores = buildAuthoritativeScoreboard('programming');
           const syncP = Object.assign({}, syncPacket, {
             track: 'programming',
             questions: state.deckProgramming || [],
-            currentQuestion: (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) || relevantQuestion
+            currentQuestion: (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) || relevantQuestion,
+            roomScores: pScores,
+            totalParticipants: pScores.length
           });
           hubNet.publishToPin(state.pinProgramming, syncP);
         }
@@ -11410,13 +11575,21 @@ if (typeof module !== 'undefined' && module.exports) {
           const pCorrect = (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) ? state.deckProgramming[state.currentQuestionIndex].answer : 0;
           const pExp = (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) ? (state.deckProgramming[state.currentQuestionIndex].explanation || '') : '';
 
+          const creativeScores = buildAuthoritativeScoreboard('creative');
+          const progScores = buildAuthoritativeScoreboard('programming');
+          state.scoresCreative = creativeScores;
+          state.scoresProgramming = progScores;
+          state.roomScores = buildAuthoritativeScoreboard('all');
+          state.totalParticipants = state.roomScores.length;
+
           hubNet.publishToPin(state.pinCreative, {
             type: 'REVEAL_QUESTION_ANSWER',
             questionIndex: state.currentQuestionIndex,
             optionCounts: state.pollCountsCreative,
             correctOptionIndex: cCorrect,
             explanation: cExp,
-            scores: state.scoresCreative,
+            scores: creativeScores,
+            totalParticipants: creativeScores.length,
             previousRanks: state.previousRanks
           });
 
@@ -11426,18 +11599,24 @@ if (typeof module !== 'undefined' && module.exports) {
             optionCounts: state.pollCountsProgramming,
             correctOptionIndex: pCorrect,
             explanation: pExp,
-            scores: state.scoresProgramming,
+            scores: progScores,
+            totalParticipants: progScores.length,
             previousRanks: state.previousRanks
           });
         } else {
           const q = state.activeDeck[state.currentQuestionIndex];
+          const authoritativeScores = buildAuthoritativeScoreboard('all');
+          state.roomScores = authoritativeScores;
+          state.totalParticipants = authoritativeScores.length;
+
           hubNet.publish({
             type: 'REVEAL_QUESTION_ANSWER',
             questionIndex: state.currentQuestionIndex,
             optionCounts: state.roundOptionCounts,
             correctOptionIndex: q ? q.answer : 0,
             explanation: q ? (q.explanation || '') : '',
-            scores: state.roomScores,
+            scores: authoritativeScores,
+            totalParticipants: authoritativeScores.length,
             previousRanks: state.previousRanks
           });
         }
@@ -11640,10 +11819,36 @@ if (typeof module !== 'undefined' && module.exports) {
 
       if (state.role === 'host') {
         if (state.isDualHost) {
-          hubNet.publishToPin(state.pinCreative, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresCreative, previousRanks: state.previousRanks });
-          hubNet.publishToPin(state.pinProgramming, { type: 'SHOW_ROUND_SCOREBOARD', scores: state.scoresProgramming, previousRanks: state.previousRanks });
+          const creativeScores = buildAuthoritativeScoreboard('creative');
+          const progScores = buildAuthoritativeScoreboard('programming');
+          state.scoresCreative = creativeScores;
+          state.scoresProgramming = progScores;
+          state.roomScores = buildAuthoritativeScoreboard('all');
+          state.totalParticipants = state.roomScores.length;
+
+          hubNet.publishToPin(state.pinCreative, {
+            type: 'SHOW_ROUND_SCOREBOARD',
+            scores: creativeScores,
+            totalParticipants: creativeScores.length,
+            previousRanks: state.previousRanks
+          });
+          hubNet.publishToPin(state.pinProgramming, {
+            type: 'SHOW_ROUND_SCOREBOARD',
+            scores: progScores,
+            totalParticipants: progScores.length,
+            previousRanks: state.previousRanks
+          });
         } else {
-          hubNet.publish({ type: 'SHOW_ROUND_SCOREBOARD', scores: state.roomScores, previousRanks: state.previousRanks });
+          const authoritativeScores = buildAuthoritativeScoreboard('all');
+          state.roomScores = authoritativeScores;
+          state.totalParticipants = authoritativeScores.length;
+
+          hubNet.publish({
+            type: 'SHOW_ROUND_SCOREBOARD',
+            scores: authoritativeScores,
+            totalParticipants: authoritativeScores.length,
+            previousRanks: state.previousRanks
+          });
         }
       }
 
@@ -11688,10 +11893,50 @@ if (typeof module !== 'undefined' && module.exports) {
 
       if (isFinal) {
         if (state.isDualHost) {
-          hubNet.publishToPin(state.pinCreative, { type: 'SHOW_FINAL_PODIUM' });
-          hubNet.publishToPin(state.pinProgramming, { type: 'SHOW_FINAL_PODIUM' });
+          const creativeStandings = buildAuthoritativeScoreboard('creative');
+          const progStandings = buildAuthoritativeScoreboard('programming');
+          state.scoresCreative = creativeStandings;
+          state.scoresProgramming = progStandings;
+          state.roomScores = buildAuthoritativeScoreboard('all');
+          state.totalParticipants = state.roomScores.length;
+
+          hubNet.publishToPin(state.pinCreative, {
+            type: 'SHOW_FINAL_PODIUM',
+            finalStandings: creativeStandings,
+            scores: creativeStandings,
+            totalParticipants: creativeStandings.length
+          });
+          hubNet.publishToPin(state.pinProgramming, {
+            type: 'SHOW_FINAL_PODIUM',
+            finalStandings: progStandings,
+            scores: progStandings,
+            totalParticipants: progStandings.length
+          });
         } else if (state.role !== 'solo') {
-          hubNet.publish({ type: 'SHOW_FINAL_PODIUM' });
+          const officialStandings = buildAuthoritativeScoreboard('all');
+          state.roomScores = officialStandings;
+          state.totalParticipants = officialStandings.length;
+
+          hubNet.publish({
+            type: 'SHOW_FINAL_PODIUM',
+            finalStandings: officialStandings,
+            scores: officialStandings,
+            totalParticipants: officialStandings.length
+          });
+        } else {
+          initParticipantAudit(state.playerId, state.playerName || 'Solo Innovator');
+          state.roomScores = [{
+            id: state.playerId,
+            name: state.playerName || 'Solo Innovator',
+            avatar: state.playerAvatar || 'robot',
+            score: state.score,
+            correctCount: state.correctCount,
+            streak: state.currentStreak,
+            highestStreak: state.highestStreak,
+            rank: 1,
+            totalParticipants: 1
+          }];
+          state.totalParticipants = 1;
         }
         showFinalResults();
       } else {
@@ -11907,16 +12152,17 @@ if (typeof module !== 'undefined' && module.exports) {
           avatar: state.playerAvatar || 'robot',
           score: state.score,
           correctCount: state.correctCount,
-          streak: state.currentStreak
+          streak: state.currentStreak,
+          highestStreak: state.highestStreak
         };
         if (existingIdx >= 0) {
-          state.roomScores[existingIdx] = myData;
+          state.roomScores[existingIdx] = Object.assign({}, state.roomScores[existingIdx], myData);
         } else {
           state.roomScores.push(myData);
         }
       }
 
-      state.roomScores.sort((a, b) => b.score - a.score);
+      state.roomScores.sort(compareLeaderboardEntries);
 
       // Compute Rank Changes & Identify Highest Climber
       let highestClimber = null;
@@ -11925,6 +12171,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
       state.roomScores.forEach((p, idx) => {
         const currentRank = idx + 1;
+        p.rank = currentRank;
         currentRankMap[p.id] = currentRank;
         const prevRank = state.previousRanks[p.id];
         if (typeof prevRank === 'number') {
@@ -11960,9 +12207,9 @@ if (typeof module !== 'undefined' && module.exports) {
         if (state.role === 'host') {
           roundMyStanding.textContent = 'Presenter View | Top Innovators';
         } else {
-          const myRank = state.roomScores.findIndex(p => p.id === state.playerId) + 1;
-          const participants = state.lobbyPlayers.filter(p => !p.isHost);
-          const totalCount = Math.max(state.roomScores.length, participants.length);
+          const myEntry = state.roomScores.find(p => p.id === state.playerId);
+          const myRank = (myEntry && myEntry.rank) ? myEntry.rank : (state.roomScores.findIndex(p => p.id === state.playerId) + 1);
+          const totalCount = state.totalParticipants || (myEntry && myEntry.totalParticipants) || Math.max(state.roomScores.length, state.lobbyPlayers.filter(p => !p.isHost).length, 1);
           roundMyStanding.textContent = `Your Rank: #${myRank} of ${totalCount}`;
         }
       }
@@ -12039,9 +12286,23 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnHostNextCreative) {
       btnHostNextCreative.addEventListener('click', () => {
         state.qIndexCreative++;
-        const targetQ = (state.deckCreative && state.deckCreative[state.qIndexCreative]) ? state.deckCreative[state.qIndexCreative] : null;
-        hubNet.publishToPin(state.pinCreative, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexCreative, question: targetQ });
-        btnHostNextCreative.textContent = `Next Creative -> (Q${state.qIndexCreative + 1})`;
+        const isFinal = (state.deckCreative && state.qIndexCreative >= state.deckCreative.length);
+        if (isFinal) {
+          const creativeStandings = buildAuthoritativeScoreboard('creative');
+          state.scoresCreative = creativeStandings;
+          hubNet.publishToPin(state.pinCreative, {
+            type: 'SHOW_FINAL_PODIUM',
+            finalStandings: creativeStandings,
+            scores: creativeStandings,
+            totalParticipants: creativeStandings.length
+          });
+          btnHostNextCreative.textContent = 'Creative Podium Revealed!';
+          btnHostNextCreative.disabled = true;
+        } else {
+          const targetQ = (state.deckCreative && state.deckCreative[state.qIndexCreative]) ? state.deckCreative[state.qIndexCreative] : null;
+          hubNet.publishToPin(state.pinCreative, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexCreative, question: targetQ });
+          btnHostNextCreative.textContent = `Next Creative -> (Q${state.qIndexCreative + 1})`;
+        }
       });
     }
 
@@ -12049,9 +12310,23 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnHostNextProgramming) {
       btnHostNextProgramming.addEventListener('click', () => {
         state.qIndexProgramming++;
-        const targetQ = (state.deckProgramming && state.deckProgramming[state.qIndexProgramming]) ? state.deckProgramming[state.qIndexProgramming] : null;
-        hubNet.publishToPin(state.pinProgramming, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexProgramming, question: targetQ });
-        btnHostNextProgramming.textContent = `Next Programming -> (Q${state.qIndexProgramming + 1})`;
+        const isFinal = (state.deckProgramming && state.qIndexProgramming >= state.deckProgramming.length);
+        if (isFinal) {
+          const progStandings = buildAuthoritativeScoreboard('programming');
+          state.scoresProgramming = progStandings;
+          hubNet.publishToPin(state.pinProgramming, {
+            type: 'SHOW_FINAL_PODIUM',
+            finalStandings: progStandings,
+            scores: progStandings,
+            totalParticipants: progStandings.length
+          });
+          btnHostNextProgramming.textContent = 'Programming Podium Revealed!';
+          btnHostNextProgramming.disabled = true;
+        } else {
+          const targetQ = (state.deckProgramming && state.deckProgramming[state.qIndexProgramming]) ? state.deckProgramming[state.qIndexProgramming] : null;
+          hubNet.publishToPin(state.pinProgramming, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexProgramming, question: targetQ });
+          btnHostNextProgramming.textContent = `Next Programming -> (Q${state.qIndexProgramming + 1})`;
+        }
       });
     }
 
@@ -12252,10 +12527,23 @@ if (typeof module !== 'undefined' && module.exports) {
         }
       }
 
-      state.roomScores.sort((a, b) => b.score - a.score);
+      state.roomScores.sort(compareLeaderboardEntries);
+      const hostParticipants = state.isDualHost 
+        ? [...(state.lobbyCreative || []), ...(state.lobbyProgramming || [])]
+        : (state.lobbyPlayers || []).filter(p => !p.isHost);
+      const totalCount = state.totalParticipants || Math.max(state.roomScores.length, hostParticipants.length, 1);
+
+      state.roomScores.forEach((p, idx) => {
+        p.rank = idx + 1;
+        p.totalParticipants = totalCount;
+      });
+
       const first = state.roomScores[0];
       const second = state.roomScores[1];
       const third = state.roomScores[2];
+
+      const myEntry = state.roomScores.find(p => p.id === state.playerId);
+      const myRank = (myEntry && myEntry.rank) ? myEntry.rank : (state.roomScores.findIndex(p => p.id === state.playerId) + 1);
 
       if (state.role === 'host') {
         if (winnerAnnouncement) winnerAnnouncement.textContent = 'Friday Showdown Champions!';
@@ -12265,15 +12553,12 @@ if (typeof module !== 'undefined' && module.exports) {
         if (finalPrimaryScore) {
           finalPrimaryScore.textContent = first ? `${first.score} pts` : 'Completed';
         }
-        const participants = state.lobbyPlayers.filter(p => !p.isHost);
-        const totalCount = Math.max(state.roomScores.length, participants.length);
         if (statAccuracy) statAccuracy.textContent = `${totalCount} Innovators`;
         if (statStreak) statStreak.textContent = 'Presenter View';
       } else {
-        const myRank = state.roomScores.findIndex(p => p.id === state.playerId) + 1;
         if (finalPrimaryScore) finalPrimaryScore.textContent = `${state.score} pts`;
         if (finalPrimaryBadge) {
-          finalPrimaryBadge.textContent = myRank === 1 ? '1st Place Champion!' : myRank === 2 ? '2nd Place!' : myRank === 3 ? '3rd Place!' : `#${myRank} of ${state.roomScores.length} Innovators`;
+          finalPrimaryBadge.textContent = myRank === 1 ? '1st Place Champion!' : myRank === 2 ? '2nd Place!' : myRank === 3 ? '3rd Place!' : `#${myRank} of ${totalCount} Innovators`;
         }
         if (statAccuracy) statAccuracy.textContent = `${state.correctCount}/${state.totalQuestions} (${accPct}%)`;
         if (statStreak) statStreak.textContent = `${state.highestStreak}`;
@@ -12315,11 +12600,12 @@ if (typeof module !== 'undefined' && module.exports) {
           finalBusLeaderboardList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); font-size: 13px; padding: 8px;">All participants featured on the Top 3 Podium!</div>';
         } else {
           remainder.forEach((p, idx) => {
+            const displayRank = (p && p.rank) ? p.rank : (idx + 4);
             const row = document.createElement('div');
             row.className = `scoreboard-row ${p.id === state.playerId ? 'is-me' : ''}`;
             row.innerHTML = `
               <div class="scoreboard-rank-name" style="display:flex; align-items:center; gap:8px;">
-                <span style="min-width:24px;">#${idx + 4}</span>
+                <span style="min-width:24px;">#${displayRank}</span>
                 <div class="chip-avatar-icon" style="width:26px; height:26px; min-width:26px;">${getAvatarSvg(p.avatar || 'robot', 26)}</div>
                 <span>${escapeHtml(p.name)}</span>
               </div>
@@ -12578,7 +12864,7 @@ if (typeof module !== 'undefined' && module.exports) {
         return;
       }
 
-      records.sort((a, b) => (b.score || 0) - (a.score || 0));
+      records.sort(compareLeaderboardEntries);
       const totalQ = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 0);
 
       const headers = ['Rank', 'Innovator Name', 'Track', 'Total Score', 'Accuracy (%)', 'Correct Answers', 'Total Questions', 'Best Streak'];
@@ -12660,7 +12946,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
     function copyQuizSummaryWhatsApp() {
       const records = Object.values(state.participantAuditLog);
-      records.sort((a, b) => (b.score || 0) - (a.score || 0));
+      records.sort(compareLeaderboardEntries);
       const first = records[0];
       const second = records[1];
       const third = records[2];
@@ -12735,7 +13021,7 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       const records = Object.values(state.participantAuditLog);
-      records.sort((a, b) => (b.score || 0) - (a.score || 0));
+      records.sort(compareLeaderboardEntries);
       const first = records[0];
 
       let avgAcc = 0;
@@ -12839,7 +13125,7 @@ if (typeof module !== 'undefined' && module.exports) {
       if (!rec || !detailQuestionsList) return;
 
       const records = Object.values(state.participantAuditLog);
-      records.sort((a, b) => (b.score || 0) - (a.score || 0));
+      records.sort(compareLeaderboardEntries);
       const rank = records.findIndex(r => r.id === userId) + 1;
       const acc = rec.totalQuestions > 0 ? Math.round((rec.correctCount / rec.totalQuestions) * 100) : 0;
 
@@ -12943,8 +13229,12 @@ if (typeof module !== 'undefined' && module.exports) {
       const secs = state.totalElapsedTime % 60;
       const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
       const pct = state.totalQuestions > 0 ? Math.round((state.correctCount / state.totalQuestions) * 100) : 0;
-      const myRank = state.roomScores.findIndex(p => p.id === state.playerId) + 1;
-      const total = Math.max(state.roomScores.length, state.lobbyPlayers.length);
+      const myEntry = state.roomScores.find(p => p.id === state.playerId);
+      const myRank = (myEntry && myEntry.rank) ? myEntry.rank : (state.roomScores.findIndex(p => p.id === state.playerId) + 1);
+      const hostParticipants = state.isDualHost 
+        ? [...(state.lobbyCreative || []), ...(state.lobbyProgramming || [])]
+        : (state.lobbyPlayers || []).filter(p => !p.isHost);
+      const total = state.totalParticipants || (myEntry && myEntry.totalParticipants) || Math.max(state.roomScores.length, hostParticipants.length, 1);
 
       let rankText = '';
       if (myRank === 1) rankText = '1st Place Champion!';
@@ -13100,6 +13390,9 @@ if (typeof module !== 'undefined' && module.exports) {
 
     /* Handle incoming MQTT messages */
     function handleNetworkMessage(topic, data) {
+      if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (_) { return; }
+      }
       if (!data || !data.type) return;
 
       const isFromCreative = state.pinCreative && topic.endsWith(state.pinCreative);
@@ -13215,6 +13508,13 @@ if (typeof module !== 'undefined' && module.exports) {
                 // STRICT MUTUAL EXCLUSIVITY: Remove from programming roster
                 state.lobbyProgramming = state.lobbyProgramming.filter(p => p.id !== data.id);
                 state.scoresProgramming = state.scoresProgramming.filter(p => p.id !== data.id);
+                const exScoreC = state.scoresCreative.find(p => p.id === data.id);
+                if (!exScoreC) {
+                  state.scoresCreative.push({ id: data.id, name: data.name, avatar: playerAvatar, score: 0, streak: 0, highestStreak: 0, correctCount: 0, track: 'creative' });
+                } else {
+                  exScoreC.name = data.name;
+                  exScoreC.avatar = playerAvatar;
+                }
                 renderDualLobbyRosters();
               } else if (isFromProgramming) {
                 const ex = state.lobbyProgramming.find(p => p.id === data.id);
@@ -13228,6 +13528,13 @@ if (typeof module !== 'undefined' && module.exports) {
                 // STRICT MUTUAL EXCLUSIVITY: Remove from creative roster
                 state.lobbyCreative = state.lobbyCreative.filter(p => p.id !== data.id);
                 state.scoresCreative = state.scoresCreative.filter(p => p.id !== data.id);
+                const exScoreP = state.scoresProgramming.find(p => p.id === data.id);
+                if (!exScoreP) {
+                  state.scoresProgramming.push({ id: data.id, name: data.name, avatar: playerAvatar, score: 0, streak: 0, highestStreak: 0, correctCount: 0, track: 'programming' });
+                } else {
+                  exScoreP.name = data.name;
+                  exScoreP.avatar = playerAvatar;
+                }
                 renderDualLobbyRosters();
               }
             } else {
@@ -13238,11 +13545,23 @@ if (typeof module !== 'undefined' && module.exports) {
                 exists.name = data.name;
                 exists.avatar = playerAvatar;
               }
+              const exScore = state.roomScores.find(p => p.id === data.id);
+              if (!exScore) {
+                state.roomScores.push({ id: data.id, name: data.name, avatar: playerAvatar, score: 0, streak: 0, highestStreak: 0, correctCount: 0 });
+              } else {
+                exScore.name = data.name;
+                exScore.avatar = playerAvatar;
+              }
               renderSingleLobbyRoster();
             }
             sound.playPlayerBloop();
           }
           if (state.role === 'host') {
+            initParticipantAudit(data.id, data.name);
+            if (state.participantAuditLog[data.id]) {
+              state.participantAuditLog[data.id].avatar = data.avatar || 'robot';
+              state.participantAuditLog[data.id].track = isFromCreative ? 'creative' : isFromProgramming ? 'programming' : state.track;
+            }
             const replyTrack = isFromCreative ? 'creative' : isFromProgramming ? 'programming' : state.track;
             const targetPin = topic.split('/').pop();
             hubNet.publishToPin(targetPin, {
@@ -13513,16 +13832,19 @@ if (typeof module !== 'undefined' && module.exports) {
           }
 
           if (state.isDualHost) {
+            const curAudit = state.participantAuditLog[data.id];
+            const playerCorrectCount = curAudit ? curAudit.correctCount : (data.isCorrect ? 1 : 0);
+            const playerHighestStreak = curAudit ? curAudit.highestStreak : data.streak;
             if (isFromCreative) {
               state.answersCreativeThisRound[data.id] = data;
               const idx = state.scoresCreative.findIndex(p => p.id === data.id);
-              const entry = { id: data.id, name: data.name, avatar: data.avatar || 'monkey', score: data.totalScore, streak: data.streak };
+              const entry = { id: data.id, name: data.name, avatar: data.avatar || 'monkey', score: data.totalScore, streak: data.streak, highestStreak: playerHighestStreak, correctCount: playerCorrectCount, track: 'creative' };
               if (idx >= 0) state.scoresCreative[idx] = entry;
               else state.scoresCreative.push(entry);
             } else if (isFromProgramming) {
               state.answersProgrammingThisRound[data.id] = data;
               const idx = state.scoresProgramming.findIndex(p => p.id === data.id);
-              const entry = { id: data.id, name: data.name, avatar: data.avatar || 'robot', score: data.totalScore, streak: data.streak };
+              const entry = { id: data.id, name: data.name, avatar: data.avatar || 'robot', score: data.totalScore, streak: data.streak, highestStreak: playerHighestStreak, correctCount: playerCorrectCount, track: 'programming' };
               if (idx >= 0) state.scoresProgramming[idx] = entry;
               else state.scoresProgramming.push(entry);
             }
@@ -13552,8 +13874,11 @@ if (typeof module !== 'undefined' && module.exports) {
             }
           } else {
             state.answersSubmittedThisRound[data.id] = data;
+            const curAudit = state.participantAuditLog[data.id];
+            const playerCorrectCount = curAudit ? curAudit.correctCount : (data.isCorrect ? 1 : 0);
+            const playerHighestStreak = curAudit ? curAudit.highestStreak : data.streak;
             const existingIdx = state.roomScores.findIndex(p => p.id === data.id);
-            const scoreEntry = { id: data.id, name: data.name, avatar: data.avatar || 'robot', score: data.totalScore, streak: data.streak };
+            const scoreEntry = { id: data.id, name: data.name, avatar: data.avatar || 'robot', score: data.totalScore, streak: data.streak, highestStreak: playerHighestStreak, correctCount: playerCorrectCount };
             if (existingIdx >= 0) state.roomScores[existingIdx] = scoreEntry;
             else state.roomScores.push(scoreEntry);
 
@@ -13582,6 +13907,7 @@ if (typeof module !== 'undefined' && module.exports) {
         case 'REVEAL_QUESTION_ANSWER':
           if (state.role === 'player') {
             if (Array.isArray(data.scores)) state.roomScores = data.scores;
+            if (data.totalParticipants) state.totalParticipants = data.totalParticipants;
             if (data.previousRanks) state.previousRanks = data.previousRanks;
             revealAnswerAndShowPoll(data);
           }
@@ -13592,6 +13918,9 @@ if (typeof module !== 'undefined' && module.exports) {
             if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
             if (Array.isArray(data.scores)) {
               state.roomScores = data.scores;
+            }
+            if (data.totalParticipants) {
+              state.totalParticipants = data.totalParticipants;
             }
             if (data.previousRanks) {
               state.previousRanks = data.previousRanks;
@@ -13632,6 +13961,14 @@ if (typeof module !== 'undefined' && module.exports) {
           break;
 
         case 'SHOW_FINAL_PODIUM':
+          if (Array.isArray(data.finalStandings) && data.finalStandings.length > 0) {
+            state.roomScores = data.finalStandings;
+          } else if (Array.isArray(data.scores) && data.scores.length > 0) {
+            state.roomScores = data.scores;
+          }
+          if (data.totalParticipants) {
+            state.totalParticipants = data.totalParticipants;
+          }
           showFinalResults();
           break;
       }
@@ -13656,6 +13993,8 @@ if (typeof module !== 'undefined' && module.exports) {
       revealAnswerAndShowPoll,
       advanceFromRevealToScoreboard,
       endQuestionAndShowRoundScoreboard,
+      compareLeaderboardEntries,
+      buildAuthoritativeScoreboard,
       renderRoundScoreboard,
       advanceToNextRoundOrPodium,
       showFinalResults,
