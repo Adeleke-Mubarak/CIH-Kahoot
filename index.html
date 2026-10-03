@@ -5007,6 +5007,10 @@
             <svg id="icon-timer-resume" class="ui-icon-svg" viewBox="0 0 24 24" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
             <span id="host-timer-pause-text">Pause</span>
           </button>
+          <button id="btn-host-sync-late" class="btn-host-timer-action" type="button" title="Sync late-joining innovators into the active question">
+            <svg class="ui-icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span>Sync Late Players</span>
+          </button>
         </div>
       </div>
 
@@ -7803,7 +7807,7 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 
     /* ==========================================================================
-       5. SERVERLESS MULTIPLAYER (MQTT DUAL-BROKER AUTO-FAILOVER)
+       5. SERVERLESS MULTIPLAYER (ACTIVE-ACTIVE DUAL-BROKER MESH & DEDUPLICATION)
        ========================================================================== */
     const BROKER_CONFIGS = [
       { host: 'broker.emqx.io', port: 8084, path: '/mqtt', protocol: 'wss' },
@@ -7812,66 +7816,121 @@ if (typeof module !== 'undefined' && module.exports) {
 
     class HubNetwork {
       constructor() {
-        this.client = null;
-        this.brokerIdx = 0;
+        this.clients = [];
         this.pins = [];
         this.role = null;
         this.connected = false;
+        this.seenMsgIds = new Set();
+        this.onReadyCallback = null;
+      }
+
+      disconnect() {
+        if (this.clients && this.clients.length > 0) {
+          this.clients.forEach(c => {
+            try {
+              if (c && typeof c.end === 'function') {
+                c.end(true);
+              }
+            } catch (e) {}
+          });
+        }
+        this.clients = [];
+        this.connected = false;
+        this.pins = [];
+        this.onReadyCallback = null;
       }
 
       connect(pins, role, onReady) {
-        this.pins = Array.isArray(pins) ? pins : [pins];
+        this.disconnect();
+        this.pins = (Array.isArray(pins) ? pins : [pins]).filter(Boolean);
         this.role = role;
-        const cfg = BROKER_CONFIGS[this.brokerIdx];
-        const url = `${cfg.protocol}://${cfg.host}:${cfg.port}${cfg.path}`;
-        const clientId = 'cih_' + Math.random().toString(16).substr(2, 8);
+        this.onReadyCallback = onReady;
 
-        if (typeof mqtt !== 'undefined' && mqtt.connect) {
+        if (typeof mqtt === 'undefined' || !mqtt.connect) {
+          this.activateLocalMock(this.pins, role, onReady);
+          return;
+        }
+
+        let atLeastOneConnected = false;
+        const self = this;
+
+        BROKER_CONFIGS.forEach((cfg, idx) => {
           try {
-            this.client = mqtt.connect(url, {
+            const url = `${cfg.protocol}://${cfg.host}:${cfg.port}${cfg.path}`;
+            const clientId = 'cih_' + Math.random().toString(16).substr(2, 8) + '_' + idx;
+
+            const client = mqtt.connect(url, {
               clientId: clientId,
               clean: true,
-              connectTimeout: 4000,
-              reconnectPeriod: 3000
+              connectTimeout: 12000,
+              reconnectPeriod: 2500,
+              keepalive: 30
             });
 
-            this.client.on('connect', () => {
-              this.connected = true;
+            client.on('connect', () => {
+              console.log(`[NETWORK] Connected to broker ${cfg.host}:${cfg.port}`);
+              self.connected = true;
               updateConnectionStatus(true);
-              this.pins.forEach(pin => {
-                const topic = `cih/showdown/${pin}`;
-                this.client.subscribe(topic, { qos: 1 });
-              });
-              if (onReady) onReady();
-            });
 
-            this.client.on('message', (topic, message) => {
-              try {
-                const data = JSON.parse(message.toString());
-                handleNetworkMessage(topic, data);
-              } catch (e) {
-                console.error("Message parse error:", e);
+              self.pins.forEach(pin => {
+                const topic = `cih/showdown/${pin}`;
+                client.subscribe(topic, { qos: 1 }, (err) => {
+                  if (err) console.warn(`[NETWORK] Subscribe error on ${cfg.host} for ${topic}:`, err);
+                });
+              });
+
+              if (!atLeastOneConnected) {
+                atLeastOneConnected = true;
+                if (self.onReadyCallback) {
+                  const cb = self.onReadyCallback;
+                  self.onReadyCallback = null;
+                  cb();
+                }
               }
             });
 
-            this.client.on('error', () => {
-              this.fallback(pins, role, onReady);
+            client.on('message', (topic, message) => {
+              try {
+                const data = JSON.parse(message.toString());
+                if (data && data.msgId) {
+                  if (self.seenMsgIds.has(data.msgId)) {
+                    return; // Deduplicate: already processed from another broker in the mesh!
+                  }
+                  self.seenMsgIds.add(data.msgId);
+                  if (self.seenMsgIds.size > 500) {
+                    const it = self.seenMsgIds.values();
+                    self.seenMsgIds.delete(it.next().value);
+                  }
+                }
+                handleNetworkMessage(topic, data);
+              } catch (e) {
+                console.error("[NETWORK] Message parse error:", e);
+              }
             });
-          } catch (e) {
-            this.fallback(pins, role, onReady);
-          }
-        } else {
-          this.activateLocalMock(pins, role, onReady);
-        }
-      }
 
-      fallback(pins, role, onReady) {
-        if (this.brokerIdx < BROKER_CONFIGS.length - 1) {
-          this.brokerIdx++;
-          this.connect(pins, role, onReady);
-        } else {
-          this.activateLocalMock(pins, role, onReady);
-        }
+            client.on('error', (err) => {
+              console.warn(`[NETWORK] Broker error on ${cfg.host}:`, err ? err.message : err);
+            });
+
+            client.on('close', () => {
+              const anyOpen = self.clients.some(c => c && c.connected);
+              self.connected = anyOpen;
+              updateConnectionStatus(anyOpen);
+            });
+
+            self.clients.push(client);
+          } catch (e) {
+            console.warn(`[NETWORK] Failed to connect to ${cfg.host}:`, e);
+          }
+        });
+
+        // Safety fallback: if no broker connected after 14s, use local mock
+        setTimeout(() => {
+          if (!atLeastOneConnected && (!self.clients || !self.clients.some(c => c && c.connected))) {
+            console.warn('[NETWORK] No brokers connected in mesh after timeout. Fallback to mock.');
+            self.activateLocalMock(self.pins, role, onReady);
+          }
+        }, 14000);
       }
 
       activateLocalMock(pins, role, onReady) {
@@ -7881,16 +7940,36 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       publishToPin(pin, payload) {
-        if (!this.client || !this.connected || !pin) return;
+        if (!pin || !payload) return;
+        if (!payload.msgId) {
+          payload.msgId = (state.playerId || 'cih') + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        }
         const topic = `cih/showdown/${pin}`;
-        try {
-          this.client.publish(topic, JSON.stringify(payload), { qos: 1 });
-        } catch (e) {
-          console.error("Publish error:", e);
+        const str = JSON.stringify(payload);
+
+        let sentAny = false;
+        if (this.clients && this.clients.length > 0) {
+          this.clients.forEach(c => {
+            if (c && c.connected) {
+              try {
+                c.publish(topic, str, { qos: 1 });
+                sentAny = true;
+              } catch (e) {
+                console.warn('[NETWORK] Client publish error:', e);
+              }
+            }
+          });
+        }
+
+        if (!sentAny && this.connected) {
+          try {
+            setTimeout(() => handleNetworkMessage(topic, payload), 10);
+          } catch (e) {}
         }
       }
 
       publish(payload) {
+        if (!this.pins || this.pins.length === 0) return;
         this.pins.forEach(pin => {
           this.publishToPin(pin, payload);
         });
@@ -8130,6 +8209,30 @@ if (typeof module !== 'undefined' && module.exports) {
       finalResults: document.getElementById('screen-final-results')
     };
 
+    function startPlayerLobbyHeartbeat() {
+      stopPlayerLobbyHeartbeat();
+      state.lobbyHeartbeatInterval = setInterval(() => {
+        if (state.role === 'player' && state.currentScreenKey === 'lobby' && state.roomPin) {
+          hubNet.publish({
+            type: 'REQUEST_GAME_SYNC',
+            id: state.playerId,
+            name: state.playerName,
+            pin: state.roomPin,
+            track: state.track
+          });
+        } else {
+          stopPlayerLobbyHeartbeat();
+        }
+      }, 3500);
+    }
+
+    function stopPlayerLobbyHeartbeat() {
+      if (state.lobbyHeartbeatInterval) {
+        clearInterval(state.lobbyHeartbeatInterval);
+        state.lobbyHeartbeatInterval = null;
+      }
+    }
+
     function showScreen(screenKey) {
       state.currentScreenKey = screenKey;
       Object.values(screens).forEach(s => {
@@ -8145,6 +8248,12 @@ if (typeof module !== 'undefined' && module.exports) {
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
       saveActiveSessionState(screenKey);
+
+      if (screenKey === 'lobby' && state.role === 'player') {
+        startPlayerLobbyHeartbeat();
+      } else {
+        stopPlayerLobbyHeartbeat();
+      }
     }
 
     function escapeHtml(str) {
@@ -9873,6 +9982,9 @@ if (typeof module !== 'undefined' && module.exports) {
             const pill = document.getElementById('join-pin-detected-pill');
             const pillText = document.getElementById('join-pin-detected-text');
             const track = urlParams.get('track');
+            if (track) {
+              state.track = track;
+            }
             if (pill) {
               pill.style.display = 'inline-flex';
               if (track) {
@@ -10173,12 +10285,15 @@ if (typeof module !== 'undefined' && module.exports) {
         showScreen('lobby');
         showYoureInPopup(pin, name, state.playerAvatar);
 
+        hubNet.disconnect();
         hubNet.connect([pin], 'player', () => {
           hubNet.publish({
             type: 'PLAYER_JOIN',
             id: state.playerId,
             name: state.playerName,
-            avatar: state.playerAvatar
+            avatar: state.playerAvatar,
+            pin: pin,
+            track: state.track
           });
         });
       });
@@ -10479,6 +10594,7 @@ if (typeof module !== 'undefined' && module.exports) {
     const hostTimerControls = document.getElementById('host-timer-controls');
     const btnHostAddTime = document.getElementById('btn-host-add-time');
     const btnHostPauseTime = document.getElementById('btn-host-pause-time');
+    const btnHostSyncLate = document.getElementById('btn-host-sync-late');
     const iconTimerPause = document.getElementById('icon-timer-pause');
     const iconTimerResume = document.getElementById('icon-timer-resume');
     const hostTimerPauseText = document.getElementById('host-timer-pause-text');
@@ -10687,8 +10803,120 @@ if (typeof module !== 'undefined' && module.exports) {
       btnHostPauseTime.addEventListener('click', () => adjustQuestionTimer('toggle_pause'));
     }
 
+    function showQuestionSyncingState(qIdx) {
+      showScreen('question');
+      if (questionText) {
+        questionText.innerHTML = `
+          <div style="text-align:center; padding: 24px 12px;">
+            <div style="display:inline-block; width:36px; height:36px; border:3px solid rgba(255,255,255,0.2); border-top-color:var(--cih-cyan); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:12px;"></div>
+            <div style="font-weight:700; font-size:18px; color:#ffffff; margin-bottom:6px;">Syncing Question ${qIdx + 1} with Presenter...</div>
+            <div style="font-size:13px; color:var(--text-secondary);">Connecting to live showdown room...</div>
+          </div>
+        `;
+      }
+      if (optBtns) {
+        optBtns.forEach(btn => {
+          if (btn) {
+            btn.disabled = true;
+            btn.classList.add('is-dimmed');
+          }
+        });
+      }
+    }
+
+    function sendGameInProgressSync(targetPin, targetPlayerId) {
+      if (state.role !== 'host') return;
+      const isDual = state.isDualHost;
+      const isFromCreative = targetPin === state.pinCreative;
+      const isFromProgramming = targetPin === state.pinProgramming;
+
+      let relevantDeck = state.activeDeck;
+      let relevantQuestion = state.currentDisplayedQuestion || (state.activeDeck && state.activeDeck[state.currentQuestionIndex]);
+      let assignedTrack = state.track;
+
+      if (isDual) {
+        if (isFromCreative) {
+          relevantDeck = state.deckCreative || [];
+          relevantQuestion = (relevantDeck && relevantDeck[state.currentQuestionIndex]) || relevantQuestion;
+          assignedTrack = 'creative';
+        } else if (isFromProgramming) {
+          relevantDeck = state.deckProgramming || [];
+          relevantQuestion = (relevantDeck && relevantDeck[state.currentQuestionIndex]) || relevantQuestion;
+          assignedTrack = 'programming';
+        }
+      }
+
+      const syncPacket = {
+        type: 'GAME_IN_PROGRESS_SYNC',
+        targetPlayerId: targetPlayerId || null,
+        currentScreenKey: state.currentScreenKey,
+        currentQuestionIndex: state.currentQuestionIndex,
+        questionTimeRemaining: state.questionTimeRemaining,
+        questionTimerRemainingMs: state.questionTimerRemainingMs,
+        questionTimerTotalMs: state.questionTimerTotalMs,
+        isTimerPaused: !!state.isTimerPaused,
+        track: assignedTrack,
+        totalQuestions: state.totalQuestions,
+        timerSeconds: state.timerSeconds,
+        questions: relevantDeck,
+        currentQuestion: relevantQuestion,
+        roomScores: state.roomScores,
+        scoresCreative: state.scoresCreative,
+        scoresProgramming: state.scoresProgramming
+      };
+
+      if (targetPin) {
+        hubNet.publishToPin(targetPin, syncPacket);
+      } else if (isDual) {
+        if (state.pinCreative) {
+          const syncC = Object.assign({}, syncPacket, {
+            track: 'creative',
+            questions: state.deckCreative || [],
+            currentQuestion: (state.deckCreative && state.deckCreative[state.currentQuestionIndex]) || relevantQuestion
+          });
+          hubNet.publishToPin(state.pinCreative, syncC);
+        }
+        if (state.pinProgramming) {
+          const syncP = Object.assign({}, syncPacket, {
+            track: 'programming',
+            questions: state.deckProgramming || [],
+            currentQuestion: (state.deckProgramming && state.deckProgramming[state.currentQuestionIndex]) || relevantQuestion
+          });
+          hubNet.publishToPin(state.pinProgramming, syncP);
+        }
+      } else {
+        hubNet.publish(syncPacket);
+      }
+    }
+
+    if (btnHostSyncLate) {
+      btnHostSyncLate.addEventListener('click', () => {
+        sendGameInProgressSync();
+        btnHostSyncLate.classList.add('is-paused');
+        const origHtml = btnHostSyncLate.innerHTML;
+        btnHostSyncLate.innerHTML = '<svg class="ui-icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> Synced!';
+        setTimeout(() => {
+          btnHostSyncLate.classList.remove('is-paused');
+          btnHostSyncLate.innerHTML = origHtml;
+        }, 1500);
+      });
+    }
+
     function renderQuestion(qIdx) {
-      if (qIdx >= state.activeDeck.length) {
+      if (qIdx >= state.activeDeck.length || !state.activeDeck[qIdx]) {
+        if (state.role === 'player') {
+          console.warn(`[QUESTION_GUARD] Question index ${qIdx} not found in activeDeck (length: ${state.activeDeck ? state.activeDeck.length : 0}). Requesting question sync from presenter.`);
+          hubNet.publish({
+            type: 'REQUEST_QUESTION_SYNC',
+            id: state.playerId,
+            name: state.playerName,
+            pin: state.roomPin,
+            track: state.track,
+            questionIndex: qIdx
+          });
+          showQuestionSyncingState(qIdx);
+          return;
+        }
         showFinalResults();
         return;
       }
@@ -11468,10 +11696,13 @@ if (typeof module !== 'undefined' && module.exports) {
         showFinalResults();
       } else {
         if (state.isDualHost) {
-          hubNet.publishToPin(state.pinCreative, { type: 'NEXT_QUESTION', nextQuestionIndex: nextIdx });
-          hubNet.publishToPin(state.pinProgramming, { type: 'NEXT_QUESTION', nextQuestionIndex: nextIdx });
+          const qC = (state.deckCreative && state.deckCreative[nextIdx]) ? state.deckCreative[nextIdx] : null;
+          const qP = (state.deckProgramming && state.deckProgramming[nextIdx]) ? state.deckProgramming[nextIdx] : null;
+          hubNet.publishToPin(state.pinCreative, { type: 'NEXT_QUESTION', nextQuestionIndex: nextIdx, question: qC });
+          hubNet.publishToPin(state.pinProgramming, { type: 'NEXT_QUESTION', nextQuestionIndex: nextIdx, question: qP });
         } else if (state.role !== 'solo') {
-          hubNet.publish({ type: 'NEXT_QUESTION', nextQuestionIndex: nextIdx });
+          const qSingle = (state.activeDeck && state.activeDeck[nextIdx]) ? state.activeDeck[nextIdx] : null;
+          hubNet.publish({ type: 'NEXT_QUESTION', nextQuestionIndex: nextIdx, question: qSingle });
         }
         renderQuestion(nextIdx);
       }
@@ -11808,7 +12039,8 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnHostNextCreative) {
       btnHostNextCreative.addEventListener('click', () => {
         state.qIndexCreative++;
-        hubNet.publishToPin(state.pinCreative, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexCreative });
+        const targetQ = (state.deckCreative && state.deckCreative[state.qIndexCreative]) ? state.deckCreative[state.qIndexCreative] : null;
+        hubNet.publishToPin(state.pinCreative, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexCreative, question: targetQ });
         btnHostNextCreative.textContent = `Next Creative -> (Q${state.qIndexCreative + 1})`;
       });
     }
@@ -11817,7 +12049,8 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnHostNextProgramming) {
       btnHostNextProgramming.addEventListener('click', () => {
         state.qIndexProgramming++;
-        hubNet.publishToPin(state.pinProgramming, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexProgramming });
+        const targetQ = (state.deckProgramming && state.deckProgramming[state.qIndexProgramming]) ? state.deckProgramming[state.qIndexProgramming] : null;
+        hubNet.publishToPin(state.pinProgramming, { type: 'NEXT_QUESTION', nextQuestionIndex: state.qIndexProgramming, question: targetQ });
         btnHostNextProgramming.textContent = `Next Programming -> (Q${state.qIndexProgramming + 1})`;
       });
     }
@@ -12973,20 +13206,28 @@ if (typeof module !== 'undefined' && module.exports) {
               if (isFromCreative) {
                 const ex = state.lobbyCreative.find(p => p.id === data.id);
                 if (!ex) {
-                  state.lobbyCreative.push({ id: data.id, name: data.name, avatar: playerAvatar });
+                  state.lobbyCreative.push({ id: data.id, name: data.name, avatar: playerAvatar, track: 'creative' });
                 } else {
                   ex.name = data.name;
                   ex.avatar = playerAvatar;
+                  ex.track = 'creative';
                 }
+                // STRICT MUTUAL EXCLUSIVITY: Remove from programming roster
+                state.lobbyProgramming = state.lobbyProgramming.filter(p => p.id !== data.id);
+                state.scoresProgramming = state.scoresProgramming.filter(p => p.id !== data.id);
                 renderDualLobbyRosters();
               } else if (isFromProgramming) {
                 const ex = state.lobbyProgramming.find(p => p.id === data.id);
                 if (!ex) {
-                  state.lobbyProgramming.push({ id: data.id, name: data.name, avatar: playerAvatar });
+                  state.lobbyProgramming.push({ id: data.id, name: data.name, avatar: playerAvatar, track: 'programming' });
                 } else {
                   ex.name = data.name;
                   ex.avatar = playerAvatar;
+                  ex.track = 'programming';
                 }
+                // STRICT MUTUAL EXCLUSIVITY: Remove from creative roster
+                state.lobbyCreative = state.lobbyCreative.filter(p => p.id !== data.id);
+                state.scoresCreative = state.scoresCreative.filter(p => p.id !== data.id);
                 renderDualLobbyRosters();
               }
             } else {
@@ -13012,11 +13253,38 @@ if (typeof module !== 'undefined' && module.exports) {
               totalQuestions: state.totalQuestions,
               timerSeconds: state.timerSeconds
             });
-            if (!state.isDualHost) {
-              hubNet.publishToPin(targetPin, {
-                type: 'LOBBY_SYNC',
-                players: state.lobbyPlayers
-              });
+
+            // If game is already in progress, immediately sync late player!
+            const activeScreens = ['countdown', 'question', 'roundResult'];
+            if (activeScreens.includes(state.currentScreenKey)) {
+              sendGameInProgressSync(targetPin, data.id);
+              showReconnectBanner(
+                'Innovator Joined!',
+                `${data.name || 'Player'} joined showdown and was synced to Question ${state.currentQuestionIndex + 1}`,
+                3000
+              );
+            } else {
+              // In lobby: broadcast full roster
+              if (state.isDualHost) {
+                if (isFromCreative) {
+                  hubNet.publishToPin(state.pinCreative, {
+                    type: 'LOBBY_SYNC',
+                    track: 'creative',
+                    players: state.lobbyCreative
+                  });
+                } else if (isFromProgramming) {
+                  hubNet.publishToPin(state.pinProgramming, {
+                    type: 'LOBBY_SYNC',
+                    track: 'programming',
+                    players: state.lobbyProgramming
+                  });
+                }
+              } else {
+                hubNet.publishToPin(targetPin, {
+                  type: 'LOBBY_SYNC',
+                  players: state.lobbyPlayers
+                });
+              }
             }
           }
           break;
@@ -13024,32 +13292,177 @@ if (typeof module !== 'undefined' && module.exports) {
         case 'UPDATE_AVATAR':
           if (data && data.id) {
             if (state.isDualHost) {
-              const cr = state.lobbyCreative.find(p => p.id === data.id);
-              if (cr) cr.avatar = data.avatar;
-              const pr = state.lobbyProgramming.find(p => p.id === data.id);
-              if (pr) pr.avatar = data.avatar;
-              renderDualLobbyRosters();
+              if (isFromCreative) {
+                const cr = state.lobbyCreative.find(p => p.id === data.id);
+                if (cr) cr.avatar = data.avatar;
+                renderDualLobbyRosters();
+                if (state.role === 'host') {
+                  hubNet.publishToPin(state.pinCreative, {
+                    type: 'LOBBY_SYNC',
+                    track: 'creative',
+                    players: state.lobbyCreative
+                  });
+                }
+              } else if (isFromProgramming) {
+                const pr = state.lobbyProgramming.find(p => p.id === data.id);
+                if (pr) pr.avatar = data.avatar;
+                renderDualLobbyRosters();
+                if (state.role === 'host') {
+                  hubNet.publishToPin(state.pinProgramming, {
+                    type: 'LOBBY_SYNC',
+                    track: 'programming',
+                    players: state.lobbyProgramming
+                  });
+                }
+              }
             } else {
               const pl = state.lobbyPlayers.find(p => p.id === data.id);
               if (pl) {
                 pl.avatar = data.avatar;
                 renderSingleLobbyRoster();
               }
+              if (state.role === 'host') {
+                hubNet.publish({
+                  type: 'LOBBY_SYNC',
+                  players: state.lobbyPlayers
+                });
+              }
             }
             sound.playPlayerBloop();
-            if (state.role === 'host' && !state.isDualHost) {
-              hubNet.publish({
-                type: 'LOBBY_SYNC',
-                players: state.lobbyPlayers
-              });
-            }
           }
           break;
 
         case 'LOBBY_SYNC':
           if (state.role === 'player' && Array.isArray(data.players)) {
             state.lobbyPlayers = data.players;
+            if (data.track) state.track = data.track;
             renderSingleLobbyRoster();
+          }
+          break;
+
+        case 'REQUEST_GAME_SYNC':
+          if (state.role === 'host') {
+            const targetPin = topic.split('/').pop();
+            const activeScreens = ['countdown', 'question', 'roundResult'];
+            if (activeScreens.includes(state.currentScreenKey)) {
+              sendGameInProgressSync(targetPin, data.id);
+            } else {
+              if (state.isDualHost) {
+                if (targetPin === state.pinCreative) {
+                  hubNet.publishToPin(state.pinCreative, {
+                    type: 'LOBBY_SYNC',
+                    track: 'creative',
+                    players: state.lobbyCreative
+                  });
+                } else if (targetPin === state.pinProgramming) {
+                  hubNet.publishToPin(state.pinProgramming, {
+                    type: 'LOBBY_SYNC',
+                    track: 'programming',
+                    players: state.lobbyProgramming
+                  });
+                }
+              } else {
+                hubNet.publishToPin(targetPin, {
+                  type: 'LOBBY_SYNC',
+                  players: state.lobbyPlayers
+                });
+              }
+            }
+          }
+          break;
+
+        case 'GAME_IN_PROGRESS_SYNC':
+          if (state.role === 'player') {
+            if (data.targetPlayerId && data.targetPlayerId !== state.playerId) return;
+            console.log('[NETWORK] Received GAME_IN_PROGRESS_SYNC:', data);
+
+            if (data.track) state.track = data.track;
+            if (data.totalQuestions) state.totalQuestions = data.totalQuestions;
+            if (data.timerSeconds) state.timerSeconds = data.timerSeconds;
+            if (Array.isArray(data.roomScores)) state.roomScores = data.roomScores;
+
+            if (Array.isArray(data.questions) && data.questions.length > 0) {
+              state.activeDeck = data.questions;
+            } else if (data.currentQuestion) {
+              if (!state.activeDeck) state.activeDeck = [];
+              state.activeDeck[data.currentQuestionIndex] = data.currentQuestion;
+            }
+
+            const targetScreen = data.currentScreenKey;
+            const qIdx = (data.currentQuestionIndex !== undefined) ? data.currentQuestionIndex : 0;
+
+            if (targetScreen === 'question') {
+              showReconnectBanner(
+                'Showdown In Progress!',
+                `Synced with live game at Question ${qIdx + 1} of ${state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 15)}`,
+                3500
+              );
+              renderQuestion(qIdx);
+
+              if (data.questionTimerRemainingMs !== undefined && data.questionTimerTotalMs) {
+                state.questionTimerTotalMs = data.questionTimerTotalMs;
+                state.questionTimerRemainingMs = data.questionTimerRemainingMs;
+                state.questionTimeRemaining = Math.max(0, Math.ceil(data.questionTimerRemainingMs / 1000));
+                state.isTimerPaused = !!data.isTimerPaused;
+                if (questionTimerDigit) questionTimerDigit.textContent = `${state.questionTimeRemaining}s`;
+              }
+            } else if (targetScreen === 'roundResult') {
+              showReconnectBanner(
+                'Showdown In Progress!',
+                `Round ${qIdx + 1} results currently showing. Next question starts shortly!`,
+                3500
+              );
+              endQuestionAndShowRoundScoreboard();
+            } else if (targetScreen === 'countdown') {
+              startSynchronizedCountdown(Date.now() + 4000);
+            }
+          }
+          break;
+
+        case 'REQUEST_QUESTION_SYNC':
+          if (state.role === 'host') {
+            const reqIdx = parseInt(data.questionIndex, 10) || 0;
+            const targetPin = topic.split('/').pop();
+            const isDual = state.isDualHost;
+            const isC = isDual && targetPin === state.pinCreative;
+            const isP = isDual && targetPin === state.pinProgramming;
+
+            let relevantDeck = state.activeDeck;
+            if (isDual) {
+              relevantDeck = isC ? (state.deckCreative || []) : (state.deckProgramming || []);
+            }
+            const targetQ = relevantDeck[reqIdx] || state.currentDisplayedQuestion || (state.activeDeck && state.activeDeck[state.currentQuestionIndex]);
+
+            hubNet.publishToPin(targetPin, {
+              type: 'QUESTION_SYNC',
+              targetPlayerId: data.id,
+              questionIndex: reqIdx,
+              question: targetQ,
+              questions: relevantDeck,
+              totalQuestions: state.totalQuestions,
+              currentScreenKey: state.currentScreenKey,
+              questionTimeRemaining: state.questionTimeRemaining,
+              questionTimerRemainingMs: state.questionTimerRemainingMs,
+              questionTimerTotalMs: state.questionTimerTotalMs,
+              isTimerPaused: state.isTimerPaused
+            });
+          }
+          break;
+
+        case 'QUESTION_SYNC':
+          if (state.role === 'player') {
+            if (data.targetPlayerId && data.targetPlayerId !== state.playerId) return;
+            console.log('[NETWORK] Received QUESTION_SYNC:', data);
+            if (Array.isArray(data.questions) && data.questions.length > 0) {
+              state.activeDeck = data.questions;
+            } else if (data.question && data.questionIndex !== undefined) {
+              if (!state.activeDeck) state.activeDeck = [];
+              state.activeDeck[data.questionIndex] = data.question;
+            }
+            if (data.totalQuestions) state.totalQuestions = data.totalQuestions;
+            if (data.currentScreenKey === 'question' || state.currentScreenKey === 'question') {
+              renderQuestion(data.questionIndex !== undefined ? data.questionIndex : state.currentQuestionIndex);
+            }
           }
           break;
 
@@ -13188,7 +13601,13 @@ if (typeof module !== 'undefined' && module.exports) {
           break;
 
         case 'NEXT_QUESTION':
-          renderQuestion(data.nextQuestionIndex);
+          if (data.nextQuestionIndex !== undefined) {
+            if (data.question) {
+              if (!state.activeDeck) state.activeDeck = [];
+              state.activeDeck[data.nextQuestionIndex] = data.question;
+            }
+            renderQuestion(data.nextQuestionIndex);
+          }
           break;
 
         case 'TIMER_ADJUST':
@@ -13296,7 +13715,13 @@ if (typeof module !== 'undefined' && module.exports) {
       renderDualLobbyQrCodes,
       openEnlargeQrModal,
       closeEnlargeQrModal,
-      checkUrlJoinParams
+      checkUrlJoinParams,
+      hubNet,
+      handleNetworkMessage,
+      sendGameInProgressSync,
+      showQuestionSyncingState,
+      startPlayerLobbyHeartbeat,
+      stopPlayerLobbyHeartbeat
     };
 
     // Auto-detect and restore interrupted showdown session
