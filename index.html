@@ -2573,6 +2573,86 @@
       margin-top: 2px;
     }
 
+    /* Dual Track Showdown: two separate podiums on the presenter screen */
+    .dual-podiums-wrap { margin-bottom: 14px; }
+    .dual-podiums-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .dual-podiums-title {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--cih-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .dual-podiums-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .dual-podium-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .dual-podium-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .dual-podium-count {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .dual-podium-stage { position: relative; }
+    .dual-podium-standings-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cih-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+    .dual-podium-csv-btn { font-weight: 700; margin-top: 6px; }
+    [id$="podium-col-1st"] .podium-avatar-badge {
+      width: 58px;
+      height: 58px;
+      border-color: #facc15;
+      box-shadow: 0 0 25px rgba(250, 204, 21, 0.6);
+    }
+    .track-tab-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .track-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .track-tab-btn:hover { background: rgba(255, 255, 255, 0.12); }
+    .track-tab-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--cih-cyan);
+      color: var(--cih-cyan);
+    }
+
     /* Final Action Buttons */
     .final-actions-row {
       display: flex;
@@ -5257,7 +5337,7 @@
       </div>
 
       <!-- Kahoot-Style Sequenced Top 3 Podium -->
-      <div class="podium-section-wrap">
+      <div id="single-podium-section" class="podium-section-wrap">
         <div class="podium-header-row">
           <div id="podium-announcer" class="podium-announcer">Revealing Friday Champions...</div>
           <button id="btn-skip-podium-anim" class="btn-skip-anim" title="Skip to final standings">
@@ -5271,8 +5351,21 @@
         </div>
       </div>
 
+      <!-- DUAL TRACK PRESENTER VIEW: two completely separate podiums (Creative / Programming) -->
+      <div id="dual-podiums-wrap" class="dual-podiums-wrap" style="display: none;">
+        <div class="dual-podiums-head">
+          <div class="dual-podiums-title">Two Tracks, Two Podiums</div>
+          <button id="btn-skip-dual-podium-anim" class="btn-skip-anim" type="button" title="Skip to final standings">
+            Skip Animation -&gt;
+          </button>
+        </div>
+        <div id="dual-podiums-grid" class="dual-podiums-grid">
+          <!-- Populated via JS: one podium card per track -->
+        </div>
+      </div>
+
       <!-- Personal Performance Card -->
-      <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
+      <div id="final-personal-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <div>
             <div style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">Your Final Score</div>
@@ -5300,7 +5393,7 @@
       </div>
 
       <!-- Full Company Standings (4th Place and Beyond) -->
-      <div style="margin-bottom: 14px;">
+      <div id="single-standings-block" style="margin-bottom: 14px;">
         <div style="font-size: 13px; font-weight: 700; color: var(--cih-cyan); margin-bottom: 6px;">
           Complete Innovator Standings
         </div>
@@ -5323,6 +5416,12 @@
           <button id="btn-podium-analytics-export-csv" class="btn-podium-export-csv" title="Download detailed CSV report with classroom analytics">
             Download Mentor CSV Report
           </button>
+        </div>
+
+        <!-- Dual showdown: pick which track's debrief to view / export -->
+        <div id="mentor-analytics-track-tabs" class="track-tab-row" style="display: none;">
+          <button type="button" id="btn-analytics-tab-creative" class="track-tab-btn active">Creative Track</button>
+          <button type="button" id="btn-analytics-tab-programming" class="track-tab-btn">Programming Track</button>
         </div>
 
         <!-- Toughest Question Summary Callout -->
@@ -5421,6 +5520,10 @@
 
         <!-- Action & Filter Bar -->
         <div class="modal-actions-bar">
+          <div id="logs-track-tabs" class="track-tab-row" style="display: none; margin-bottom: 0;">
+            <button type="button" id="btn-logs-tab-creative" class="track-tab-btn active">Creative Track</button>
+            <button type="button" id="btn-logs-tab-programming" class="track-tab-btn">Programming Track</button>
+          </div>
           <div class="modal-export-group">
             <button id="btn-export-csv" class="btn-export-csv" title="Export to Excel / CSV format">
               Download Full CSV (Excel)
@@ -7975,17 +8078,33 @@ if (typeof module !== 'undefined' && module.exports) {
       }
     }
 
-    function recordParticipantAnswer(id, qIdx, selectedIdx, selectedText, correctIdx, correctText, isCorrect, pointsEarned, optName, optAvatar) {
+    /* Returns the question deck that belongs to a given track. In a Dual Track
+       Showdown the host's activeDeck is an interleaved presentation deck, so
+       per-track data (question text, answers, analytics) must come from the
+       dedicated creative / programming decks instead. */
+    function getDeckForTrack(track) {
+      if (state.isDualHost) {
+        if (track === 'creative') return state.deckCreative || [];
+        if (track === 'programming') return state.deckProgramming || [];
+      }
+      return state.activeDeck || [];
+    }
+
+    function recordParticipantAnswer(id, qIdx, selectedIdx, selectedText, correctIdx, correctText, isCorrect, pointsEarned, optName, optAvatar, optTrack) {
       if (!state.participantAuditLog[id]) {
         const found = state.lobbyPlayers.find(p => p.id === id);
         const name = optName || (found ? found.name : 'Innovator');
         const avatar = optAvatar || (found ? found.avatar : 'robot');
-        initParticipantAudit(id, name, state.track, avatar);
+        initParticipantAudit(id, name, optTrack || state.track, avatar);
       }
       const log = state.participantAuditLog[id];
       if (optAvatar) log.avatar = optAvatar;
       if (optName) log.name = optName;
-      const q = state.activeDeck ? state.activeDeck[qIdx] : null;
+      if (state.isDualHost && (optTrack === 'creative' || optTrack === 'programming')) {
+        log.track = optTrack;
+      }
+      const trackDeck = getDeckForTrack(state.isDualHost ? (optTrack || log.track) : null);
+      const q = trackDeck ? trackDeck[qIdx] : null;
       const qText = q ? q.question : ('Question ' + (qIdx + 1));
       const exp = q ? q.explanation : '';
 
@@ -8009,7 +8128,7 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       log.correctCount = log.answers.filter(a => a.isCorrect).length;
-      log.totalQuestions = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : log.answers.length);
+      log.totalQuestions = state.totalQuestions || (trackDeck && trackDeck.length ? trackDeck.length : log.answers.length);
     }
 
     function resetGameStateForNewQuiz() {
@@ -12670,96 +12789,238 @@ if (typeof module !== 'undefined' && module.exports) {
       sound.stopDrumroll();
     }
 
+    /* ----------------------------------------------------------------------
+       PODIUM TARGETS
+       Solo / Single-track / Player view  -> ONE podium (ids without prefix)
+       Dual Track host (presenter) view   -> TWO fully separate podiums:
+                                              'dpc-' = Creative, 'dpp-' = Programming
+       Every podium element id is  <prefix> + <base id>, so the same reveal
+       logic drives both layouts without ever mixing the two cohorts.
+       ---------------------------------------------------------------------- */
+    function isDualPresenterView() {
+      return state.role === 'host' && !!state.isDualHost;
+    }
+
+    function getPodiumTargets() {
+      if (isDualPresenterView() && state.dualPodiums) {
+        return [
+          { prefix: 'dpc-', label: 'Creative', standings: state.dualPodiums.creative || [] },
+          { prefix: 'dpp-', label: 'Programming', standings: state.dualPodiums.programming || [] }
+        ];
+      }
+      return [{ prefix: '', label: 'Friday', standings: state.roomScores || [] }];
+    }
+
+    function podiumEl(target, baseId) {
+      return document.getElementById(target.prefix + baseId);
+    }
+
+    function buildPodiumColumnsHtml(standings, prefix) {
+      const list = Array.isArray(standings) ? standings : [];
+      const first = list[0];
+      const second = list[1];
+      const third = list[2];
+      return `
+          <div id="${prefix}podium-col-2nd" class="podium-col is-hidden">
+            <div class="podium-medal">2nd</div>
+            <div class="podium-avatar-badge">${second ? getAvatarSvg(second.avatar || 'robot', 44) : getAvatarSvg('robot', 44)}</div>
+            <div class="podium-name">${second ? escapeHtml(second.name) : 'Vacant'}</div>
+            <div class="podium-score">${second ? second.score + ' pts' : '-'}</div>
+            <div class="podium-pillar podium-2nd"></div>
+          </div>
+          <div id="${prefix}podium-col-1st" class="podium-col is-hidden">
+            <div class="podium-medal medal-1st">1st</div>
+            <div class="podium-avatar-badge">${first ? getAvatarSvg(first.avatar || 'lion', 54) : getAvatarSvg('lion', 54)}</div>
+            <div class="podium-name champion-glow">${first ? escapeHtml(first.name) : 'Champion'}</div>
+            <div class="podium-score">${first ? first.score + ' pts' : '-'}</div>
+            <div class="podium-pillar podium-1st"></div>
+          </div>
+          <div id="${prefix}podium-col-3rd" class="podium-col is-hidden">
+            <div class="podium-medal">3rd</div>
+            <div class="podium-avatar-badge">${third ? getAvatarSvg(third.avatar || 'robot', 44) : getAvatarSvg('robot', 44)}</div>
+            <div class="podium-name">${third ? escapeHtml(third.name) : 'Vacant'}</div>
+            <div class="podium-score">${third ? third.score + ' pts' : '-'}</div>
+            <div class="podium-pillar podium-3rd"></div>
+          </div>
+        `;
+    }
+
+    /* Renders rank 4+ rows for a standings list into the given container */
+    function renderStandingsInto(el, standings) {
+      if (!el) return;
+      el.style.opacity = '0';
+      el.style.transition = 'opacity 0.6s ease';
+      el.innerHTML = '';
+      const list = Array.isArray(standings) ? standings : [];
+      const remainder = list.slice(3);
+      if (remainder.length === 0) {
+        el.innerHTML = '<div style="text-align: center; color: var(--text-secondary); font-size: 13px; padding: 8px;">All participants featured on the Top 3 Podium!</div>';
+        return;
+      }
+      remainder.forEach((p, idx) => {
+        const displayRank = (p && p.rank) ? p.rank : (idx + 4);
+        const row = document.createElement('div');
+        row.className = `scoreboard-row ${p.id === state.playerId ? 'is-me' : ''}`;
+        row.innerHTML = `
+          <div class="scoreboard-rank-name" style="display:flex; align-items:center; gap:8px;">
+            <span style="min-width:24px;">#${displayRank}</span>
+            <div class="chip-avatar-icon" style="width:26px; height:26px; min-width:26px;">${getAvatarSvg(p.avatar || 'robot', 26)}</div>
+            <span>${escapeHtml(p.name)}</span>
+          </div>
+          <div class="scoreboard-pts">${p.score} pts</div>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    /* Builds the two separate track podium cards shown on the Dual host screen */
+    function renderDualPodiums() {
+      const grid = document.getElementById('dual-podiums-grid');
+      if (!grid || !state.dualPodiums) return;
+      const defs = [
+        { key: 'creative', prefix: 'dpc-', label: 'Creative', cls: 'creative-border', badge: 'track-badge-creative', title: 'Creative Track (Blender 3D)', btnLabel: 'Download Creative CSV Report' },
+        { key: 'programming', prefix: 'dpp-', label: 'Programming', cls: 'programming-border', badge: 'track-badge-programming', title: 'Programming Track (Python &amp; JS)', btnLabel: 'Download Programming CSV Report' }
+      ];
+      grid.innerHTML = defs.map(d => {
+        const standings = state.dualPodiums[d.key] || [];
+        return `
+          <div class="dual-track-card dual-podium-card ${d.cls}">
+            <div class="dual-podium-head">
+              <span class="track-badge-pill ${d.badge}" style="margin-bottom:0;">${d.title}</span>
+              <span class="dual-podium-count">${standings.length} Innovators</span>
+            </div>
+            <div id="${d.prefix}podium-announcer" class="podium-announcer">Revealing ${d.label} Champions...</div>
+            <div class="dual-podium-stage">
+              <div id="${d.prefix}podium-1st-spotlight" class="podium-1st-spotlight"></div>
+              <div id="${d.prefix}final-podium-container" class="podium-container">${buildPodiumColumnsHtml(standings, d.prefix)}</div>
+            </div>
+            <div class="dual-podium-standings-title">Complete ${d.label} Standings</div>
+            <div id="${d.prefix}standings" class="full-standings-box"></div>
+            <button type="button" id="${d.prefix}btn-export-csv" class="btn btn-secondary dual-podium-csv-btn">${d.btnLabel}</button>
+          </div>
+        `;
+      }).join('');
+
+      defs.forEach(d => {
+        renderStandingsInto(document.getElementById(d.prefix + 'standings'), state.dualPodiums[d.key] || []);
+        const btn = document.getElementById(d.prefix + 'btn-export-csv');
+        if (btn) btn.addEventListener('click', () => exportQuizResultsCSV(d.key));
+      });
+    }
+
+    function revealPodiumExtras() {
+      if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
+      ['dpc-standings', 'dpp-standings'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.opacity = '1';
+      });
+      if (mentorClassroomAnalyticsCard && state.role === 'host') mentorClassroomAnalyticsCard.style.opacity = '1';
+    }
+
     function completePodiumInstantly() {
       clearPodiumTimers();
-      const col3 = document.getElementById('podium-col-3rd');
-      const col2 = document.getElementById('podium-col-2nd');
-      const col1 = document.getElementById('podium-col-1st');
-      const spotlight = document.getElementById('podium-1st-spotlight');
+      getPodiumTargets().forEach(t => {
+        ['podium-col-3rd', 'podium-col-2nd', 'podium-col-1st'].forEach(base => {
+          const col = podiumEl(t, base);
+          if (col) { col.classList.remove('is-hidden'); col.classList.add('is-revealed'); }
+        });
+        const spotlight = podiumEl(t, 'podium-1st-spotlight');
+        if (spotlight) spotlight.classList.remove('active');
 
-      if (col3) { col3.classList.remove('is-hidden'); col3.classList.add('is-revealed'); }
-      if (col2) { col2.classList.remove('is-hidden'); col2.classList.add('is-revealed'); }
-      if (col1) { col1.classList.remove('is-hidden'); col1.classList.add('is-revealed'); }
-      if (spotlight) spotlight.classList.remove('active');
+        const first = t.standings[0];
+        const announcer = podiumEl(t, 'podium-announcer');
+        if (announcer) {
+          announcer.classList.remove('pulse');
+          if (first) {
+            announcer.textContent = t.label + ' Champion: ' + first.name + '!';
+          } else {
+            announcer.textContent = (t.prefix === '') ? 'Friday Showdown Completed!' : (t.label + ' Track Completed!');
+          }
+        }
+      });
 
-      const first = state.roomScores[0];
-      if (podiumAnnouncer) {
-        podiumAnnouncer.classList.remove('pulse');
-        podiumAnnouncer.textContent = first ? ('Friday Champion: ' + first.name + '!') : 'Friday Showdown Completed!';
-      }
-
-      if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
-      if (mentorClassroomAnalyticsCard && state.role === 'host') mentorClassroomAnalyticsCard.style.opacity = '1';
+      revealPodiumExtras();
       triggerConfetti();
     }
 
     function animatePodiumReveal() {
       clearPodiumTimers();
-      const col3 = document.getElementById('podium-col-3rd');
-      const col2 = document.getElementById('podium-col-2nd');
-      const col1 = document.getElementById('podium-col-1st');
-      const spotlight = document.getElementById('podium-1st-spotlight');
+      const targets = getPodiumTargets();
+      const isDualView = targets.length > 1;
 
-      const first = state.roomScores[0];
-      const second = state.roomScores[1];
-      const third = state.roomScores[2];
-
-      if (podiumAnnouncer) {
-        podiumAnnouncer.classList.remove('pulse');
-        podiumAnnouncer.textContent = 'Revealing Friday Champions...';
-      }
-      if (spotlight) spotlight.classList.remove('active');
-
-      // Step 1 (0.8s): Reveal 3rd Place
-      const t1 = setTimeout(() => {
-        if (podiumAnnouncer) podiumAnnouncer.textContent = third ? ('In 3rd Place: ' + third.name + '!') : '3rd Place';
-        if (col3) {
-          col3.classList.remove('is-hidden');
-          col3.classList.add('is-revealed');
+      targets.forEach(t => {
+        const announcer = podiumEl(t, 'podium-announcer');
+        const spotlight = podiumEl(t, 'podium-1st-spotlight');
+        if (announcer) {
+          announcer.classList.remove('pulse');
+          announcer.textContent = 'Revealing ' + t.label + ' Champions...';
         }
+        if (spotlight) spotlight.classList.remove('active');
+      });
+
+      const revealPlace = (baseId, place) => {
+        targets.forEach(t => {
+          const entry = t.standings[place - 1];
+          const announcer = podiumEl(t, 'podium-announcer');
+          const ordinal = place === 3 ? '3rd' : '2nd';
+          if (announcer) {
+            announcer.textContent = entry ? ('In ' + ordinal + ' Place: ' + entry.name + '!') : (ordinal + ' Place');
+          }
+          const col = podiumEl(t, baseId);
+          if (col) { col.classList.remove('is-hidden'); col.classList.add('is-revealed'); }
+        });
+      };
+
+      // Step 1 (0.8s): Reveal 3rd Place (both tracks together in dual view)
+      const t1 = setTimeout(() => {
+        revealPlace('podium-col-3rd', 3);
         sound.playPodium3rd();
       }, 800);
 
       // Step 2 (3.0s): Reveal 2nd Place
       const t2 = setTimeout(() => {
-        if (podiumAnnouncer) podiumAnnouncer.textContent = second ? ('In 2nd Place: ' + second.name + '!') : '2nd Place';
-        if (col2) {
-          col2.classList.remove('is-hidden');
-          col2.classList.add('is-revealed');
-        }
+        revealPlace('podium-col-2nd', 2);
         sound.playPodium2nd();
       }, 3000);
 
       // Step 3 (5.2s): Drumroll & Spotlight for 1st Place
       const t3 = setTimeout(() => {
-        if (podiumAnnouncer) {
-          podiumAnnouncer.classList.add('pulse');
-          podiumAnnouncer.textContent = 'AND THE FRIDAY CHAMPION IS...';
-        }
-        if (spotlight) spotlight.classList.add('active');
+        targets.forEach(t => {
+          const announcer = podiumEl(t, 'podium-announcer');
+          const spotlight = podiumEl(t, 'podium-1st-spotlight');
+          if (announcer) {
+            announcer.classList.add('pulse');
+            announcer.textContent = isDualView
+              ? ('AND THE ' + t.label.toUpperCase() + ' CHAMPION IS...')
+              : 'AND THE FRIDAY CHAMPION IS...';
+          }
+          if (spotlight) spotlight.classList.add('active');
+        });
         sound.startDrumroll();
       }, 5200);
 
       // Step 4 (7.0s): Grand 1st Place Champion Explosion!
       const t4 = setTimeout(() => {
         sound.stopDrumroll();
-        if (spotlight) spotlight.classList.remove('active');
-        if (podiumAnnouncer) {
-          podiumAnnouncer.classList.remove('pulse');
-          podiumAnnouncer.textContent = first ? ('Friday Champion: ' + first.name + '!') : 'Champion!';
-        }
-        if (col1) {
-          col1.classList.remove('is-hidden');
-          col1.classList.add('is-revealed');
-        }
+        targets.forEach(t => {
+          const first = t.standings[0];
+          const announcer = podiumEl(t, 'podium-announcer');
+          const spotlight = podiumEl(t, 'podium-1st-spotlight');
+          const col1 = podiumEl(t, 'podium-col-1st');
+          if (spotlight) spotlight.classList.remove('active');
+          if (announcer) {
+            announcer.classList.remove('pulse');
+            announcer.textContent = first ? (t.label + ' Champion: ' + first.name + '!') : 'Champion!';
+          }
+          if (col1) { col1.classList.remove('is-hidden'); col1.classList.add('is-revealed'); }
+        });
         sound.playChampionFanfare();
         triggerConfetti();
       }, 7000);
 
       // Step 5 (8.5s): Reveal standings & actions smoothly
       const t5 = setTimeout(() => {
-        if (finalBusLeaderboardList) finalBusLeaderboardList.style.opacity = '1';
-        if (mentorClassroomAnalyticsCard && state.role === 'host') mentorClassroomAnalyticsCard.style.opacity = '1';
+        revealPodiumExtras();
       }, 8500);
 
       state.podiumRevealTimers = [t1, t2, t3, t4, t5];
@@ -12838,58 +13099,39 @@ if (typeof module !== 'undefined' && module.exports) {
       }
       if (statTime) statTime.textContent = timeStr;
 
-      if (finalPodiumContainer) {
-        finalPodiumContainer.innerHTML = `
-          <div id="podium-col-2nd" class="podium-col is-hidden">
-            <div class="podium-medal">2nd</div>
-            <div class="podium-avatar-badge">${second ? getAvatarSvg(second.avatar || 'robot', 44) : getAvatarSvg('robot', 44)}</div>
-            <div class="podium-name">${second ? escapeHtml(second.name) : 'Vacant'}</div>
-            <div class="podium-score">${second ? second.score + ' pts' : '-'}</div>
-            <div class="podium-pillar podium-2nd"></div>
-          </div>
-          <div id="podium-col-1st" class="podium-col is-hidden">
-            <div class="podium-medal medal-1st">1st</div>
-            <div class="podium-avatar-badge">${first ? getAvatarSvg(first.avatar || 'lion', 54) : getAvatarSvg('lion', 54)}</div>
-            <div class="podium-name champion-glow">${first ? escapeHtml(first.name) : 'Champion'}</div>
-            <div class="podium-score">${first ? first.score + ' pts' : '-'}</div>
-            <div class="podium-pillar podium-1st"></div>
-          </div>
-          <div id="podium-col-3rd" class="podium-col is-hidden">
-            <div class="podium-medal">3rd</div>
-            <div class="podium-avatar-badge">${third ? getAvatarSvg(third.avatar || 'robot', 44) : getAvatarSvg('robot', 44)}</div>
-            <div class="podium-name">${third ? escapeHtml(third.name) : 'Vacant'}</div>
-            <div class="podium-score">${third ? third.score + ' pts' : '-'}</div>
-            <div class="podium-pillar podium-3rd"></div>
-          </div>
-        `;
+      const dualPresenter = isDualPresenterView();
+      if (dualPresenter) {
+        // Two completely independent standings - never merged
+        state.dualPodiums = {
+          creative: buildAuthoritativeScoreboard('creative'),
+          programming: buildAuthoritativeScoreboard('programming')
+        };
+      } else {
+        state.dualPodiums = null;
       }
 
-      if (finalBusLeaderboardList) {
-        finalBusLeaderboardList.style.opacity = '0';
-        finalBusLeaderboardList.style.transition = 'opacity 0.6s ease';
-        finalBusLeaderboardList.innerHTML = '';
-        const remainder = state.roomScores.slice(3);
-        if (remainder.length === 0) {
-          finalBusLeaderboardList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); font-size: 13px; padding: 8px;">All participants featured on the Top 3 Podium!</div>';
-        } else {
-          remainder.forEach((p, idx) => {
-            const displayRank = (p && p.rank) ? p.rank : (idx + 4);
-            const row = document.createElement('div');
-            row.className = `scoreboard-row ${p.id === state.playerId ? 'is-me' : ''}`;
-            row.innerHTML = `
-              <div class="scoreboard-rank-name" style="display:flex; align-items:center; gap:8px;">
-                <span style="min-width:24px;">#${displayRank}</span>
-                <div class="chip-avatar-icon" style="width:26px; height:26px; min-width:26px;">${getAvatarSvg(p.avatar || 'robot', 26)}</div>
-                <span>${escapeHtml(p.name)}</span>
-              </div>
-              <div class="scoreboard-pts">${p.score} pts</div>
-            `;
-            finalBusLeaderboardList.appendChild(row);
-          });
-        }
+      if (finalPodiumContainer) {
+        finalPodiumContainer.innerHTML = buildPodiumColumnsHtml(state.roomScores, '');
       }
+      renderStandingsInto(finalBusLeaderboardList, state.roomScores);
+      if (dualPresenter) renderDualPodiums();
 
       const isHost = (state.role === 'host');
+      const singlePodiumSection = document.getElementById('single-podium-section');
+      const singleStandingsBlock = document.getElementById('single-standings-block');
+      const finalPersonalCard = document.getElementById('final-personal-card');
+      const dualPodiumsWrap = document.getElementById('dual-podiums-wrap');
+      if (singlePodiumSection) singlePodiumSection.style.display = dualPresenter ? 'none' : '';
+      if (singleStandingsBlock) singleStandingsBlock.style.display = dualPresenter ? 'none' : '';
+      if (finalPersonalCard) finalPersonalCard.style.display = dualPresenter ? 'none' : '';
+      if (dualPodiumsWrap) dualPodiumsWrap.style.display = dualPresenter ? 'block' : 'none';
+      if (dualPresenter) {
+        if (appShellMain) appShellMain.classList.add('wide-shell');
+        if (winnerAnnouncement) winnerAnnouncement.textContent = 'Friday Showdown Champions: Both Tracks!';
+        if (state.analyticsTrack !== 'creative' && state.analyticsTrack !== 'programming') state.analyticsTrack = 'creative';
+      }
+      syncAnalyticsTrackTabs();
+
       if (bannerFinaleGeneralQuiz) {
         bannerFinaleGeneralQuiz.style.display = isHost ? 'block' : 'none';
       }
@@ -12901,7 +13143,8 @@ if (typeof module !== 'undefined' && module.exports) {
         btnViewLogs.style.display = isHost ? 'inline-flex' : 'none';
       }
       if (btnPodiumExportCsv) {
-        btnPodiumExportCsv.style.display = isHost ? 'inline-flex' : 'none';
+        // The combined single-file report is never offered for a dual showdown
+        btnPodiumExportCsv.style.display = (isHost && !dualPresenter) ? 'inline-flex' : 'none';
       }
       if (btnPlayAgain) {
         btnPlayAgain.textContent = isHost ? 'Host Another Showdown' : 'Join Hub Showdown';
@@ -12914,7 +13157,7 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       if (isHost) {
-        renderClassroomAnalytics();
+        renderClassroomAnalytics(dualPresenter ? state.analyticsTrack : undefined);
       }
 
       showScreen('finalResults');
@@ -12923,13 +13166,16 @@ if (typeof module !== 'undefined' && module.exports) {
       animatePodiumReveal();
     }
 
+
     /* ==========================================================================
        ORGANIZER QUIZ LOGS & CSV EXPORT CONTROLLER
        ========================================================================== */
-    function computeClassroomAnalytics() {
-      const records = Object.values(state.participantAuditLog || {});
+    function computeClassroomAnalytics(trackFilter) {
+      const dualTrack = (state.isDualHost && (trackFilter === 'creative' || trackFilter === 'programming')) ? trackFilter : null;
+      const records = dualTrack ? getTrackRecords(dualTrack) : Object.values(state.participantAuditLog || {});
+      const analyticsDeck = getDeckForTrack(dualTrack);
       const totalParticipants = records.length;
-      const totalQ = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 0);
+      const totalQ = state.totalQuestions || (analyticsDeck ? analyticsDeck.length : 0);
 
       if (totalQ === 0) {
         return {
@@ -12949,11 +13195,12 @@ if (typeof module !== 'undefined' && module.exports) {
         let correctText = '';
         let explanationText = '';
 
-        if (state.activeDeck && state.activeDeck[qIdx]) {
-          const qObj = state.activeDeck[qIdx];
+        if (analyticsDeck && analyticsDeck[qIdx]) {
+          const qObj = analyticsDeck[qIdx];
           questionText = qObj.question || questionText;
-          if (qObj.options && qObj.options[qObj.correct] !== undefined) {
-            correctText = qObj.options[qObj.correct];
+          const correctIdxVal = (qObj.answer !== undefined) ? qObj.answer : qObj.correct;
+          if (qObj.options && qObj.options[correctIdxVal] !== undefined) {
+            correctText = qObj.options[correctIdxVal];
           }
           explanationText = qObj.explanation || '';
         }
@@ -13018,13 +13265,13 @@ if (typeof module !== 'undefined' && module.exports) {
       };
     }
 
-    function renderClassroomAnalytics() {
+    function renderClassroomAnalytics(trackFilter) {
       const summaryBox = document.getElementById('toughest-questions-summary');
       const breakdownList = document.getElementById('question-accuracy-breakdown-list');
 
       if (!summaryBox || !breakdownList) return;
 
-      const data = computeClassroomAnalytics();
+      const data = computeClassroomAnalytics(trackFilter);
 
       if (data.totalParticipants === 0 || data.questionStats.length === 0) {
         summaryBox.style.background = 'rgba(239, 68, 68, 0.12)';
@@ -13130,15 +13377,82 @@ if (typeof module !== 'undefined' && module.exports) {
       });
     }
 
-    function exportQuizResultsCSV() {
-      const records = Object.values(state.participantAuditLog);
+    /* ----------------------------------------------------------------------
+       PER-TRACK REPORTING HELPERS (Dual Track Showdown)
+       A dual showdown always produces two separate reports: one for the
+       Creative cohort and one for the Programming cohort. Nothing here ever
+       merges the two cohorts into a single list.
+       ---------------------------------------------------------------------- */
+    function getTrackLabel(trackKey) {
+      if (trackKey === 'creative') return 'Creative Track (Blender 3D)';
+      if (trackKey === 'programming') return 'Programming Track (Python & JavaScript)';
+      if (trackKey === 'general') return 'General Knowledge Showdown';
+      return 'Custom Quiz Showdown';
+    }
+
+    function resolveDualTrack(trackArg) {
+      if (!state.isDualHost) return null;
+      if (trackArg === 'creative' || trackArg === 'programming') return trackArg;
+      if (state.analyticsTrack === 'creative' || state.analyticsTrack === 'programming') return state.analyticsTrack;
+      return 'creative';
+    }
+
+    /* Ranked audit records for one track (dual) or the whole room (everything else).
+       Dual order & scores come from buildAuthoritativeScoreboard so the CSV, logs
+       modal and podium can never disagree. */
+    function getTrackRecords(trackKey) {
+      const dualTrack = resolveDualTrack(trackKey);
+      if (!dualTrack) {
+        const all = Object.values(state.participantAuditLog || {});
+        all.sort(compareLeaderboardEntries);
+        return all;
+      }
+      const standings = buildAuthoritativeScoreboard(dualTrack);
+      const deckLen = getDeckForTrack(dualTrack).length;
+      return standings.map(entry => {
+        const rec = state.participantAuditLog ? state.participantAuditLog[entry.id] : null;
+        const base = rec
+          ? Object.assign({}, rec)
+          : { id: entry.id, name: entry.name, avatar: entry.avatar, answers: [], totalQuestions: state.totalQuestions || deckLen };
+        base.name = entry.name || base.name;
+        base.avatar = entry.avatar || base.avatar;
+        base.track = dualTrack;
+        base.score = entry.score || 0;
+        base.correctCount = Math.max(base.correctCount || 0, entry.correctCount || 0);
+        base.highestStreak = Math.max(base.highestStreak || 0, entry.highestStreak || 0);
+        base.streak = entry.streak || 0;
+        base.rank = entry.rank;
+        base.totalQuestions = base.totalQuestions || state.totalQuestions || deckLen;
+        if (!Array.isArray(base.answers)) base.answers = [];
+        return base;
+      });
+    }
+
+    function syncAnalyticsTrackTabs() {
+      const dual = isDualPresenterView();
+      const wrap = document.getElementById('mentor-analytics-track-tabs');
+      if (wrap) wrap.style.display = dual ? 'flex' : 'none';
+      const bC = document.getElementById('btn-analytics-tab-creative');
+      const bP = document.getElementById('btn-analytics-tab-programming');
+      if (bC) bC.classList.toggle('active', state.analyticsTrack !== 'programming');
+      if (bP) bP.classList.toggle('active', state.analyticsTrack === 'programming');
+      if (btnPodiumAnalyticsExportCsv) {
+        btnPodiumAnalyticsExportCsv.textContent = dual
+          ? ('Download ' + (state.analyticsTrack === 'programming' ? 'Programming' : 'Creative') + ' CSV Report')
+          : 'Download Mentor CSV Report';
+      }
+    }
+
+    function exportQuizResultsCSV(trackArg) {
+      const dualTrack = resolveDualTrack(typeof trackArg === 'string' ? trackArg : null);
+      const records = getTrackRecords(dualTrack);
       if (records.length === 0) {
         alert('No quiz records available to export yet.');
         return;
       }
 
-      records.sort(compareLeaderboardEntries);
-      const totalQ = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 0);
+      const deck = getDeckForTrack(dualTrack);
+      const totalQ = state.totalQuestions || (deck ? deck.length : 0);
 
       const headers = ['Rank', 'Innovator Name', 'Track', 'Total Score', 'Accuracy (%)', 'Correct Answers', 'Total Questions', 'Best Streak'];
       for (let i = 0; i < totalQ; i++) {
@@ -13155,34 +13469,42 @@ if (typeof module !== 'undefined' && module.exports) {
       }
 
       const rows = [];
-      const analytics = computeClassroomAnalytics();
-      const trackLabel = state.isDualHost ? 'Dual Track (Creative & Programming)' : 
+      const analytics = computeClassroomAnalytics(dualTrack || undefined);
+      const trackLabel = dualTrack ? getTrackLabel(dualTrack) :
         (state.track === 'creative' ? 'Creative Track (Blender 3D)' : 
         (state.track === 'programming' ? 'Programming Track (JavaScript)' : 
         (state.track === 'general' ? 'General Knowledge Showdown' : 'Custom Quiz Showdown')));
+      const roomPinLabel = dualTrack
+        ? (dualTrack === 'creative' ? state.pinCreative : state.pinProgramming)
+        : state.roomPin;
 
       const hardestQ = analytics.toughestQuestions[0];
       const hardestLabel = hardestQ ? ('Q' + (hardestQ.qIndex + 1) + ' (' + hardestQ.accPct + '% accuracy)') : 'N/A';
 
       // Mentor Classroom Summary Metadata
       rows.push([escapeCsv('CIH SHOWDOWN CLASSROOM RESULTS & MENTOR DEBRIEF REPORT')]);
-      rows.push([escapeCsv('Track: ' + trackLabel), escapeCsv('Session Date: ' + new Date().toLocaleString()), escapeCsv('Room PIN: ' + (state.roomPin || 'Solo/Local'))].join(','));
+      rows.push([escapeCsv('Track: ' + trackLabel), escapeCsv('Session Date: ' + new Date().toLocaleString()), escapeCsv('Room PIN: ' + (roomPinLabel || 'Solo/Local'))].join(','));
       rows.push([escapeCsv('Total Innovators: ' + records.length), escapeCsv('Class Average Accuracy: ' + analytics.classAveragePct + '%'), escapeCsv('Toughest Question: ' + hardestLabel)].join(','));
+      if (dualTrack) {
+        const nameOf = r => r ? (r.name + ' (' + (r.score || 0) + ' pts)') : '-';
+        rows.push([escapeCsv('Podium - 1st: ' + nameOf(records[0])), escapeCsv('2nd: ' + nameOf(records[1])), escapeCsv('3rd: ' + nameOf(records[2]))].join(','));
+      }
       rows.push(['']);
 
       // Main Table Rows
       rows.push(headers.map(escapeCsv).join(','));
 
       records.forEach((rec, idx) => {
-        const acc = rec.totalQuestions > 0 ? Math.round((rec.correctCount / rec.totalQuestions) * 100) : 0;
+        const rowTotalQ = rec.totalQuestions || totalQ;
+        const acc = rowTotalQ > 0 ? Math.round((rec.correctCount / rowTotalQ) * 100) : 0;
         const row = [
-          idx + 1,
+          (dualTrack && rec.rank) ? rec.rank : (idx + 1),
           rec.name,
-          rec.track || state.track,
+          dualTrack ? (dualTrack === 'creative' ? 'Creative' : 'Programming') : (rec.track || state.track),
           rec.score || 0,
           acc + '%',
           rec.correctCount || 0,
-          rec.totalQuestions || totalQ,
+          rowTotalQ,
           rec.highestStreak || 0
         ];
 
@@ -13210,7 +13532,7 @@ if (typeof module !== 'undefined' && module.exports) {
       const link = document.createElement('a');
       const dateStr = new Date().toISOString().slice(0, 10);
       link.setAttribute('href', url);
-      link.setAttribute('download', 'CIH_Quiz_Records_' + state.track + '_' + dateStr + '.csv');
+      link.setAttribute('download', 'CIH_Quiz_Records_' + (dualTrack || state.track) + '_' + dateStr + '.csv');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -13218,13 +13540,13 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 
     function copyQuizSummaryWhatsApp() {
-      const records = Object.values(state.participantAuditLog);
-      records.sort(compareLeaderboardEntries);
+      const dualTrack = resolveDualTrack(state.logsTrackFilter);
+      const records = getTrackRecords(dualTrack);
       const first = records[0];
       const second = records[1];
       const third = records[2];
 
-      const trackName = state.isDualHost ? 'Dual Track (Creative & Programming)' : 
+      const trackName = dualTrack ? getTrackLabel(dualTrack) :
         (state.track === 'creative' ? 'Creative Track (Blender 3D)' : 
         (state.track === 'programming' ? 'Programming Track (JavaScript)' : 
         (state.track === 'general' ? 'General Knowledge Showdown' : 'Custom Quiz Showdown')));
@@ -13235,7 +13557,8 @@ if (typeof module !== 'undefined' && module.exports) {
         avgAcc = Math.round(sumAcc / records.length);
       }
 
-      const totalQ = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 0);
+      const deck = getDeckForTrack(dualTrack);
+      const totalQ = state.totalQuestions || (deck ? deck.length : 0);
       let toughestQText = 'None';
       let minCorrect = 999999;
       for (let i = 0; i < totalQ; i++) {
@@ -13246,7 +13569,7 @@ if (typeof module !== 'undefined' && module.exports) {
         });
         if (cCount < minCorrect && records.length > 0) {
           minCorrect = cCount;
-          const q = state.activeDeck ? state.activeDeck[i] : null;
+          const q = deck ? deck[i] : null;
           toughestQText = q ? ('Q' + (i + 1) + ': ' + q.question.slice(0, 32) + '...') : ('Q' + (i + 1));
         }
       }
@@ -13273,6 +13596,79 @@ if (typeof module !== 'undefined' && module.exports) {
       copyTextToClipboard(summaryText, btnCopySummary, 'Copy Summary for WhatsApp');
     }
 
+    function syncLogsTrackTabs() {
+      const dual = !!state.isDualHost;
+      const wrap = document.getElementById('logs-track-tabs');
+      if (wrap) wrap.style.display = dual ? 'flex' : 'none';
+      const bC = document.getElementById('btn-logs-tab-creative');
+      const bP = document.getElementById('btn-logs-tab-programming');
+      if (bC) bC.classList.toggle('active', state.logsTrackFilter !== 'programming');
+      if (bP) bP.classList.toggle('active', state.logsTrackFilter === 'programming');
+      if (btnExportCsv) {
+        btnExportCsv.textContent = dual
+          ? ('Download ' + (state.logsTrackFilter === 'programming' ? 'Programming' : 'Creative') + ' CSV (Excel)')
+          : 'Download Full CSV (Excel)';
+      }
+      if (btnCopySummary) {
+        // copyTextToClipboard restores the label we pass in, so keep the plain label here
+        btnCopySummary.textContent = 'Copy Summary for WhatsApp';
+      }
+      const sub = document.getElementById('modal-quiz-sub');
+      if (sub) {
+        sub.textContent = dual
+          ? ('Community Innovation Hub Friday Showdown - ' + getTrackLabel(state.logsTrackFilter === 'programming' ? 'programming' : 'creative') + ' Records')
+          : 'Community Innovation Hub Friday Showdown Records';
+      }
+    }
+
+    function renderLogsModalData() {
+      const dualTrack = resolveDualTrack(state.logsTrackFilter);
+      const records = getTrackRecords(dualTrack);
+      const first = records[0];
+
+      let avgAcc = 0;
+      if (records.length > 0) {
+        const sumAcc = records.reduce((acc, r) => acc + (r.totalQuestions > 0 ? (r.correctCount / r.totalQuestions) * 100 : 0), 0);
+        avgAcc = Math.round(sumAcc / records.length);
+      }
+
+      const deck = getDeckForTrack(dualTrack);
+      const totalQ = state.totalQuestions || (deck ? deck.length : 0);
+      let toughestQText = 'None';
+      let minCorrect = 999999;
+      for (let i = 0; i < totalQ; i++) {
+        let cCount = 0;
+        records.forEach(r => {
+          const ans = r.answers ? r.answers.find(a => a.qIndex === i) : null;
+          if (ans && ans.isCorrect) cCount++;
+        });
+        if (cCount < minCorrect && records.length > 0) {
+          minCorrect = cCount;
+          const q = deck ? deck[i] : null;
+          toughestQText = q ? ('Q' + (i + 1) + ': ' + q.question.slice(0, 26) + '...') : ('Q' + (i + 1));
+        }
+      }
+
+      if (statModalParticipants) statModalParticipants.textContent = String(records.length);
+      if (statModalAccuracy) statModalAccuracy.textContent = avgAcc + '%';
+      if (statModalTopScorer) statModalTopScorer.textContent = first ? (first.name + ' (' + first.score + ' pts)') : '-';
+      if (statModalToughestQ) statModalToughestQ.textContent = records.length > 0 ? toughestQText : '-';
+
+      if (selectLogParticipant) {
+        selectLogParticipant.innerHTML = '<option value="all">-- All Participants Overview --</option>';
+        records.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r.id;
+          opt.textContent = r.name + ' (' + r.score + ' pts)';
+          selectLogParticipant.appendChild(opt);
+        });
+      }
+
+      syncLogsTrackTabs();
+      renderLogsOverviewTable(records);
+      showLogsView('overview');
+    }
+
     function openOrganizerLogsModal() {
       if (state.role === 'solo' && !state.participantAuditLog[state.playerId]) {
         initParticipantAudit(state.playerId, state.playerName || 'Solo Innovator');
@@ -13293,49 +13689,15 @@ if (typeof module !== 'undefined' && module.exports) {
         } catch (e) {}
       }
 
-      const records = Object.values(state.participantAuditLog);
-      records.sort(compareLeaderboardEntries);
-      const first = records[0];
-
-      let avgAcc = 0;
-      if (records.length > 0) {
-        const sumAcc = records.reduce((acc, r) => acc + (r.totalQuestions > 0 ? (r.correctCount / r.totalQuestions) * 100 : 0), 0);
-        avgAcc = Math.round(sumAcc / records.length);
-      }
-
-      const totalQ = state.totalQuestions || (state.activeDeck ? state.activeDeck.length : 0);
-      let toughestQText = 'None';
-      let minCorrect = 999999;
-      for (let i = 0; i < totalQ; i++) {
-        let cCount = 0;
-        records.forEach(r => {
-          const ans = r.answers ? r.answers.find(a => a.qIndex === i) : null;
-          if (ans && ans.isCorrect) cCount++;
-        });
-        if (cCount < minCorrect && records.length > 0) {
-          minCorrect = cCount;
-          const q = state.activeDeck ? state.activeDeck[i] : null;
-          toughestQText = q ? ('Q' + (i + 1) + ': ' + q.question.slice(0, 26) + '...') : ('Q' + (i + 1));
+      if (state.isDualHost) {
+        if (state.logsTrackFilter !== 'creative' && state.logsTrackFilter !== 'programming') {
+          state.logsTrackFilter = (state.analyticsTrack === 'programming') ? 'programming' : 'creative';
         }
+      } else {
+        state.logsTrackFilter = null;
       }
 
-      if (statModalParticipants) statModalParticipants.textContent = String(records.length);
-      if (statModalAccuracy) statModalAccuracy.textContent = avgAcc + '%';
-      if (statModalTopScorer) statModalTopScorer.textContent = first ? (first.name + ' (' + first.score + ' pts)') : '-';
-      if (statModalToughestQ) statModalToughestQ.textContent = records.length > 0 ? toughestQText : '-';
-
-      if (selectLogParticipant) {
-        selectLogParticipant.innerHTML = '<option value="all">-- All Participants Overview --</option>';
-        records.forEach(r => {
-          const opt = document.createElement('option');
-          opt.value = r.id;
-          opt.textContent = r.name + ' (' + r.score + ' pts)';
-          selectLogParticipant.appendChild(opt);
-        });
-      }
-
-      renderLogsOverviewTable(records);
-      showLogsView('overview');
+      renderLogsModalData();
 
       if (modalOrganizerLogs) modalOrganizerLogs.classList.add('active');
     }
@@ -13394,11 +13756,11 @@ if (typeof module !== 'undefined' && module.exports) {
     }
 
     function renderParticipantDetailView(userId) {
-      const rec = state.participantAuditLog[userId];
+      const trackRecords = getTrackRecords(state.isDualHost ? state.logsTrackFilter : null);
+      const rec = trackRecords.find(r => r.id === userId) || state.participantAuditLog[userId];
       if (!rec || !detailQuestionsList) return;
 
-      const records = Object.values(state.participantAuditLog);
-      records.sort(compareLeaderboardEntries);
+      const records = trackRecords;
       const rank = records.findIndex(r => r.id === userId) + 1;
       const acc = rec.totalQuestions > 0 ? Math.round((rec.correctCount / rec.totalQuestions) * 100) : 0;
 
@@ -13450,11 +13812,34 @@ if (typeof module !== 'undefined' && module.exports) {
     if (btnSkipPodiumAnim) {
       btnSkipPodiumAnim.addEventListener('click', completePodiumInstantly);
     }
+    const btnSkipDualPodiumAnim = document.getElementById('btn-skip-dual-podium-anim');
+    if (btnSkipDualPodiumAnim) {
+      btnSkipDualPodiumAnim.addEventListener('click', completePodiumInstantly);
+    }
+    [['creative', 'btn-analytics-tab-creative'], ['programming', 'btn-analytics-tab-programming']].forEach(pair => {
+      const tabBtn = document.getElementById(pair[1]);
+      if (tabBtn) {
+        tabBtn.addEventListener('click', () => {
+          state.analyticsTrack = pair[0];
+          syncAnalyticsTrackTabs();
+          renderClassroomAnalytics(pair[0]);
+        });
+      }
+    });
+    [['creative', 'btn-logs-tab-creative'], ['programming', 'btn-logs-tab-programming']].forEach(pair => {
+      const tabBtn = document.getElementById(pair[1]);
+      if (tabBtn) {
+        tabBtn.addEventListener('click', () => {
+          state.logsTrackFilter = pair[0];
+          renderLogsModalData();
+        });
+      }
+    });
     if (btnPodiumExportCsv) {
-      btnPodiumExportCsv.addEventListener('click', exportQuizResultsCSV);
+      btnPodiumExportCsv.addEventListener('click', () => exportQuizResultsCSV());
     }
     if (btnPodiumAnalyticsExportCsv) {
-      btnPodiumAnalyticsExportCsv.addEventListener('click', exportQuizResultsCSV);
+      btnPodiumAnalyticsExportCsv.addEventListener('click', () => exportQuizResultsCSV(isDualPresenterView() ? state.analyticsTrack : undefined));
     }
     if (btnViewLogs) {
       btnViewLogs.addEventListener('click', openOrganizerLogsModal);
@@ -13465,7 +13850,7 @@ if (typeof module !== 'undefined' && module.exports) {
       });
     }
     if (btnExportCsv) {
-      btnExportCsv.addEventListener('click', exportQuizResultsCSV);
+      btnExportCsv.addEventListener('click', () => exportQuizResultsCSV(state.isDualHost ? state.logsTrackFilter : undefined));
     }
     if (btnCopySummary) {
       btnCopySummary.addEventListener('click', copyQuizSummaryWhatsApp);
@@ -14094,7 +14479,8 @@ if (typeof module !== 'undefined' && module.exports) {
             data.isCorrect,
             data.pointsEarned,
             data.name,
-            data.avatar
+            data.avatar,
+            (isFromCreative ? 'creative' : (isFromProgramming ? 'programming' : data.track))
           );
           if (state.participantAuditLog[data.id]) {
             state.participantAuditLog[data.id].name = data.name || state.participantAuditLog[data.id].name;
@@ -14271,6 +14657,9 @@ if (typeof module !== 'undefined' && module.exports) {
       renderRoundScoreboard,
       advanceToNextRoundOrPodium,
       showFinalResults,
+      getTrackRecords,
+      getDeckForTrack,
+      renderDualPodiums,
       animatePodiumReveal,
       completePodiumInstantly,
       computeClassroomAnalytics,
