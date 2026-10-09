@@ -5917,967 +5917,1268 @@ const QUESTIONS_CREATIVE = [
   {
     id: "c01",
     question: "What is the primary keyboard shortcut to switch between Object Mode and Edit Mode in Blender?",
-    options: ["Tab", "Spacebar", "Z", "Shift + A"],
+    options: ["Tab","Spacebar","Z","Shift + A"],
     answer: 0,
-    explanation: "Pressing 'Tab' toggles between Object Mode (for positioning entire objects) and Edit Mode (for editing vertices, edges, and faces)."
+    explanation: "Pressing 'Tab' toggles between Object Mode (for manipulating whole objects) and Edit Mode (for editing vertices, edges, and faces)."
   },
   {
     id: "c02",
-    question: "Which key is used to Grab (move) an object or selection in the 3D Viewport?",
-    options: ["M", "G", "T", "V"],
-    answer: 1,
-    explanation: "The 'G' key stands for Grab, which activates the move tool for selected geometry."
+    question: "Which keyboard shortcut activates the Extrude tool when working in Blender Edit Mode?",
+    options: ["E","X","Shift + E","Ctrl + E"],
+    answer: 0,
+    explanation: "Pressing 'E' extrudes selected vertices, edges, or faces outward to create new connected geometry."
   },
   {
     id: "c03",
-    question: "Which key is used to Rotate selected geometry in Blender?",
-    options: ["O", "Alt + R", "R", "Ctrl + R"],
-    answer: 2,
-    explanation: "'R' is the shortcut to Rotate selected objects or components."
+    question: "What shortcut adds a Loop Cut around a polygon mesh in Blender Edit Mode?",
+    options: ["Ctrl + R","Alt + L","Shift + C","Ctrl + B"],
+    answer: 0,
+    explanation: "'Ctrl + R' invokes the Loop Cut and Slide tool, allowing you to slice an edge loop across quad polygons."
   },
   {
     id: "c04",
-    question: "Which key is used to Scale (resize) selected geometry in Blender?",
-    options: ["Z", "Shift + S", "E", "S"],
-    answer: 3,
-    explanation: "'S' is the standard shortcut to Scale objects or selections up or down."
+    question: "Which trio represents the three fundamental geometric sub-elements of a 3D mesh in Blender?",
+    options: ["Vertices, Edges, Faces","Pixels, Voxels, Textures","Nodes, Shaders, Renders","Points, Splines, Curves"],
+    answer: 0,
+    explanation: "A polygon mesh is composed of vertices (corner points), edges (connecting lines), and faces (polygonal surfaces)."
   },
   {
     id: "c05",
-    question: "Refer to the 3D axes diagram below: If you want to move an object ONLY along the vertical Z-axis (blue axis), which key sequence do you press?",
-    options: ["G then Z", "R then Z", "S then X", "Ctrl + Z"],
+    question: "What are the three primary transform shortcuts in Blender for moving, rotating, and scaling objects?",
+    options: ["G (Grab), R (Rotate), S (Scale)","M (Move), R (Rotate), Z (Zoom)","T (Transform), O (Orient), S (Size)","W (Walk), E (Extrude), D (Draw)"],
     answer: 0,
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 160" width="300" height="160"><rect width="300" height="160" fill="%230b1120" rx="8"/><line x1="150" y1="110" x2="230" y2="110" stroke="%23ef4444" stroke-width="4"/><polygon points="235,110 225,105 225,115" fill="%23ef4444"/><text x="245" y="115" fill="%23ef4444" font-family="sans-serif" font-weight="bold" font-size="16">X</text><line x1="150" y1="110" x2="200" y2="60" stroke="%2322c55e" stroke-width="4"/><polygon points="204,56 193,60 200,68" fill="%2322c55e"/><text x="212" y="55" fill="%2322c55e" font-family="sans-serif" font-weight="bold" font-size="16">Y</text><line x1="150" y1="110" x2="150" y2="25" stroke="%2338bdf8" stroke-width="4"/><polygon points="150,18 145,28 155,28" fill="%2338bdf8"/><text x="135" y="15" fill="%2338bdf8" font-family="sans-serif" font-weight="bold" font-size="15">Z (Up)</text><circle cx="150" cy="110" r="5" fill="%23ffffff"/></svg>',
-    timerSeconds: 25,
-    explanation: "Pressing 'G' activates Grab, and pressing 'Z' constrains the movement strictly to the vertical Z-axis."
+    explanation: "'G' grabs (moves) the selection, 'R' rotates it, and 'S' scales it along global or local axes."
   },
   {
     id: "c06",
-    question: "Which Numpad key switches your viewport directly to the Front Orthographic view?",
-    options: ["Numpad 7", "Numpad 1", "Numpad 3", "Numpad 0"],
-    answer: 1,
-    explanation: "Numpad 1 switches to Front view, Numpad 3 is Right view, Numpad 7 is Top view, and Numpad 0 is Camera view."
+    question: "Which shortcut key in Blender Edit Mode is used to Inset a face inward?",
+    options: ["I","Shift + I","Ctrl + I","Alt + F"],
+    answer: 0,
+    explanation: "'I' initiates the Inset Faces tool, generating smaller duplicate faces inset within the selected polygons."
   },
   {
     id: "c07",
-    question: "Which Numpad key switches the viewport to Top view in Blender?",
-    options: ["Numpad 1", "Numpad 9", "Numpad 7", "Numpad 5"],
-    answer: 2,
-    explanation: "Numpad 7 looks directly down onto your scene from the Top."
+    question: "What is the shortcut to Bevel selected edges or vertices in Blender?",
+    options: ["Ctrl + B","B","Alt + B","Shift + B"],
+    answer: 0,
+    explanation: "'Ctrl + B' chamfers or bevels edges, rounding corners and adding bevel segments with the scroll wheel."
   },
   {
     id: "c08",
-    question: "Which mouse action is used by default to orbit (rotate) your camera view around a 3D model?",
-    options: ["Right Click + Drag", "Left Click + Drag", "Double Click Left", "Middle Mouse Button (Scroll Wheel) Click + Drag"],
-    answer: 3,
-    explanation: "Clicking and dragging the Middle Mouse Button (scroll wheel) orbits your view around the scene."
+    question: "What is the purpose of the 3D Cursor in Blender?",
+    options: ["It defines the spawn point for new objects and serves as a custom transform pivot","It acts as the scene render camera","It shows where the mouse clicked last in the timeline","It measures light intensity across surfaces"],
+    answer: 0,
+    explanation: "The red-and-white 3D Cursor marks the insertion point for newly created objects and acts as an arbitrary pivot point."
   },
   {
     id: "c09",
-    question: "Examine the mesh geometry diagram below: What are the three fundamental components that construct this polygon?",
-    options: ["Vertices, Edges, and Faces", "Pixels, Voxels, and Vectors", "Layers, Channels, and Paths", "Curves, Surfaces, and Bones"],
+    question: "Which modifier is commonly used in Blender to smooth low-poly models by subdividing faces?",
+    options: ["Subdivision Surface","Decimate","Boolean","Solidify"],
     answer: 0,
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 150" width="320" height="150"><rect width="320" height="150" fill="%230b1120" rx="8"/><polygon points="110,95 180,95 210,65 140,65" fill="%2338bdf8" fill-opacity="0.35" stroke="%2338bdf8" stroke-width="2"/><line x1="110" y1="95" x2="180" y2="95" stroke="%23fbbf24" stroke-width="4"/><circle cx="110" cy="95" r="6" fill="%23ef4444"/><circle cx="180" cy="95" r="6" fill="%23ef4444"/><text x="60" y="115" fill="%23ef4444" font-family="sans-serif" font-size="12" font-weight="bold">Vertex</text><text x="135" y="115" fill="%23fbbf24" font-family="sans-serif" font-size="12" font-weight="bold">Edge</text><text x="160" y="80" fill="%2338bdf8" font-family="sans-serif" font-size="12" font-weight="bold">Face</text></svg>',
-    timerSeconds: 30,
-    explanation: "A polygon mesh is constructed from Vertices (points), Edges (lines between points), and Faces (surfaces bounded by edges)."
+    explanation: "The Subdivision Surface modifier recursively splits faces and smooths surfaces using the Catmull-Clark algorithm."
   },
   {
     id: "c10",
-    question: "In Edit Mode, which number keys on the main keyboard switch between Vertex, Edge, and Face select modes?",
-    options: ["F1, F2, F3", "1, 2, 3", "Ctrl + 1, 2, 3", "Shift + 1, 2, 3"],
-    answer: 1,
-    explanation: "Pressing 1 activates Vertex selection, 2 activates Edge selection, and 3 activates Face selection."
+    question: "Which Blender modifier mirrors geometry across an object axis to ensure bilateral symmetry?",
+    options: ["Mirror Modifier","Array Modifier","Lattice Modifier","Screw Modifier"],
+    answer: 0,
+    explanation: "The Mirror Modifier duplicates mesh geometry symmetrically across the X, Y, or Z axis relative to the object's origin."
   },
   {
     id: "c11",
-    question: "What does the red-and-white striped circle in Blender's 3D Viewport represent?",
-    options: ["World Origin", "Active Light Bulb", "The 3D Cursor", "Camera Target"],
-    answer: 2,
-    explanation: "The 3D Cursor is a crucial reference point where new objects spawn and can be used as a pivot point for scaling and rotation."
+    question: "Why is an object's Origin Point (the small orange dot) critical during 3D modeling?",
+    options: ["It serves as the pivot center for all rotations, scaling, and location coordinates","It determines the render color of the material","It represents the camera view direction","It sets the polygon count budget"],
+    answer: 0,
+    explanation: "The origin point defines the pivot around which an object rotates and scales, and corresponds to its world position (0,0,0 relative offset)."
   },
   {
     id: "c12",
-    question: "Which shortcut opens the 'Add Object' menu in 3D Viewport to spawn cubes, spheres, or lights?",
-    options: ["Ctrl + A", "Alt + A", "Spacebar", "Shift + A"],
-    answer: 3,
-    explanation: "'Shift + A' opens the Add menu, allowing you to add Meshes, Curves, Lights, Cameras, and empties."
+    question: "What does recalculating Face Normals (Shift + N) accomplish in Blender Edit Mode?",
+    options: ["It points all face normal vectors consistently outward so light reflects correctly","It flattens all faces onto the ground plane","It deletes duplicate vertex points","It bakes normal map textures to disk"],
+    answer: 0,
+    explanation: "Normals determine which side of a face is the outer front. 'Shift + N' recalculates normals to ensure they point outward."
   },
   {
     id: "c13",
-    question: "How do you select ALL vertices or objects in your current view in Blender?",
-    options: ["A", "Ctrl + S", "Alt + A", "Spacebar"],
+    question: "What does the UV Unwrapping process do to a 3D mesh model?",
+    options: ["It flattens the 3D surface into 2D coordinates so 2D image textures can wrap accurately","It converts the polygon mesh into a curved NURBS surface","It bakes realistic light shadows into vertex colors","It reduces total vertex count by 50 percent"],
     answer: 0,
-    explanation: "Pressing 'A' selects all elements, while 'Alt + A' (or double-tapping A) deselects everything."
+    explanation: "UV unwrapping unfolds 3D mesh faces onto a flat 2D plane (U and V axes) so 2D textures map onto the 3D geometry."
   },
   {
     id: "c14",
-    question: "Which shortcut is used to delete selected geometry or objects?",
-    options: ["D", "X (or Delete)", "Backspace only", "Ctrl + D"],
-    answer: 1,
-    explanation: "Pressing 'X' (or the Delete key) brings up the delete menu to remove vertices, edges, faces, or objects."
+    question: "What is the role of Marking Seams (Ctrl + E > Mark Seam) during UV unwrapping?",
+    options: ["It defines cut lines where the 3D model will split open flat, like seams on tailored clothing","It joins two separate meshes into one continuous object","It creates physical collision barriers in the game engine","It locks vertices so they cannot be moved"],
+    answer: 0,
+    explanation: "Seams indicate cut lines where Blender divides the 3D mesh into flattened islands during UV unwrapping."
   },
   {
     id: "c15",
-    question: "Which shortcut key is used to Extrude faces or edges outward to create new geometry?",
-    options: ["X", "Shift + E", "E", "Alt + E"],
-    answer: 2,
-    explanation: "'E' activates Extrude, pulling new geometry out from the selected face, edge, or vertex."
+    question: "Which default workspace tab in Blender provides the node graph for creating and modifying materials?",
+    options: ["Shading","Animation","Sculpting","Compositing"],
+    answer: 0,
+    explanation: "The 'Shading' workspace displays the 3D Viewport alongside the Shader Editor node graph for visual material authoring."
   },
   {
     id: "c16",
-    question: "Which shortcut is used to Inset a face (creating a smaller face inside the selected face)?",
-    options: ["F", "Ctrl + I", "Shift + I", "I"],
-    answer: 3,
-    explanation: "'I' activates the Inset tool, creating an inner boundary within the selected polygon face."
+    question: "In Blender's Principled BSDF shader, what visual quality does the Roughness slider control?",
+    options: ["How blurry or sharp reflections appear on the surface","How transparent the material looks","How much the material glows in the dark","The overall metallic tint of the object"],
+    answer: 0,
+    explanation: "Roughness 0.0 produces a mirror-like sharp reflection, while 1.0 produces a diffuse matte surface with scattered reflections."
   },
   {
     id: "c17",
-    question: "Which shortcut is used to create a Bevel (chamfer or rounded edge) on selected edges in Edit Mode?",
-    options: ["Ctrl + B", "B", "Shift + B", "Alt + B"],
+    question: "What is the primary difference between Blender's Eevee and Cycles render engines?",
+    options: ["Eevee is a real-time rasterization engine, while Cycles is a physically-based path tracing engine","Eevee only renders wireframes, while Cycles renders full color","Cycles only works on mobile devices, while Eevee is for desktops","Cycles cannot render shadows or reflections"],
     answer: 0,
-    explanation: "'Ctrl + B' bevels edges or vertices, smoothing sharp corners into chamfered or rounded edges."
+    explanation: "Eevee is a fast real-time viewport renderer, while Cycles calculates realistic physics-based raytracing with bounce light and caustics."
   },
   {
     id: "c18",
-    question: "Which shortcut inserts a Loop Cut & Slide around a cylindrical or quad mesh?",
-    options: ["Shift + R", "Ctrl + R", "Alt + R", "L"],
-    answer: 1,
-    explanation: "'Ctrl + R' activates Loop Cut, allowing you to slice edge loops around quads and adjust the number of cuts with the scroll wheel."
+    question: "Which Numpad key snaps the Blender 3D Viewport directly to the active Camera view?",
+    options: ["Numpad 0","Numpad 1","Numpad 3","Numpad 7"],
+    answer: 0,
+    explanation: "'Numpad 0' toggles the camera perspective view, showing exactly what will be framed during rendering."
   },
   {
     id: "c19",
-    question: "How do you create a Face between selected vertices or fill an open hole in Edit Mode?",
-    options: ["Ctrl + F", "Spacebar", "F", "Alt + F"],
-    answer: 2,
-    explanation: "Pressing 'F' (Fill) creates a new face connecting the currently selected vertices or edges."
+    question: "Which Numpad key toggles between Perspective view and Orthographic view in the viewport?",
+    options: ["Numpad 5","Numpad 2","Numpad 8","Numpad . (Period)"],
+    answer: 0,
+    explanation: "'Numpad 5' toggles Orthographic projection (parallel lines with no perspective vanishing point) and Perspective projection."
   },
   {
     id: "c20",
-    question: "Which shortcut is used to Duplicate selected objects or mesh components in Blender?",
-    options: ["Ctrl + C", "Ctrl + D", "Alt + C", "Shift + D"],
-    answer: 3,
-    explanation: "'Shift + D' duplicates the selection and immediately activates Grab mode so you can position the copy."
+    question: "What shortcut key toggles Proportional Editing on and off in Blender Edit Mode?",
+    options: ["O","P","Alt + O","Shift + P"],
+    answer: 0,
+    explanation: "Pressing 'O' toggles Proportional Editing, which moves surrounding mesh geometry smoothly with a spherical falloff."
   },
   {
     id: "c21",
-    question: "Which tool allows you to cut custom freehand edges across a mesh face by clicking on it?",
-    options: ["The Knife Tool (K)", "The Shear Tool", "The Rip Tool (V)", "The Spin Tool"],
+    question: "What is the shortcut to Join multiple selected 3D objects into a single object in Blender?",
+    options: ["Ctrl + J","Ctrl + M","Alt + J","Shift + J"],
     answer: 0,
-    explanation: "The Knife tool ('K') allows precise manual cutting across faces and edges."
+    explanation: "'Ctrl + J' joins all selected objects into the active object as a single unified mesh."
   },
   {
     id: "c22",
-    question: "Which shortcut merges selected vertices together (e.g. at Center or by Distance)?",
-    options: ["Ctrl + M", "M", "Alt + M", "J"],
-    answer: 1,
-    explanation: "Pressing 'M' opens the Merge menu with options like 'At Center', 'At Cursor', and 'By Distance' to clean up duplicate vertices."
+    question: "What shortcut in Edit Mode separates selected geometry into a new distinct object?",
+    options: ["P","Ctrl + P","Alt + P","Shift + D"],
+    answer: 0,
+    explanation: "Pressing 'P' opens the Separate menu, allowing you to split selected vertices into their own independent object."
   },
   {
     id: "c23",
-    question: "Which shortcut joins multiple selected separate mesh objects into a single object in Object Mode?",
-    options: ["Shift + J", "Alt + J", "Ctrl + J", "J"],
-    answer: 2,
-    explanation: "'Ctrl + J' joins selected objects into the active object."
+    question: "Why is it important to Apply Scale (Ctrl + A > Scale) before exporting a model to Unity?",
+    options: ["To reset object scale multipliers to 1.0, preventing distorted physics, bevels, and texture stretching","To delete all unused materials from memory","To permanently reduce texture file sizes on disk","To bake animation keyframes automatically"],
+    answer: 0,
+    explanation: "Unapplied scale causes non-uniform dimensions, resulting in squashed colliders, uneven bevels, and erratic physics calculations."
   },
   {
     id: "c24",
-    question: "If you want to separate selected faces in Edit Mode into their own new independent object, which key do you press?",
-    options: ["S", "Ctrl + P", "Alt + S", "P"],
-    answer: 3,
-    explanation: "'P' opens the Separate menu, allowing you to separate geometry by Selection, Material, or Loose Parts."
+    question: "Which 3D file formats are most widely used for importing Blender assets into the Unity game engine?",
+    options: ["FBX and glTF / OBJ","MP3 and WAV","DOCX and PDF","SVG and EPS"],
+    answer: 0,
+    explanation: "FBX and glTF (or OBJ) are industry-standard 3D exchange formats that preserve meshes, UVs, bones, and basic material assignments."
   },
   {
     id: "c25",
-    question: "What does toggling Proportional Editing ('O' key) do during modeling?",
-    options: ["Smoothly pulls surrounding unselected vertices within an adjustable radius", "Transforms only the selected vertex without affecting anything else", "Automatically applies a mirror modifier", "Deletes hidden vertices"],
+    question: "Which shortcut opens the Add Object menu in the Blender 3D Viewport?",
+    options: ["Shift + A","Ctrl + A","Alt + A","Tab + A"],
     answer: 0,
-    explanation: "Proportional Editing ('O') creates smooth organic deformations by moving nearby vertices within an adjustable falloff circle."
+    explanation: "'Shift + A' summons the Add menu to quickly create primitives like cubes, spheres, lights, cameras, and curves."
   },
   {
     id: "c26",
-    question: "What is an 'N-gon' in 3D polygon modeling?",
-    options: ["A face with exactly 3 vertices", "A face with 5 or more vertices", "A face with exactly 4 vertices", "A mesh with zero volume"],
-    answer: 1,
-    explanation: "An N-gon is any polygon face with more than 4 sides/vertices, which can cause shading artifacts during subdivision."
+    question: "How do you import a 3D model, texture, or audio file into a Unity project?",
+    options: ["Drag the file directly into the Project window Assets folder","Open Windows Notepad and copy the file text","Upload the file to the Unity website first","Press Ctrl + Alt + Delete in the Scene view"],
+    answer: 0,
+    explanation: "In Unity, dragging external files into the Project tab's Assets directory triggers Unity's automatic asset import pipeline."
   },
   {
     id: "c27",
-    question: "Where in Blender's interface do you add Modifiers like Mirror, Bevel, or Subdivision Surface?",
-    options: ["The Timeline panel", "The Shader Editor", "The Wrench (Properties) tab", "The Render Settings tab"],
-    answer: 2,
-    explanation: "Modifiers are accessed and managed in the Modifiers tab, represented by a blue Wrench icon in the Properties panel."
+    question: "In the Unity editor, what is the core difference between the Project window and the Hierarchy window?",
+    options: ["Project stores files on disk, while Hierarchy lists GameObjects present in the current active Scene","Hierarchy stores saved files on disk, while Project shows the camera view","Project only shows C# scripts, while Hierarchy only shows 3D models","There is no difference between them"],
+    answer: 0,
+    explanation: "The Project window is an asset browser for files stored on your hard drive; the Hierarchy lists GameObjects active in the loaded Scene."
   },
   {
     id: "c28",
-    question: "Which modifier divides faces into smaller pieces to smooth out the surface of a 3D model?",
-    options: ["Array Modifier", "Boolean Modifier", "Solidify Modifier", "Subdivision Surface Modifier"],
-    answer: 3,
-    explanation: "The Subdivision Surface (Subsurf) modifier smooths curved geometry by iteratively subdividing mesh faces."
+    question: "What is a GameObject in the Unity engine?",
+    options: ["The fundamental base entity that represents every character, prop, light, and camera in a scene","A single line of compiled C# code","The primary game controller hardware","An exported video file of gameplay"],
+    answer: 0,
+    explanation: "Everything in a Unity Scene is a GameObject. By themselves they do little, but they host Components that give them behavior and visuals."
   },
   {
     id: "c29",
-    question: "What is the fast shortcut to add a Level 1 or Level 2 Subdivision Surface modifier to an object?",
-    options: ["Ctrl + 1 or Ctrl + 2", "Alt + 1 or Alt + 2", "Shift + 1 or 2", "F1 or F2"],
+    question: "What is a Component in Unity?",
+    options: ["A modular functional block attached to a GameObject that defines its behavior or properties","A subfolder inside the Assets directory","The physical graphics card inside your computer","A special shader node in Blender"],
     answer: 0,
-    explanation: "In Object Mode, 'Ctrl + 1' adds a Subdivision Surface modifier with viewport level 1, 'Ctrl + 2' adds level 2, etc."
+    explanation: "Components (such as Transform, Rigidbody, MeshFilter, and custom C# scripts) give GameObjects their functionality."
   },
   {
     id: "c30",
-    question: "Which modifier allows you to model only one half of a symmetrical character or car and automatically mirror it?",
-    options: ["Lattice Modifier", "Mirror Modifier", "Bevel Modifier", "Skin Modifier"],
-    answer: 1,
-    explanation: "The Mirror modifier duplicates the mesh across an axis (usually X), ensuring perfect symmetry."
+    question: "Which component is automatically present on every single GameObject in Unity and cannot be removed?",
+    options: ["Transform","Rigidbody","AudioSource","BoxCollider"],
+    answer: 0,
+    explanation: "Every GameObject has a Transform component defining its 3D Position, Rotation, and Scale within the scene world."
   },
   {
     id: "c31",
-    question: "In the Mirror modifier, why is enabling the 'Clipping' checkbox important?",
-    options: ["It makes the object transparent", "It hides the object in rendering", "It prevents center vertices from crossing over the mirror line and merges them together", "It increases rendering speed"],
-    answer: 2,
-    explanation: "Clipping locks center vertices along the mirror axis, preventing them from crossing over and leaving unsightly gaps."
+    question: "What is a Prefab in Unity?",
+    options: ["A reusable, pre-configured GameObject asset template stored in the Project folder","A temporary bug in the game engine","A paid asset on the Unity Asset Store","An uncompressed raw audio clip"],
+    answer: 0,
+    explanation: "A Prefab is an asset that stores a GameObject with all its components and properties configured, ready to be instantiated repeatedly."
   },
   {
     id: "c32",
-    question: "Which modifier gives thickness to a flat 2D plane or thin surface (like making a sheet of paper into a book cover)?",
-    options: ["Screw Modifier", "Remesh Modifier", "Displace Modifier", "Solidify Modifier"],
-    answer: 3,
-    explanation: "The Solidify modifier extrudes a flat shell to give it volumetric wall thickness."
+    question: "Which component must be added to a GameObject in Unity to allow physics simulation like gravity and forces?",
+    options: ["Rigidbody","MeshRenderer","Canvas","Light"],
+    answer: 0,
+    explanation: "The Rigidbody component puts a GameObject under the control of the Unity physics engine, applying gravity, mass, and velocity."
   },
   {
     id: "c33",
-    question: "Which modifier creates repeating copies of an object spaced evenly apart (e.g. stairs, fences, pillars)?",
-    options: ["Array Modifier", "Mirror Modifier", "Build Modifier", "Decimate Modifier"],
+    question: "What is the purpose of a Collider component (such as BoxCollider or SphereCollider) in Unity?",
+    options: ["It defines the invisible physical shape of an object for calculating collisions and overlaps","It draws the 3D polygon colors on the screen","It plays background music when characters walk","It saves high scores to a database"],
     answer: 0,
-    explanation: "The Array modifier generates multiple duplicate copies arranged by offset distance."
+    explanation: "Colliders define the boundary volume used by the physics engine to detect contacts, impacts, and trigger overlaps."
   },
   {
     id: "c34",
-    question: "Which modifier performs mathematical operations between two meshes, such as cutting a hole using 'Difference'?",
-    options: ["Bevel Modifier", "Boolean Modifier", "Warp Modifier", "Hook Modifier"],
-    answer: 1,
-    explanation: "The Boolean modifier uses CSG operations (Difference, Union, Intersect) to carve or combine geometry."
+    question: "What happens when you enable the 'Is Trigger' checkbox on a Collider in Unity?",
+    options: ["Solid physical collisions are disabled, allowing objects to pass through while firing trigger event functions","The GameObject explodes with particle effects","The GameObject becomes completely invisible to the camera","The physics engine doubles the gravity on the object"],
+    answer: 0,
+    explanation: "Trigger colliders do not physically block objects. Instead, they detect intersections and invoke 'OnTriggerEnter' in scripts."
   },
   {
     id: "c35",
-    question: "How do you make a faceted low-poly sphere appear smooth in the viewport without adding more polygons?",
-    options: ["Scale it down by 50%", "Apply a Solidify modifier", "Right-click the object and select 'Shade Smooth'", "Press Ctrl + Z"],
-    answer: 2,
-    explanation: "Right-clicking and choosing 'Shade Smooth' interpolates vertex normals across faces, making curved surfaces look smooth without extra polygon overhead."
+    question: "What is the key difference between the Update() and FixedUpdate() methods in Unity C# scripts?",
+    options: ["Update runs once per rendered frame, while FixedUpdate runs at fixed time intervals for physics","FixedUpdate runs only when the game starts, while Update never runs","Update is for mobile games, while FixedUpdate is for PC games","There is no difference between them"],
+    answer: 0,
+    explanation: "'Update()' executes once every graphic frame (variable time), while 'FixedUpdate()' executes on a regular physics clock (e.g. 50 times/sec)."
   },
   {
     id: "c36",
-    question: "Which key opens the 'Viewport Shading' pie menu (Wireframe, Solid, Material Preview, Rendered)?",
-    options: ["V", "W", "Tab", "Z"],
-    answer: 3,
-    explanation: "Pressing 'Z' brings up the Shading Pie Menu to quickly switch between Wireframe, Solid, Material Preview, and Rendered modes."
+    question: "In an endless runner game, how is continuous forward motion typically applied to the player?",
+    options: ["By updating the position along the forward axis each frame using transform.Translate() or Rigidbody velocity","By rotating the camera 360 degrees constantly","By deleting the ground plane repeatedly","By clicking the mouse button 100 times a second"],
+    answer: 0,
+    explanation: "Continuous runner motion is achieved by advancing the player forward (e.g., `transform.Translate(Vector3.forward * speed * Time.deltaTime)`)."
   },
   {
     id: "c37",
-    question: "Which default master shader node in Blender provides realistic PBR (Physically Based Rendering) materials?",
-    options: ["Principled BSDF", "Diffuse BSDF", "Glass BSDF", "Toon Shader"],
+    question: "How do endless runner games maintain infinite track length without running out of computer memory?",
+    options: ["By instantiating track segments ahead of the player and destroying or recycling segments that pass behind","By pre-loading a 500-mile long 3D model when the game starts","By freezing the game whenever a segment ends","By turning off the graphics card"],
     answer: 0,
-    explanation: "The 'Principled BSDF' combines PBR properties like Base Color, Metallic, Roughness, Specular, and Normal into one comprehensive shader."
+    explanation: "Object recycling or spawning track tile prefabs ahead and deleting tiles behind keeps memory usage low and the track endless."
   },
   {
     id: "c38",
-    question: "In a Principled BSDF material, what happens when you set 'Roughness' close to 0.0?",
-    options: ["The surface becomes matte and completely non-reflective", "The surface becomes extremely shiny like a mirror or polished glass", "The object becomes invisible", "The object emits bright light"],
-    answer: 1,
-    explanation: "A Roughness value of 0.0 creates a sharp, perfectly specular, glossy reflection like polished chrome or still water."
+    question: "What is the difference between Unity's Scene view and Game view?",
+    options: ["Scene view is an interactive 3D editor workspace; Game view renders the game through the player camera","Scene view is what players see on their phone; Game view is for code editing","Game view is only available after buying a license","Scene view cannot show 3D objects"],
+    answer: 0,
+    explanation: "You arrange objects, cameras, and colliders in the Scene view; the Game view shows the active camera's final rendered perspective."
   },
   {
     id: "c39",
-    question: "Which property in Principled BSDF should you increase to 1.0 to make a material look like real metal?",
-    options: ["Subsurface", "Transmission", "Metallic", "Alpha"],
-    answer: 2,
-    explanation: "Setting 'Metallic' to 1.0 gives materials conductive metallic reflectance and tinted specular highlights."
+    question: "What is the primary role of the Inspector window in the Unity editor?",
+    options: ["It displays and allows editing of all properties and components of the currently selected GameObject","It shows the folder structure on the computer hard drive","It writes C# code automatically","It records gameplay audio clips"],
+    answer: 0,
+    explanation: "When you select an object in the Hierarchy or Project tab, the Inspector displays its name, tags, and attached components for adjustment."
   },
   {
     id: "c40",
-    question: "What is the purpose of 'Recalculate Normals' (Shift + N) in Edit Mode?",
-    options: ["It deletes all interior vertices", "It centers the 3D cursor", "It rotates the object by 90 degrees", "It fixes inverted faces so all polygon surfaces point outward"],
-    answer: 3,
-    explanation: "If faces look dark or shaded inside-out, pressing 'Shift + N' recalculates normals to ensure all faces point consistently outside."
+    question: "What is the purpose of the Unity Console window?",
+    options: ["It logs messages, Debug.Log outputs, warnings, and code compilation or runtime errors","It plays video game trailers","It connects multiplayer game servers","It changes the editor color theme"],
+    answer: 0,
+    explanation: "The Console displays script print messages (via `Debug.Log`), compile-time syntax errors, and runtime physics/null-reference exceptions."
   },
   {
     id: "c41",
-    question: "Which light type in Blender simulates parallel rays like direct sunlight from infinity?",
-    options: ["Sun Light", "Point Light", "Spot Light", "Area Light"],
+    question: "Why is multiplying movement speed by Time.deltaTime essential in Unity game loops?",
+    options: ["To ensure movement is frame-rate independent, so movement speed is identical on both fast and slow computers","To double the maximum frame rate of the game","To convert meters into centimeters automatically","To save player battery power on mobile devices"],
     answer: 0,
-    explanation: "Sun lights cast parallel rays in a single direction regardless of position, simulating natural outdoor sunlight."
+    explanation: "`Time.deltaTime` provides the seconds elapsed since the last frame. Multiplying by it ensures motion is smooth per second, not per frame."
   },
   {
     id: "c42",
-    question: "Which light type emits soft, directional studio light from a rectangular or disk-shaped boundary?",
-    options: ["Point Light", "Area Light", "Sun Light", "Ambient Light"],
-    answer: 1,
-    explanation: "Area lights simulate softbox studio lights, producing realistic soft shadows depending on their size."
+    question: "Which programming language is the official standard for scripting gameplay mechanics in modern Unity?",
+    options: ["C# (C-Sharp)","Python","PHP","HTML"],
+    answer: 0,
+    explanation: "Unity uses Microsoft C# as its primary, type-safe, object-oriented scripting language."
   },
   {
     id: "c43",
-    question: "Which shortcut aligns and snaps your view directly into the Active Camera?",
-    options: ["Numpad 5", "Ctrl + Alt + Numpad 0", "Numpad 0", "Spacebar"],
-    answer: 2,
-    explanation: "Numpad 0 jumps directly into your camera's frame to preview your final shot composition."
+    question: "What is a Material in Unity?",
+    options: ["An asset that wraps shaders, colors, and textures to define how a 3D surface interacts with light","A sound effect played on impact","A physical weight assigned to a car","A high score saved to memory"],
+    answer: 0,
+    explanation: "Materials combine textures, colors, smoothness, and shaders to determine how a mesh surface reflects, refracts, or absorbs scene lighting."
   },
   {
     id: "c44",
-    question: "Which shortcut snaps the Active Camera directly to your current viewport perspective?",
-    options: ["Shift + Numpad 0", "Alt + C", "F12", "Ctrl + Alt + Numpad 0"],
-    answer: 3,
-    explanation: "'Ctrl + Alt + Numpad 0' repositions the active camera to match your exact current view."
+    question: "What is the difference between a Tag and a Layer on a Unity GameObject?",
+    options: ["Tags are string labels used to identify objects; Layers categorize objects for physics collisions and camera culling","Layers are for text strings; Tags are for 3D textures","Tags determine gravity; Layers determine sound volume","There is no difference between them"],
+    answer: 0,
+    explanation: "A Tag (e.g., 'Player', 'Coin') identifies GameObjects in code; a Layer determines physics collision masks and camera culling masks."
   },
   {
     id: "c45",
-    question: "What is the difference between Blender's 'Eevee' and 'Cycles' render engines?",
-    options: ["Eevee is a fast real-time rasterized engine; Cycles is a physically accurate ray-tracing engine", "Eevee is for 2D drawing only, Cycles is for 3D", "Cycles is only for exporting audio", "Eevee cannot render colors"],
+    question: "Which built-in Unity method destroys a GameObject or component at runtime?",
+    options: ["Destroy(gameObject);","Delete.Object();","Remove(this);","Kill.Target();"],
     answer: 0,
-    explanation: "Eevee renders lightning fast in real-time like a video game engine; Cycles calculates ray-traced bounces for photorealistic lighting and caustics."
+    explanation: "`Destroy(gameObject)` safely cleans up and removes the specified GameObject from the scene at the end of the current frame."
   },
   {
     id: "c46",
-    question: "Which function key renders a still image of the current frame in Blender?",
-    options: ["F5", "F12", "F9", "Ctrl + F12"],
-    answer: 1,
-    explanation: "'F12' renders the active frame using the active camera, while 'Ctrl + F12' renders the entire animation sequence."
+    question: "Which built-in Unity method creates a new clone of an existing GameObject or Prefab at runtime?",
+    options: ["Instantiate(prefab, position, rotation);","Clone(prefab);","Spawn.New();","Create.Object();"],
+    answer: 0,
+    explanation: "`Instantiate()` spawns a clone of an original prefab at the specified world position and rotation."
   },
   {
     id: "c47",
-    question: "What is Blender's native, proprietary project file format?",
-    options: [".max", ".fbx", ".blend", ".obj"],
-    answer: 2,
-    explanation: "Blender saves all scene data, meshes, materials, and settings into '.blend' files."
+    question: "What component is attached to the Main Camera GameObject that actually captures and renders the scene?",
+    options: ["Camera","MeshRenderer","Light","Canvas"],
+    answer: 0,
+    explanation: "The Camera component defines field of view, clipping planes, projection type, and view background color."
   },
   {
     id: "c48",
-    question: "Which modern file format is widely recommended for exporting 3D models with textures for web and game engines?",
-    options: [".txt", ".mp4", ".psd", ".glTF / .glb"],
-    answer: 3,
-    explanation: ".glTF and .glb (GL Transmission Format) are the JPEG of 3D, optimized for Three.js, web apps, and modern game engines."
+    question: "Which component provides dedicated character movement with collision detection without requiring Rigidbody physics?",
+    options: ["CharacterController","WheelCollider","HingeJoint","AudioListener"],
+    answer: 0,
+    explanation: "The CharacterController component is tailored for first-person or third-person movement without standard rigid body forces."
   },
   {
     id: "c49",
-    question: "What does 'Apply Scale' (Ctrl + A -> Scale) do, and why is it important before beveling or unwrapping?",
-    options: ["It resets the object's current scale to 1.0 so modifiers and bevels calculate with uniform proportions", "It doubles the object's size", "It deletes the object's materials", "It converts the mesh into a curve"],
+    question: "What Unity window is used to install official Unity extensions, tools, and Asset Store packages?",
+    options: ["Package Manager (Window > Package Manager)","Game View Options","Audio Mixer","Profiler"],
     answer: 0,
-    explanation: "If you scale an object in Object Mode without applying scale, bevels and modifiers will stretch unevenly. 'Ctrl + A -> Scale' bakes the dimensions to 1.0."
+    explanation: "The Package Manager downloads and manages modular Unity packages, such as Cinemachine, Input System, and Universal Render Pipeline."
   },
   {
     id: "c50",
-    question: "Which Blender workspace tab is specially designed for node-based material creation?",
-    options: ["Sculpting", "Shading", "Compositing", "Scripting"],
-    answer: 1,
-    explanation: "The 'Shading' workspace splits the view into a 3D preview and the Shader Editor node graph for crafting custom materials."
+    question: "What is the shortcut to save the active Scene in the Unity editor?",
+    options: ["Ctrl + S","Ctrl + P","Ctrl + D","Alt + F4"],
+    answer: 0,
+    explanation: "'Ctrl + S' saves the open scene, writing all GameObject placements and configurations to the scene asset file."
   }
 ];
 
 const QUESTIONS_PROGRAMMING = [
   {
     id: "p01",
-    question: "Which built-in Python function is used to display output or text on the screen?",
+    question: "Which built-in Python function is used to output text or data to the console?",
     options: ["print()","console.log()","echo()","display()"],
     answer: 0,
-    explanation: "'print()' is Python's standard built-in function to output messages, variables, and calculations to the terminal or console."
+    explanation: "'print()' outputs strings, numbers, and variables to the standard output terminal in Python."
   },
   {
     id: "p02",
-    question: "What is the standard file extension used for Python source code files?",
-    options: [".python",".py",".pt",".pyt"],
-    answer: 1,
-    explanation: "Python files are saved with the '.py' extension (for example, 'app.py' or 'main.py')."
+    question: "Which built-in Python function prompts the user and reads input from the keyboard as a string?",
+    options: ["input()","read()","scan()","get()"],
+    answer: 0,
+    explanation: "'input()' pauses execution, reads a line entered by the user, and returns it as a string."
   },
   {
     id: "p03",
-    question: "In JavaScript, which keyword declares a variable whose value can NEVER be reassigned?",
-    options: ["let","var","const","static"],
-    answer: 2,
-    explanation: "'const' creates an immutable variable binding in JavaScript; attempting to reassign it triggers a TypeError."
+    question: "What character is used to create single-line comments in Python code?",
+    options: ["#","//","/*","--"],
+    answer: 0,
+    explanation: "The hash symbol '#' signifies a single-line comment in Python; everything after it on that line is ignored by the interpreter."
   },
   {
     id: "p04",
-    question: "How do you start a single-line comment in Python?",
-    options: ["// comment","/* comment */","# comment","<!-- comment -->"],
-    answer: 2,
-    explanation: "In Python, the hash symbol '#' denotes a single-line comment. Everything after '#' on that line is ignored by the interpreter."
+    question: "How does Python define code blocks for loops, functions, and if-statements instead of using curly braces?",
+    options: ["Indentation (whitespace)","Semicolons at line ends","Curly braces { }","Square brackets [ ]"],
+    answer: 0,
+    explanation: "Python enforces consistent whitespace indentation (conventionally 4 spaces) to delimit code blocks."
   },
   {
     id: "p05",
-    question: "How does Python define code blocks for if-statements, loops, and functions instead of curly braces {}?",
-    options: ["Square brackets []","Indentation (whitespace)","Semicolons at line ends","Parentheses ()"],
-    answer: 1,
-    explanation: "Python uses indentation (standard 4 spaces) to define code blocks and scope. Clean indentation is mandatory in Python syntax!"
+    question: "Which of the following is an example of a floating-point number (float) in Python?",
+    options: ["3.14","42","\"100\"","True"],
+    answer: 0,
+    explanation: "'3.14' contains a decimal point, making it a floating-point number (`float`), whereas 42 is an integer (`int`)."
   },
   {
     id: "p06",
-    question: "What is the standard method used to print debug messages to the browser console in JavaScript?",
-    options: ["print()","console.log()","document.write()","terminal.output()"],
-    answer: 1,
-    explanation: "'console.log()' outputs messages, variables, and debug data to the browser's developer tools console."
+    question: "What will be the output of `type(False)` in Python?",
+    options: ["<class 'bool'>","<class 'str'>","<class 'int'>","<class 'NoneType'>"],
+    answer: 0,
+    explanation: "Booleans in Python (`True` and `False`) belong to the `<class 'bool'>` data type."
   },
   {
     id: "p07",
-    question: "How do you create a variable named 'score' with the integer value 100 in Python?",
-    options: ["score = 100","int score = 100;","let score = 100","var score = 100;"],
+    question: "What is the result of multiplying a string by an integer in Python: `\"Go! \" * 3`?",
+    options: ["\"Go! Go! Go! \"","Error: cannot multiply string","\"Go! 3\"","0"],
     answer: 0,
-    explanation: "Python uses dynamic typing and simple assignment: 'score = 100'. No variable declaration keywords (like let or var) are used."
+    explanation: "In Python, the '*' operator on a string and an integer performs string repetition, repeating the sequence 3 times."
   },
   {
     id: "p08",
-    question: "What is the key difference between 'let' and 'var' in modern JavaScript?",
-    options: ["'var' cannot be changed","'let' has block scope; 'var' has function scope","'let' is only for numbers","'var' is not supported in modern browsers"],
-    answer: 1,
-    explanation: "'let' is block-scoped (confined to its enclosing curly braces {}), preventing variable leakage, while 'var' is function-scoped."
+    question: "Which function returns the total number of characters in a string or items in a list?",
+    options: ["len()","count()","size()","length()"],
+    answer: 0,
+    explanation: "'len()' is the built-in function that calculates the length of sequences like strings, lists, and tuples."
   },
   {
     id: "p09",
-    question: "Which of the following is an INVALID variable name in Python?",
-    options: ["user_name","_private_key","2nd_place","studentScore"],
-    answer: 2,
-    explanation: "In Python, variable names cannot start with a number. '2nd_place' is invalid syntax, whereas letters and underscores are allowed."
+    question: "How do you convert the string '50' into a numeric integer in Python?",
+    options: ["int(\"50\")","float(\"50\")","str(50)","to_int(\"50\")"],
+    answer: 0,
+    explanation: "'int()' parses numeric strings or floats and casts them into integers."
   },
   {
     id: "p10",
-    question: "Which built-in Python function returns the data type of an object or variable?",
-    options: ["typeof()","type()","dataType()","check()"],
-    answer: 1,
-    explanation: "The 'type()' function returns the data type class of an object (for example, 'type(5)' returns '<class int>')."
+    question: "What is the difference between `/` and `//` arithmetic operators in Python?",
+    options: ["/ performs floating-point division; // performs floor (integer) division","/ is floor division; // is float division","/ is modulo remainder; // is power","They are identical in Python 3"],
+    answer: 0,
+    explanation: "`7 / 2` evaluates to 3.5 (float), while `7 // 2` evaluates to 3 (floor division discarding remainder)."
   },
   {
     id: "p11",
-    question: "What will the Python expression 'type(3.14)' evaluate to?",
-    options: ["<class 'int'>","<class 'float'>","<class 'decimal'>","<class 'number'>"],
-    answer: 1,
-    explanation: "Numbers with a decimal point in Python belong to the 'float' (floating-point number) data type."
+    question: "What does the modulo operator `%` return in Python: `14 % 4`?",
+    options: ["2","3.5","3","0"],
+    answer: 0,
+    explanation: "14 divided by 4 is 3 with a remainder of 2. The `%` modulo operator yields the remainder: 2."
   },
   {
     id: "p12",
-    question: "What will 'typeof 42' evaluate to in JavaScript?",
-    options: ["'integer'","'number'","'float'","'int'"],
-    answer: 1,
-    explanation: "JavaScript does not have separate integer and float types; all numerical values have the primitive type 'number'."
+    question: "Which operator raises a number to a power in Python: `2 ** 4`?",
+    options: ["**","^","^^","pow"],
+    answer: 0,
+    explanation: "'**' is Python's exponentiation operator. `2 ** 4` equals 16 (`2 * 2 * 2 * 2`)."
   },
   {
     id: "p13",
-    question: "How are Boolean values written in Python?",
-    options: ["true and false (lowercase)","True and False (Capitalized)","TRUE and FALSE (all caps)","1 and 0 only"],
-    answer: 1,
-    explanation: "Python Booleans MUST be capitalized: 'True' and 'False'. Writing 'true' or 'false' in lowercase causes a NameError!"
+    question: "Which comparison operator checks whether two values are equal in Python?",
+    options: ["==","=","===","!="],
+    answer: 0,
+    explanation: "'==' checks equality between values, whereas '=' is the assignment operator that assigns values to variables."
   },
   {
     id: "p14",
-    question: "Which operator in JavaScript checks both value AND data type for strict equality?",
-    options: ["==","===","!=","="],
-    answer: 1,
-    explanation: "The strict equality operator '===' checks both value and type without performing type coercion (e.g. 5 === '5' is false)."
+    question: "Which logical operator returns True only if BOTH conditions are True?",
+    options: ["and","or","not","xor"],
+    answer: 0,
+    explanation: "'and' evaluates to True if and only if both left and right operand expressions evaluate to True."
   },
   {
     id: "p15",
-    question: "What does the Python function 'input(\"Enter your name: \")' always return by default?",
-    options: ["An integer (int)","A string (str)","A boolean (bool)","None"],
-    answer: 1,
-    explanation: "The 'input()' function pauses execution to prompt the user and ALWAYS returns whatever they type as a text string ('str')."
+    question: "What are the three keywords used for multi-way conditional branching in Python?",
+    options: ["if, elif, else","if, else if, else","switch, case, default","try, catch, finally"],
+    answer: 0,
+    explanation: "Python uses 'if' for initial conditions, 'elif' (short for else if) for subsequent tests, and 'else' for catch-all fallbacks."
   },
   {
     id: "p16",
-    question: "How do you convert the text string \"45\" into an integer in Python?",
-    options: ["Integer(\"45\")","int(\"45\")","parse_int(\"45\")","\"45\".toInt()"],
-    answer: 1,
-    explanation: "The 'int()' constructor converts a valid numeric string or float into an integer (e.g., int('45') yields 45)."
+    question: "Which loop repeats a block of code as long as a specified condition remains True?",
+    options: ["while loop","for loop","do-while loop","repeat-until loop"],
+    answer: 0,
+    explanation: "A 'while' loop continues iterating while its controlling boolean condition remains True."
   },
   {
     id: "p17",
-    question: "In Python 3, what is the result of dividing two numbers with a single slash: '7 / 2'?",
-    options: ["3","3.5","3.0","4"],
-    answer: 1,
-    explanation: "In Python 3, standard division with a single slash '/' always performs true division and returns a float: '7 / 2 = 3.5'."
+    question: "What sequence of integers is generated by `range(5)` in a Python for-loop?",
+    options: ["0, 1, 2, 3, 4","1, 2, 3, 4, 5","0, 1, 2, 3, 4, 5","1, 2, 3, 4"],
+    answer: 0,
+    explanation: "`range(n)` generates non-negative integers starting at 0 up to, but not including, n."
   },
   {
     id: "p18",
-    question: "What characters enclose Template Literals in modern JavaScript for string interpolation?",
-    options: ["Double quotes (\"\")","Single quotes ('')","Backticks (``)","Parentheses (())"],
-    answer: 2,
-    explanation: "Template literals are enclosed by backticks (``), enabling embedded expressions via `${variable}` and multi-line strings."
+    question: "What numbers are generated by `list(range(2, 9, 2))`?",
+    options: ["[2, 4, 6, 8]","[2, 3, 4, 5, 6, 7, 8]","[2, 5, 8]","[4, 6, 8]"],
+    answer: 0,
+    explanation: "`range(start, stop, step)` starts at 2, increments by 2, and stops before 9: producing 2, 4, 6, 8."
   },
   {
     id: "p19",
-    question: "Which operator is used for Floor Division (integer quotient, discarding remainder) in Python?",
-    options: ["/","//","%","div"],
-    answer: 1,
-    explanation: "The double slash '//' is Python's floor division operator. For example, '7 // 2' equals '3'."
+    question: "Which keyword immediately exits and terminates the enclosing loop?",
+    options: ["break","continue","pass","return"],
+    answer: 0,
+    explanation: "'break' breaks out of the smallest enclosing `for` or `while` loop immediately."
   },
   {
     id: "p20",
-    question: "What is the console output of this remainder (modulo) operation in JavaScript?",
-    codeSnippet: "const dividend = 17;\nconst divisor = 5;\nconst remainder = dividend % divisor;\nconsole.log(remainder);",
-    codeLang: "javascript",
-    options: ["3","2","3.4","0"],
-    answer: 1,
-    explanation: "The remainder (modulo) operator '%' returns the remainder: 17 divided by 5 is 3 with 2 left over."
+    question: "Which keyword skips the rest of the current loop iteration and proceeds to the next iteration?",
+    options: ["continue","break","skip","pass"],
+    answer: 0,
+    explanation: "'continue' halts the current cycle of the loop and starts the next iteration at the top of the loop."
   },
   {
     id: "p21",
-    question: "Which method removes and returns the LAST element from a JavaScript array?",
-    options: ["array.shift()","array.pop()","array.remove()","array.delete()"],
-    answer: 1,
-    explanation: "'array.pop()' removes the last item from an array and returns it, reducing the array length by 1."
+    question: "Which keyword is used to define a custom function in Python?",
+    options: ["def","function","fun","define"],
+    answer: 0,
+    explanation: "'def' (short for define) introduces a function definition in Python, followed by function name and parentheses."
   },
   {
     id: "p22",
-    question: "Which operator calculates exponentiation (powers like 2 to the power 3 = 8) in Python?",
-    codeSnippet: "base = 2\nexponent = 3\nresult = base ** exponent\nprint(result)",
-    codeLang: "python",
-    options: ["^","**","^^","pow"],
-    answer: 1,
-    explanation: "In Python, '**' is the power/exponent operator: '2 ** 3' equals 8. (Note: '^' is bitwise XOR, not power!)."
+    question: "Which keyword sends a calculated result back to the caller from inside a Python function?",
+    options: ["return","send","yield","output"],
+    answer: 0,
+    explanation: "'return' exits the function and passes the specified expression value back to the caller."
   },
   {
     id: "p23",
-    question: "Which logical operator represents 'AND' in JavaScript?",
-    options: ["and","&&","&","AND"],
-    answer: 1,
-    explanation: "JavaScript uses double ampersand '&&' as the logical AND operator (returns true only if both operands are truthy)."
+    question: "What is the default return value of a Python function that does not include a return statement?",
+    options: ["None","0","False","Empty string \"\""],
+    answer: 0,
+    explanation: "If a function reaches the end of its body without returning a value, Python implicitly returns `None`."
   },
   {
     id: "p24",
-    question: "Which logical operator represents 'AND' in Python?",
-    options: ["&&","and","&","AND"],
-    answer: 1,
-    explanation: "Python uses clean English words for logical operations: 'and', 'or', and 'not' (in lowercase)."
+    question: "How do you define a default parameter value in a Python function header?",
+    options: ["def greet(name=\"Guest\"): ","def greet(name: \"Guest\"): ","def greet(name == \"Guest\"): ","def greet(default name \"Guest\"): "],
+    answer: 0,
+    explanation: "Using `=` in the parameter signature assigns a default fallback value if the caller omits that argument."
   },
   {
     id: "p25",
-    question: "Which logical operator represents 'OR' in JavaScript?",
-    options: ["or","||","|","OR"],
-    answer: 1,
-    explanation: "Double pipe '||' is the logical OR operator in JavaScript (evaluates to true if either operand is truthy)."
+    question: "How do you create an empty list in Python?",
+    options: ["items = [] or items = list()","items = ()","items = {}","items = < >"],
+    answer: 0,
+    explanation: "Square brackets `[]` or the constructor `list()` creates an empty, mutable Python list."
   },
   {
     id: "p26",
-    question: "What will the expression '\"Code\" + \"Hub\"' output in Python?",
-    options: ["'Code Hub'","'CodeHub'","'Code+Hub'","Error: Cannot add strings"],
-    answer: 1,
-    explanation: "The '+' operator on strings performs concatenation (joining them together directly without automatic spaces): 'CodeHub'."
+    question: "Given `colors = [\"red\", \"green\", \"blue\"]`, which expression accesses the first element?",
+    options: ["colors[0]","colors[1]","colors.first()","colors[-0]"],
+    answer: 0,
+    explanation: "Python sequences use zero-based indexing, so index 0 points to the very first element."
   },
   {
     id: "p27",
-    question: "Which property is used in JavaScript to update or retrieve the visible text inside an HTML element?",
-    options: ["element.textContent","element.textChange","element.modifyText","element.string()"],
+    question: "What does negative indexing like `items[-1]` access in a Python list?",
+    options: ["The very last element in the list","The first element in the list","A random negative number","An index error"],
     answer: 0,
-    explanation: "'.textContent' sets or returns the text content of the specified node and all its child elements."
+    explanation: "Negative indices count backwards from the end of a sequence, with -1 representing the last item."
   },
   {
     id: "p28",
-    question: "What is the index of the FIRST element in a JavaScript array?",
-    options: ["0","1","-1","first"],
+    question: "Which list method adds a single new item to the end of an existing list?",
+    options: [".append()",".add()",".insert()",".push()"],
     answer: 0,
-    explanation: "Like most programming languages, JavaScript uses zero-based indexing, meaning the first element is at index 0."
+    explanation: "`list.append(x)` appends object x to the end of the list in-place."
   },
   {
     id: "p29",
-    question: "In Python, which index accesses the LAST character of the string s = \"INNOVATE\"?",
-    options: ["s[last]","s[0]","s[-1]","s[end]"],
-    answer: 2,
-    explanation: "Python supports negative indexing! Index '-1' refers to the last element, '-2' the second to last, and so forth."
+    question: "Which list method removes and returns the last element (or an element at a specified index)?",
+    options: [".pop()",".delete()",".remove()",".drop()"],
+    answer: 0,
+    explanation: "`list.pop()` removes and returns the item at the given position; without arguments, it pops the last item."
   },
   {
     id: "p30",
-    question: "Which method adds a new element to the END of a JavaScript array?",
-    options: ["array.append()","array.push()","array.add()","array.insert()"],
-    answer: 1,
-    explanation: "'array.push()' appends one or more items to the end of an array and returns the new length."
+    question: "Given `nums = [10, 20, 30, 40, 50]`, what does the slice `nums[1:4]` produce?",
+    options: ["[20, 30, 40]","[10, 20, 30]","[20, 30, 40, 50]","[10, 20, 30, 40]"],
+    answer: 0,
+    explanation: "Slicing `[start:stop]` includes the start index (1 -> 20) up to, but excluding, the stop index (4 -> 50), yielding `[20, 30, 40]`."
   },
   {
     id: "p31",
-    question: "Which built-in function returns the total number of items in a string, list, or tuple in Python?",
-    options: ["size()","length()","len()","count()"],
-    answer: 2,
-    explanation: "The 'len()' function returns the length (count of elements) of a sequence or collection."
+    question: "What is the primary difference between a Python List and a Python Tuple?",
+    options: ["Lists are mutable (can be changed); Tuples are immutable (cannot be modified after creation)","Tuples can only store numbers; Lists store text","Lists use parentheses; Tuples use curly brackets","Lists are faster to search than Tuples"],
+    answer: 0,
+    explanation: "Lists (bracketed with `[]`) are mutable; tuples (bracketed with `()`) are immutable, meaning their elements cannot be changed."
   },
   {
     id: "p32",
-    question: "What is the modern, recommended way to format variables inside strings in Python 3.6+?",
-    options: ["f-strings: f\"Hello {name}\"","String concatenation only","printf(\"Hello %s\", name)","\"Hello \".format(name)"],
+    question: "How do you define a tuple with three elements in Python?",
+    options: ["point = (10, 20, 30)","point = [10, 20, 30]","point = {10, 20, 30}","point = <10, 20, 30>"],
     answer: 0,
-    explanation: "f-strings (prefixed with 'f') allow embedding expressions directly inside curly braces: f'Hello {name}'."
+    explanation: "Tuples are constructed using parentheses `()` enclosing comma-separated values."
   },
   {
     id: "p33",
-    question: "Which JavaScript array property returns the total number of elements in the array?",
-    options: ["array.count","array.size","array.length","array.total"],
-    answer: 2,
-    explanation: "The '.length' property reflects the number of elements in a JavaScript array."
+    question: "What data structure in Python stores associative Key-Value pairs inside curly braces?",
+    options: ["Dictionary (dict)","List","Tuple","Array"],
+    answer: 0,
+    explanation: "A dictionary (`dict`) maps unique keys to values using syntax like `{\"name\": \"Ada\", \"age\": 20}`."
   },
   {
     id: "p34",
-    question: "Which character MUST follow the condition in a Python if-statement: 'if age >= 18'?",
-    options: ["; (semicolon)","{ (curly brace)",": (colon)","then"],
-    answer: 2,
-    explanation: "In Python, conditional statements, loops, and function headers must end with a colon ':' before the indented block."
+    question: "Given `user = {\"name\": \"Kweku\", \"score\": 100}`, how do you read the 'score' value?",
+    options: ["user[\"score\"] or user.get(\"score\")","user(score)","user.score()","user->score"],
+    answer: 0,
+    explanation: "Dictionary values are retrieved by key indexing (`user[\"score\"]`) or safely using `.get(\"score\")`."
   },
   {
     id: "p35",
-    question: "What is the keyword for 'else if' in Python conditional statements?",
-    options: ["elseif","else if","elif","case"],
-    answer: 2,
-    explanation: "Python uses the concise keyword 'elif' (short for else-if) to check multiple conditions sequentially."
+    question: "How do you check whether a specific key exists in a Python dictionary?",
+    options: ["\"name\" in user","user.has(\"name\")","user.exists(\"name\")","user.contains(\"name\")"],
+    answer: 0,
+    explanation: "The `in` keyword checks for the presence of a key in a dictionary: `'key' in dict_name` returns True or False."
   },
   {
     id: "p36",
-    question: "How do you create an object literal in JavaScript representing a student with name 'Ada' and age 18?",
-    options: ["{ name: 'Ada', age: 18 }","[ name: 'Ada', age: 18 ]","( name: 'Ada', age: 18 )","< name: 'Ada', age: 18 >"],
+    question: "What key characteristic distinguishes a Python Set (`set`) from a List?",
+    options: ["Sets store only unique items with no duplicates and are unordered","Sets can only store integers","Sets preserve duplicate items in order","Sets can be accessed by numeric index"],
     answer: 0,
-    explanation: "JavaScript objects are declared using curly braces '{}' containing key-value pairs separated by commas."
+    explanation: "A set is an unordered collection of unique elements; duplicate values added to a set are automatically discarded."
   },
   {
     id: "p37",
-    question: "How do you create an empty List in Python?",
-    options: ["my_list = []","my_list = ()","my_list = {}","my_list = set()"],
+    question: "Which string method converts all characters in a string to uppercase in Python?",
+    options: [".upper()",".to_upper()",".capitalize()",".uppercase()"],
     answer: 0,
-    explanation: "Square brackets '[]' create a List. Parentheses '()' create a Tuple, and curly braces '{}' create a Dictionary or Set."
+    explanation: "`\"hello\".upper()` returns `\"HELLO\"`. Strings are immutable, so this returns a new uppercase string."
   },
   {
     id: "p38",
-    question: "How do you write a standard function named 'greet' in JavaScript?",
-    options: ["def greet() {}","function greet() {}","fn greet() {}","create greet() {}"],
-    answer: 1,
-    explanation: "Standard function declarations in JavaScript begin with the 'function' keyword: 'function greet() { ... }'."
+    question: "Which string method removes whitespace from both the beginning and the end of a string?",
+    options: [".strip()",".trim()",".clean()",".remove_spaces()"],
+    answer: 0,
+    explanation: "Python's `.strip()` method removes leading and trailing spaces, tabs, and newlines."
   },
   {
     id: "p39",
-    question: "Which method adds a single item to the END of an existing Python list?",
-    codeSnippet: "hub_tools = ['VS Code', 'Git']\nhub_tools.append('Python')\nprint(hub_tools)",
-    codeLang: "python",
-    options: [".add()",".push()",".append()",".insertEnd()"],
-    answer: 2,
-    explanation: "In Python, the list method '.append(item)' adds an element to the end of the list. (In JavaScript, it is '.push()')."
+    question: "What is the modern, recommended syntax for formatting variables directly into strings in Python 3.6+?",
+    options: ["f-strings (e.g., f\"Hello, {name}!\")","String concatenation with +","% formatting","String pointers"],
+    answer: 0,
+    explanation: "Formatted string literals (f-strings) prefix the string with 'f' and evaluate expressions placed inside `{}` placeholders."
   },
   {
     id: "p40",
-    question: "What is the fundamental difference between a Python List and a Python Tuple?",
-    options: ["Lists can store numbers; Tuples cannot","Lists are mutable (can be changed); Tuples are immutable (cannot be changed)","Tuples are slower than Lists","Lists use parentheses; Tuples use brackets"],
-    answer: 1,
-    explanation: "Lists (using []) are mutable and can be modified. Tuples (using ()) are immutable; once created, their elements cannot be changed."
+    question: "What does `\"cat,dog,bird\".split(\",\")` return in Python?",
+    options: ["['cat', 'dog', 'bird']","('cat', 'dog', 'bird')","\"cat dog bird\"","['cat,dog,bird']"],
+    answer: 0,
+    explanation: "`.split(\",\")` divides a string around the delimiter comma and returns a list of sub-strings."
   },
   {
     id: "p41",
-    question: "What will the following JavaScript code output to the console?",
-    codeSnippet: "const double = x => x * 2;\nconsole.log(double(6));",
-    codeLang: "javascript",
-    options: ["12","6","undefined","NaN"],
+    question: "How do you join a list of strings into one string separated by hyphens in Python?",
+    options: ["\"-\".join([\"a\", \"b\", \"c\"])","[\"a\", \"b\", \"c\"].join(\"-\")","join(\"-\", [\"a\", \"b\", \"c\"])","concat(\"-\", [\"a\", \"b\", \"c\"])"],
     answer: 0,
-    explanation: "The arrow function 'x => x * 2' doubles the input: passing 6 returns 12."
+    explanation: "In Python, `.join()` is called on the separator string: `\"-\".join([\"a\", \"b\", \"c\"])` produces `\"a-b-c\"`."
   },
   {
     id: "p42",
-    question: "Which Python data structure stores data in Key-Value pairs using curly braces {}?",
-    options: ["List","Tuple","Dictionary (dict)","Array"],
-    answer: 2,
-    explanation: "A Dictionary ('dict') stores data in key:value associations, like {'name': 'Ada', 'track': 'Programming'}."
+    question: "Which keyword is used to load an external library or standard module in Python?",
+    options: ["import","require","include","using"],
+    answer: 0,
+    explanation: "The 'import' keyword imports modules from Python's standard library or installed packages."
   },
   {
     id: "p43",
-    question: "Which of the following is considered a 'falsy' value in JavaScript?",
-    options: ["1","'0' (string with zero)","0 (the number zero)","[] (empty array)"],
-    answer: 2,
-    explanation: "The number 0 is falsy in JavaScript (along with '', null, undefined, NaN, and false). Non-empty strings and arrays are truthy!"
+    question: "Which standard library function generates a random integer between 1 and 6 inclusive?",
+    options: ["random.randint(1, 6)","random.random(1, 6)","math.random(1, 6)","random.choice(6)"],
+    answer: 0,
+    explanation: "`random.randint(a, b)` returns a random integer N such that `a <= N <= b` (both endpoints inclusive)."
   },
   {
     id: "p44",
-    question: "What values will the expression 'list(range(5))' generate in Python?",
-    options: ["[1, 2, 3, 4, 5]","[0, 1, 2, 3, 4]","[0, 1, 2, 3, 4, 5]","[1, 2, 3, 4]"],
-    answer: 1,
-    explanation: "'range(n)' starts at 0 and stops right before n, producing n numbers: [0, 1, 2, 3, 4]."
+    question: "What keywords construct the exception handling block in Python?",
+    options: ["try and except","try and catch","attempt and handle","begin and rescue"],
+    answer: 0,
+    explanation: "Python uses `try:` to wrap code that may raise errors, and `except ExceptionName:` to handle them gracefully."
   },
   {
     id: "p45",
-    question: "Which loop control keyword immediately STOPS and exits a loop in Python?",
-    options: ["stop","exit","break","continue"],
-    answer: 2,
-    explanation: "'break' immediately terminates the loop execution and jumps to the code following the loop."
+    question: "What built-in exception is raised when code attempts to divide a number by zero in Python?",
+    options: ["ZeroDivisionError","NullDivisionException","MathError","ArithmeticOverflow"],
+    answer: 0,
+    explanation: "Attempting division by zero in Python immediately raises a `ZeroDivisionError`."
   },
   {
     id: "p46",
-    question: "What is the famous quirk result of 'typeof null' in JavaScript?",
-    options: ["'null'","'undefined'","'object'","'boolean'"],
-    answer: 2,
-    explanation: "'typeof null' returns 'object'. This was a historic bug in the first 1995 JavaScript engine that was kept for backward compatibility."
+    question: "What special Python value represents the absence of a value or null state?",
+    options: ["None","null","nil","undefined"],
+    answer: 0,
+    explanation: "`None` is Python's singleton object representing null or no value, belonging to `NoneType`."
   },
   {
     id: "p47",
-    question: "Which keyword is used to declare/define a function in Python?",
-    options: ["function","def","fun","lambda"],
-    answer: 1,
-    explanation: "The 'def' keyword (short for define) is used to create a function in Python (for example: 'def greet():')."
+    question: "What does the expression `\"apple\" in [\"banana\", \"orange\", \"apple\"]` evaluate to?",
+    options: ["True","False","None","Error"],
+    answer: 0,
+    explanation: "The `in` membership operator checks if the item exists in the collection; since 'apple' is present, it returns True."
   },
   {
     id: "p48",
-    question: "What will this Python function output when executed?",
-    codeSnippet: "def add(a, b):\n    return a + b\n\nresult = add(7, 8)\nprint(result)",
-    codeLang: "python",
-    options: ["15","56","\"78\"","None"],
+    question: "What will `max([15, 82, 3, 44])` return in Python?",
+    options: ["82","15","3","44"],
     answer: 0,
-    explanation: "The 'add' function takes 7 and 8, computes their sum (15), and returns it to be printed."
+    explanation: "The built-in `max()` function scans an iterable or argument list and returns the highest value."
   },
   {
     id: "p49",
-    question: "Which JavaScript method converts a JavaScript object into a JSON-formatted string?",
-    options: ["JSON.parse()","JSON.stringify()","JSON.toText()","JSON.encode()"],
-    answer: 1,
-    explanation: "'JSON.stringify(object)' serializes a JavaScript object into a JSON string for transmission or storage."
+    question: "What Python technique allows concise list creation: `[x * 2 for x in range(3)]`?",
+    options: ["List comprehension","List multiplication","Lambda mapping","Generator unpacking"],
+    answer: 0,
+    explanation: "List comprehension provides a concise syntax to create new lists by transforming or filtering elements from an iterable."
   },
   {
     id: "p50",
     question: "Who originally designed and created the Python programming language in 1991?",
-    options: ["Brendan Eich","Guido van Rossum","James Gosling","Dennis Ritchie"],
-    answer: 1,
-    explanation: "Guido van Rossum created Python in the late 1980s and first released it in 1991, naming it after the British comedy show Monty Python."
+    options: ["Guido van Rossum","Brendan Eich","James Gosling","Dennis Ritchie"],
+    answer: 0,
+    explanation: "Dutch programmer Guido van Rossum created Python in the late 1980s and first released it in February 1991."
   }
 ];
 
 const QUESTIONS_GENERAL = [
   {
     id: "g01",
-    question: "Who is widely considered to be the world's first computer programmer for writing an algorithm for the Analytical Engine?",
-    options: ["Ada Lovelace", "Alan Turing", "Charles Babbage", "Grace Hopper"],
+    question: "What is the approximate speed of light in a vacuum, rounded to the nearest thousand kilometers per second?",
+    options: ["300,000 km/s","150,000 km/s","500,000 km/s","1,000,000 km/s"],
     answer: 0,
-    explanation: "Ada Lovelace wrote the world's first machine algorithm in the 1840s for Charles Babbage's mechanical computer."
+    explanation: "Light travels in a vacuum at approximately 299,792 km/s, commonly rounded to 300,000 km/s (3 x 10^8 m/s)."
   },
   {
     id: "g02",
-    question: "What is the capital city of Nigeria?",
-    options: ["Lagos", "Abuja", "Ibadan", "Kano"],
-    answer: 1,
-    explanation: "Abuja officially replaced Lagos as the federal capital of Nigeria on December 12, 1991."
+    question: "Who is widely regarded as the world's first computer programmer for writing an algorithm for Charles Babbage's Analytical Engine?",
+    options: ["Ada Lovelace","Alan Turing","Grace Hopper","Katherine Johnson"],
+    answer: 0,
+    explanation: "Ada Lovelace published the first computer algorithm in the 1840s, calculating Bernoulli numbers on Babbage's mechanical computer."
   },
   {
     id: "g03",
-    question: "Which chemical element makes up roughly 78 percent of Earth's atmosphere by volume?",
-    options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"],
-    answer: 2,
-    explanation: "Earth's atmosphere is composed of roughly 78% Nitrogen, 21% Oxygen, and 1% other trace gases."
+    question: "Which British computer scientist invented the World Wide Web in 1989 while working at CERN?",
+    options: ["Tim Berners-Lee","Bill Gates","Linus Torvalds","Steve Wozniak"],
+    answer: 0,
+    explanation: "Tim Berners-Lee created HTTP, HTML, and URL protocols, enabling global document sharing via the World Wide Web."
   },
   {
     id: "g04",
-    question: "What is the best-selling video game of all time, with over 300 million copies sold worldwide?",
-    options: ["Grand Theft Auto V", "Tetris", "Super Mario Bros", "Minecraft"],
-    answer: 3,
-    explanation: "Minecraft, created by Markus 'Notch' Persson and Mojang Studios, has surpassed 300 million copies sold worldwide."
+    question: "What is the largest organ of the human body by surface area and weight?",
+    options: ["Skin (Integumentary system)","Liver","Lungs","Brain"],
+    answer: 0,
+    explanation: "The skin is the body's largest organ, covering an average of 1.5 to 2 square meters in adult humans."
   },
   {
     id: "g05",
-    question: "Which British computer scientist invented the World Wide Web (WWW) in 1989 while working at CERN?",
-    options: ["Tim Berners-Lee", "Bill Gates", "Linus Torvalds", "Steve Wozniak"],
+    question: "What is the chemical formula for common table salt?",
+    options: ["NaCl (Sodium Chloride)","KCl (Potassium Chloride)","H2O (Water)","CO2 (Carbon Dioxide)"],
     answer: 0,
-    explanation: "Tim Berners-Lee created HTTP, HTML, and URL standards to make the World Wide Web accessible to everyone."
+    explanation: "Common table salt is formed by an ionic bond between sodium (Na) and chlorine (Cl), yielding NaCl."
   },
   {
     id: "g06",
-    question: "What is the tallest mountain on the African continent?",
-    options: ["Mount Kenya", "Mount Kilimanjaro", "Mount Everest", "Table Mountain"],
-    answer: 1,
-    explanation: "Mount Kilimanjaro in Tanzania is Africa's highest peak at 5,895 meters (19,341 feet) above sea level."
+    question: "Which planet in our Solar System is closest to the Sun?",
+    options: ["Mercury","Venus","Mars","Earth"],
+    answer: 0,
+    explanation: "Mercury orbits closest to the Sun, completing an orbit in approximately 88 Earth days."
   },
   {
     id: "g07",
-    question: "What do the letters in 'AI' stand for in modern technology and computing?",
-    options: ["Automated Internet", "Advanced Interface", "Artificial Intelligence", "Applied Informatics"],
-    answer: 2,
-    explanation: "AI stands for Artificial Intelligence, referring to machines that simulate human cognition and decision-making."
+    question: "What is the largest and deepest ocean on planet Earth?",
+    options: ["Pacific Ocean","Atlantic Ocean","Indian Ocean","Arctic Ocean"],
+    answer: 0,
+    explanation: "The Pacific Ocean covers over 60 million square miles, comprising more than 30 percent of the Earth's total surface area."
   },
   {
     id: "g08",
-    question: "How many interlocking colored rings are on the official Olympic flag?",
-    options: ["3", "4", "6", "5"],
-    answer: 3,
-    explanation: "The 5 interlocking rings represent the five inhabited continents of the world united by athleticism."
+    question: "What is the highest mountain peak above sea level on Earth?",
+    options: ["Mount Everest","K2 (Mount Godwin-Austen)","Kangchenjunga","Mount Kilimanjaro"],
+    answer: 0,
+    explanation: "Mount Everest in the Himalayas rises to an elevation of 8,848.86 meters (29,031.7 feet) above sea level."
   },
   {
     id: "g09",
-    question: "What is the fastest land animal in the world, capable of reaching speeds over 100 km/h (60 mph)?",
-    options: ["Cheetah", "Lion", "Pronghorn", "Greyhound"],
+    question: "Which river is widely recognized as the longest river in the world?",
+    options: ["Nile River","Amazon River","Yangtze River","Mississippi River"],
     answer: 0,
-    explanation: "The cheetah can accelerate from 0 to 60 mph in under 3 seconds, making it the fastest animal on land."
+    explanation: "The Nile River in northeastern Africa flows approximately 6,650 kilometers (4,132 miles) into the Mediterranean Sea."
   },
   {
     id: "g10",
-    question: "In digital screens and monitors, what are the three primary additive colors of light (RGB)?",
-    options: ["Red, Yellow, Blue", "Red, Green, Blue", "Cyan, Magenta, Yellow", "Red, Orange, Violet"],
-    answer: 1,
-    explanation: "RGB stands for Red, Green, and Blue, the primary colors used to render every color on digital monitors and phones."
+    question: "What is the innermost, solid layer located at the very center of the Earth?",
+    options: ["Inner Core","Outer Core","Mantle","Crust"],
+    answer: 0,
+    explanation: "The Earth's inner core is a solid sphere primarily made of iron and nickel under tremendous pressure and heat."
   },
   {
     id: "g11",
-    question: "Which organ in the human body consumes about 20 percent of the body's total energy despite only weighing 2 percent of body mass?",
-    options: ["Heart", "Liver", "Brain", "Lungs"],
-    answer: 2,
-    explanation: "The human brain consumes around 20% of resting glucose and oxygen to fuel neural firing."
+    question: "What biological process allows green plants to convert sunlight, carbon dioxide, and water into glucose and oxygen?",
+    options: ["Photosynthesis","Respiration","Fermentation","Transpiration"],
+    answer: 0,
+    explanation: "Photosynthesis uses chlorophyll to capture sunlight and synthesize carbohydrates while releasing oxygen."
   },
   {
     id: "g12",
-    question: "What company originally created the Android mobile operating system before it was acquired by Google in 2005?",
-    options: ["Apple", "Motorola", "Nokia", "Android Inc. (co-founded by Andy Rubin)"],
-    answer: 3,
-    explanation: "Android Inc. was founded in Palo Alto in 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White before Google bought it in 2005."
+    question: "Which gas makes up approximately 78 percent of Earth's atmosphere?",
+    options: ["Nitrogen (N2)","Oxygen (O2)","Carbon Dioxide (CO2)","Argon (Ar)"],
+    answer: 0,
+    explanation: "Nitrogen comprises approximately 78% of dry air, followed by oxygen at roughly 21%."
   },
   {
     id: "g13",
-    question: "What is the largest hot desert in the world?",
-    options: ["Sahara Desert", "Gobi Desert", "Kalahari Desert", "Arabian Desert"],
+    question: "Which cellular organelle is nicknamed the 'powerhouse of the cell' for generating ATP energy?",
+    options: ["Mitochondria","Nucleus","Ribosome","Golgi apparatus"],
     answer: 0,
-    explanation: "The Sahara Desert in Northern Africa spans roughly 9.2 million square kilometers, making it Earth's largest hot desert."
+    explanation: "Mitochondria generate most of the cell's adenosine triphosphate (ATP), the chemical energy currency of life."
   },
   {
     id: "g14",
-    question: "Which popular programming language was named after the British comedy troupe 'Monty Python'?",
-    options: ["Java", "Python", "Ruby", "Cobra"],
-    answer: 1,
-    explanation: "Guido van Rossum named Python after the BBC sketch comedy show 'Monty Python's Flying Circus', which he enjoyed reading."
+    question: "How many bones are there in the adult human skeleton?",
+    options: ["206","300","150","256"],
+    answer: 0,
+    explanation: "Humans are born with about 270 bones, which fuse during development to form 206 distinct bones in adulthood."
   },
   {
     id: "g15",
-    question: "How many days are in a standard Leap Year?",
-    options: ["364", "365", "366", "367"],
-    answer: 2,
-    explanation: "A leap year has 366 days instead of 365, adding February 29th to keep calendars synchronized with Earth's orbit."
+    question: "What is the hardest naturally occurring mineral on Earth, scoring a 10 on the Mohs scale?",
+    options: ["Diamond","Quartz","Topaz","Corundum"],
+    answer: 0,
+    explanation: "Diamond, composed of carbon atoms arranged in a rigid tetrahedral lattice, is Earth's hardest natural mineral."
   },
   {
     id: "g16",
-    question: "What is the boiling point of pure water at standard sea-level atmospheric pressure in Celsius?",
-    options: ["90 degrees C", "150 degrees C", "80 degrees C", "100 degrees C"],
-    answer: 3,
-    explanation: "Water boils at 100 degrees Celsius (212 degrees Fahrenheit) at standard atmospheric pressure."
+    question: "Which European nation presented the Statue of Liberty as a gift to the United States in the late 19th century?",
+    options: ["France","Great Britain","Spain","Germany"],
+    answer: 0,
+    explanation: "The Statue of Liberty was designed by French sculptor Frederic-Auguste Bartholdi and gifted by the people of France in 1886."
   },
   {
     id: "g17",
-    question: "Which African country is known as the 'Giant of Africa' due to having the largest population on the continent?",
-    options: ["Nigeria", "Egypt", "South Africa", "Ethiopia"],
+    question: "Which of the Seven Wonders of the Ancient World is the oldest and the only one still largely intact today?",
+    options: ["Great Pyramid of Giza","Hanging Gardens of Babylon","Lighthouse of Alexandria","Colossus of Rhodes"],
     answer: 0,
-    explanation: "With over 220 million people, Nigeria is the most populous nation in Africa and 6th in the world."
+    explanation: "Built around 2560 BC for Pharaoh Khufu, the Great Pyramid of Giza remains standing almost 4,600 years later."
   },
   {
     id: "g18",
-    question: "In binary computing and file storage, how many bytes are in exactly one Kilobyte (KB)?",
-    options: ["1000 bytes", "1024 bytes", "512 bytes", "2048 bytes"],
-    answer: 1,
-    explanation: "In binary computing, 1 KB is 2^10 = 1024 bytes."
+    question: "What was the name of the first artificial human-made satellite launched into orbit by the Soviet Union in 1957?",
+    options: ["Sputnik 1","Explorer 1","Vostok 1","Apollo 11"],
+    answer: 0,
+    explanation: "Sputnik 1 was launched on October 4, 1957, inaugurating the Space Age and space exploration race."
   },
   {
     id: "g19",
-    question: "What is the closest planet to the Sun in our Solar System?",
-    options: ["Venus", "Mars", "Mercury", "Earth"],
-    answer: 2,
-    explanation: "Mercury is the innermost and smallest planet in our solar system, orbiting nearest to the Sun."
+    question: "Which scientist formulated the three fundamental laws of classical motion and the law of universal gravitation?",
+    options: ["Sir Isaac Newton","Galileo Galilei","Johannes Kepler","Nikola Tesla"],
+    answer: 0,
+    explanation: "Isaac Newton published his laws of motion and universal gravitation in the monumental work 'Philosophiae Naturalis Principia Mathematica' in 1687."
   },
   {
     id: "g20",
-    question: "Who is the legendary football player that captained Argentina to victory in the 2022 FIFA World Cup?",
-    options: ["Cristiano Ronaldo", "Kylian Mbappe", "Diego Maradona", "Lionel Messi"],
-    answer: 3,
-    explanation: "Lionel Messi captained Argentina to their third FIFA World Cup victory in December 2022."
+    question: "Who developed the Theory of General Relativity and the famous mass-energy equivalence equation E = mc^2?",
+    options: ["Albert Einstein","Niels Bohr","Max Planck","Stephen Hawking"],
+    answer: 0,
+    explanation: "Albert Einstein revolutionized modern physics in the early 20th century with Special and General Relativity."
   },
   {
     id: "g21",
-    question: "What is the hardest naturally occurring mineral on Earth, scoring a 10 on the Mohs scale?",
-    options: ["Diamond", "Quartz", "Topaz", "Ruby"],
+    question: "In what year did the British passenger liner RMS Titanic sink on its maiden voyage across the Atlantic?",
+    options: ["1912","1905","1920","1898"],
     answer: 0,
-    explanation: "Diamond is composed of pure carbon in a crystal lattice and is the hardest natural mineral known."
+    explanation: "The Titanic struck an iceberg on the night of April 14, 1912, and sank in the early morning of April 15, 1912."
   },
   {
     id: "g22",
-    question: "Which social video platform was originally launched under the name 'Musical.ly' before rebranding globally?",
-    options: ["Instagram", "TikTok", "Snapchat", "Vine"],
-    answer: 1,
-    explanation: "ByteDance acquired Musical.ly in 2017 and merged it with their existing app to create TikTok worldwide in 2018."
+    question: "What is the largest living land mammal on planet Earth?",
+    options: ["African Bush Elephant","White Rhinoceros","Hippopotamus","Giraffe"],
+    answer: 0,
+    explanation: "The African Bush Elephant can weigh up to 6,000 kilograms (6 tonnes) and reach shoulder heights over 3.5 meters."
   },
   {
     id: "g23",
-    question: "What is the official currency of the United Kingdom?",
-    options: ["Euro", "Dollar", "Pound Sterling", "Franc"],
-    answer: 2,
-    explanation: "The United Kingdom's official currency is the British Pound Sterling (GBP)."
+    question: "What is the fastest animal on land, capable of reaching sprint speeds over 100 km/h (60 mph)?",
+    options: ["Cheetah","Lion","Pronghorn Antelope","Peregrine Falcon"],
+    answer: 0,
+    explanation: "The cheetah can accelerate from 0 to 95 km/h in just 3 seconds, making it the fastest terrestrial predator."
   },
   {
     id: "g24",
-    question: "What gas do plants absorb from the atmosphere to perform photosynthesis?",
-    options: ["Nitrogen", "Oxygen", "Hydrogen", "Carbon Dioxide"],
-    answer: 3,
-    explanation: "Plants absorb Carbon Dioxide (CO2) and water, using sunlight to release Oxygen (O2) and synthesize glucose."
+    question: "Which of the following is the only mammal capable of true, sustained flapping flight?",
+    options: ["Bat","Flying Squirrel","Sugar Glider","Flying Lemur"],
+    answer: 0,
+    explanation: "Bats (order Chiroptera) are the only mammals capable of powered, continuous flight with modified forelimb wings."
   },
   {
     id: "g25",
-    question: "Which artificial intelligence company developed the generative chatbot known as ChatGPT?",
-    options: ["OpenAI", "Google", "Microsoft", "Meta"],
+    question: "What is the largest planet in our Solar System, famous for its Great Red Spot storm?",
+    options: ["Jupiter","Saturn","Neptune","Uranus"],
     answer: 0,
-    explanation: "ChatGPT was developed and launched by OpenAI in November 2022."
+    explanation: "Jupiter is a gas giant with more than two and a half times the mass of all other Solar System planets combined."
   },
   {
     id: "g26",
-    question: "What is the longest river in the world, flowing through northeastern Africa?",
-    options: ["Amazon River", "Nile River", "Yangtze River", "Mississippi River"],
-    answer: 1,
-    explanation: "The Nile River stretches over 6,650 kilometers (4,132 miles) through 11 African countries."
+    question: "Which planet is colloquially called the 'Red Planet' due to iron oxide rust on its surface?",
+    options: ["Mars","Venus","Mercury","Jupiter"],
+    answer: 0,
+    explanation: "Mars appears reddish in the night sky due to the prevalence of iron oxide (rust) covering its rocky surface."
   },
   {
     id: "g27",
-    question: "What is the perimeter of a square if each of its four sides measures 5 meters?",
-    options: ["10 meters", "25 meters", "20 meters", "15 meters"],
-    answer: 2,
-    explanation: "A square has 4 equal sides: 4 * 5 meters = 20 meters perimeter."
+    question: "Who was the first human being to step foot on the Moon during the Apollo 11 mission in July 1969?",
+    options: ["Neil Armstrong","Buzz Aldrin","Michael Collins","Yuri Gagarin"],
+    answer: 0,
+    explanation: "Neil Armstrong stepped onto the lunar surface on July 20, 1969, declaring: 'That's one small step for man, one giant leap for mankind.'"
   },
   {
     id: "g28",
-    question: "Which famous physicist and mathematician formulated the mass-energy equivalence formula E = mc^2?",
-    options: ["Isaac Newton", "Nikola Tesla", "Thomas Edison", "Albert Einstein"],
-    answer: 3,
-    explanation: "Albert Einstein published the Theory of Special Relativity in 1905, establishing E = mc^2."
+    question: "Which scientific instrument is used to measure atmospheric pressure?",
+    options: ["Barometer","Thermometer","Anemometer","Hygrometer"],
+    answer: 0,
+    explanation: "Barometers measure air pressure, helping meteorologists forecast weather changes and atmospheric fronts."
   },
   {
     id: "g29",
-    question: "What does the 'HTTP' at the beginning of web addresses stand for?",
-    options: ["Hypertext Transfer Protocol", "High Technology Test Platform", "Home Terminal Text Protocol", "Hosted Tool Transfer Program"],
+    question: "What does the scientific acronym DNA stand for?",
+    options: ["Deoxyribonucleic Acid","Dinitrogen Acid","Decarboxylic Nucleic Atom","Dynamic Natural Acid"],
     answer: 0,
-    explanation: "HTTP stands for Hypertext Transfer Protocol, the foundational protocol for transferring web pages across the Internet."
+    explanation: "DNA stands for Deoxyribonucleic Acid, the double-helix molecule carrying genetic instructions for all living organisms."
   },
   {
     id: "g30",
-    question: "Which planet in our solar system is renowned for its bright, prominent rings composed of ice and rock particles?",
-    options: ["Jupiter", "Saturn", "Neptune", "Uranus"],
-    answer: 1,
-    explanation: "Saturn has the most extensive and visible ring system in our solar system."
+    question: "What is the official currency unit of Japan?",
+    options: ["Yen","Won","Yuan","Ringgit"],
+    answer: 0,
+    explanation: "The Japanese Yen (symbol: JPY, symbol mark: Yen) is Japan's official legal tender."
   },
   {
     id: "g31",
-    question: "How many players are on the pitch for ONE team during a standard soccer (association football) match?",
-    options: ["9 players", "10 players", "11 players", "12 players"],
-    answer: 2,
-    explanation: "A standard soccer team fields 11 players, including 1 goalkeeper and 10 outfield players."
+    question: "What is the capital city of Australia?",
+    options: ["Canberra","Sydney","Melbourne","Brisbane"],
+    answer: 0,
+    explanation: "Canberra was selected as Australia's capital city in 1908 as a compromise between rivals Sydney and Melbourne."
   },
   {
     id: "g32",
-    question: "What is the capital city of Japan, famous for Shibuya Crossing and the Akihabara electronics district?",
-    options: ["Kyoto", "Osaka", "Hiroshima", "Tokyo"],
-    answer: 3,
-    explanation: "Tokyo is the capital and largest metropolitan city of Japan."
+    question: "What is the smallest continent on Earth by total land area?",
+    options: ["Australia (Oceania)","Europe","Antarctica","South America"],
+    answer: 0,
+    explanation: "Australia is the smallest continent by land area, encompassing about 7.7 million square kilometers."
   },
   {
     id: "g33",
-    question: "Which scientific instrument is used to measure electric current in an electrical circuit?",
-    options: ["Ammeter", "Voltmeter", "Barometer", "Thermometer"],
+    question: "What is the deepest known point in Earth's oceans, located in the western Pacific Ocean?",
+    options: ["Challenger Deep (Mariana Trench)","Puerto Rico Trench","Java Trench","Sunda Trench"],
     answer: 0,
-    explanation: "An Ammeter measures electric current in amperes (A), while a Voltmeter measures electric potential difference in volts."
+    explanation: "Challenger Deep in the Mariana Trench descends to an extraordinary depth of approximately 10,928 meters (35,853 feet)."
   },
   {
     id: "g34",
-    question: "In the famous comic book stories, what is the secret alter-ego identity of the superhero Batman?",
-    options: ["Clark Kent", "Bruce Wayne", "Peter Parker", "Tony Stark"],
-    answer: 1,
-    explanation: "Bruce Wayne is the wealthy CEO and philanthropist who protects Gotham City as Batman."
+    question: "Which Italian Renaissance polymath painted the Mona Lisa and The Last Supper?",
+    options: ["Leonardo da Vinci","Michelangelo","Raphael","Donatello"],
+    answer: 0,
+    explanation: "Leonardo da Vinci (1452-1519) painted the Mona Lisa and mastered anatomy, engineering, and painting during the Renaissance."
   },
   {
     id: "g35",
-    question: "What is the approximate speed of light in a vacuum, rounded to the nearest thousand kilometers per second?",
-    options: ["150,000 km/s", "200,000 km/s", "300,000 km/s", "500,000 km/s"],
-    answer: 2,
-    explanation: "The speed of light in vacuum is approximately 299,792 km/s, commonly rounded to 300,000 km/s (3 x 10^8 m/s)."
+    question: "Which Dutch Post-Impressionist painter created the famous masterpiece 'The Starry Night' in 1889?",
+    options: ["Vincent van Gogh","Rembrandt van Rijn","Johannes Vermeer","Claude Monet"],
+    answer: 0,
+    explanation: "Vincent van Gogh painted 'The Starry Night' while staying at the Saint-Paul-de-Mausole asylum in Saint-Remy-de-Provence."
+  },
+  {
+    id: "g36",
+    question: "Which English playwright and poet authored Romeo and Juliet, Hamlet, and Macbeth?",
+    options: ["William Shakespeare","Christopher Marlowe","Geoffrey Chaucer","John Milton"],
+    answer: 0,
+    explanation: "William Shakespeare (1564-1616) wrote 39 plays and 154 sonnets, fundamentally shaping the English language."
+  },
+  {
+    id: "g37",
+    question: "Which German inventor introduced the movable type printing press to Europe around 1440?",
+    options: ["Johannes Gutenberg","Martin Luther","Albrecht Durer","Nikolaus Otto"],
+    answer: 0,
+    explanation: "Gutenberg's invention of mechanical movable type dramatically accelerated the spread of literacy, science, and the Renaissance."
+  },
+  {
+    id: "g38",
+    question: "Which open-source operating system kernel was created by Finnish programmer Linus Torvalds in 1991?",
+    options: ["Linux","Unix","Windows NT","macOS"],
+    answer: 0,
+    explanation: "Linus Torvalds released the initial Linux kernel in 1991, which powers modern servers, Android devices, and supercomputers."
+  },
+  {
+    id: "g39",
+    question: "Which object-oriented programming language was developed by James Gosling at Sun Microsystems in 1995 with the motto 'Write Once, Run Anywhere'?",
+    options: ["Java","C++","C#","Ruby"],
+    answer: 0,
+    explanation: "James Gosling developed Java at Sun Microsystems, using a virtual machine (JVM) for cross-platform portability."
+  },
+  {
+    id: "g40",
+    question: "Which company developed the original Android operating system before Google acquired it in 2005?",
+    options: ["Android Inc.","Symbian Ltd.","Palm Inc.","BlackBerry Ltd."],
+    answer: 0,
+    explanation: "Android Inc. was founded in 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White before Google purchased it in 2005."
+  },
+  {
+    id: "g41",
+    question: "In computer hardware, what does the acronym CPU stand for?",
+    options: ["Central Processing Unit","Central Power Utility","Computer Program Unit","Core Pixel Unit"],
+    answer: 0,
+    explanation: "The Central Processing Unit (CPU) executes instructions, performs mathematical logic, and coordinates hardware components."
+  },
+  {
+    id: "g42",
+    question: "In computer systems, what does the memory acronym RAM stand for?",
+    options: ["Random Access Memory","Read Access Module","Rapid Action Memory","Routing Array Memory"],
+    answer: 0,
+    explanation: "RAM is volatile high-speed memory that stores active programs and working data for quick CPU access."
+  },
+  {
+    id: "g43",
+    question: "How many bits are in a single standard digital byte?",
+    options: ["8","4","16","32"],
+    answer: 0,
+    explanation: "A standard byte consists of 8 binary bits, capable of representing 256 distinct integer values (0 to 255)."
+  },
+  {
+    id: "g44",
+    question: "What is widely recognized as the world's first commercial home video game console, released in 1972?",
+    options: ["Magnavox Odyssey","Atari 2600","Nintendo Entertainment System","Commodore 64"],
+    answer: 0,
+    explanation: "The Magnavox Odyssey, designed by Ralph Baer, was released in September 1972 as the first commercial home video game console."
+  },
+  {
+    id: "g45",
+    question: "Which Japanese video game designer created iconic gaming franchises including Mario, The Legend of Zelda, and Donkey Kong?",
+    options: ["Shigeru Miyamoto","Hideo Kojima","Tadao Ando","Satoshi Tajiri"],
+    answer: 0,
+    explanation: "Shigeru Miyamoto joined Nintendo in 1977 and revolutionized interactive entertainment with Mario and Zelda."
+  },
+  {
+    id: "g46",
+    question: "Which ancient civilization constructed the Colosseum and paved a network of stone roads throughout Europe?",
+    options: ["Ancient Rome","Ancient Greece","Ancient Egypt","Babylon"],
+    answer: 0,
+    explanation: "The Roman Empire built architectural marvels including aqueducts, the Colosseum, and the Pantheon."
+  },
+  {
+    id: "g47",
+    question: "Which South American civilization constructed the 15th-century mountain citadel of Machu Picchu in Peru?",
+    options: ["Inca Empire","Aztec Empire","Maya Civilization","Olmec Civilization"],
+    answer: 0,
+    explanation: "The Incas built Machu Picchu high in the Andes mountains around 1450 under emperor Pachacuti."
+  },
+  {
+    id: "g48",
+    question: "What is the largest hot desert on Earth, spanning across northern Africa?",
+    options: ["Sahara Desert","Arabian Desert","Gobi Desert","Kalahari Desert"],
+    answer: 0,
+    explanation: "The Sahara Desert covers over 9 million square kilometers, an area nearly the size of the United States."
+  },
+  {
+    id: "g49",
+    question: "Which continent is home to the Geographic South Pole and contains roughly 90 percent of all ice on Earth?",
+    options: ["Antarctica","Arctic","Greenland","Australia"],
+    answer: 0,
+    explanation: "Antarctica is the coldest, driest, and windiest continent, holding the majority of Earth's freshwater ice."
+  },
+  {
+    id: "g50",
+    question: "What is the chemical symbol for Gold on the periodic table?",
+    options: ["Au","Ag","Fe","Gd"],
+    answer: 0,
+    explanation: "'Au' comes from the Latin word 'aurum', meaning shining dawn or gold."
+  },
+  {
+    id: "g51",
+    question: "What is the chemical symbol for Iron on the periodic table?",
+    options: ["Fe","Ir","In","Pb"],
+    answer: 0,
+    explanation: "'Fe' derives from the Latin word 'ferrum', meaning iron."
+  },
+  {
+    id: "g52",
+    question: "What is the most abundant chemical element in the observable universe?",
+    options: ["Hydrogen (H)","Helium (He)","Carbon (C)","Oxygen (O)"],
+    answer: 0,
+    explanation: "Hydrogen makes up roughly 75% of the baryonic mass of the universe and fuels stars through nuclear fusion."
+  },
+  {
+    id: "g53",
+    question: "What is the pH value of pure neutral water at room temperature (25 degrees Celsius)?",
+    options: ["7","0","14","5"],
+    answer: 0,
+    explanation: "A pH of 7 represents a neutral solution, with values below 7 being acidic and values above 7 being alkaline/basic."
+  },
+  {
+    id: "g54",
+    question: "Which blood cells are responsible for carrying oxygen from the lungs to the rest of the human body?",
+    options: ["Red blood cells (Erythrocytes)","White blood cells (Leukocytes)","Platelets (Thrombocytes)","Plasma proteins"],
+    answer: 0,
+    explanation: "Red blood cells contain iron-rich hemoglobin molecules that bind oxygen in the lungs and deliver it to bodily tissues."
+  },
+  {
+    id: "g55",
+    question: "Which organ in the human body secretes insulin to regulate blood glucose levels?",
+    options: ["Pancreas","Gallbladder","Spleen","Kidney"],
+    answer: 0,
+    explanation: "Beta cells in the islets of Langerhans inside the pancreas produce and release insulin into the bloodstream."
+  },
+  {
+    id: "g56",
+    question: "Which muscular organ pumps deoxygenated blood to the lungs and oxygenated blood to the body?",
+    options: ["Heart","Liver","Lungs","Stomach"],
+    answer: 0,
+    explanation: "The human heart beats approximately 100,000 times a day, circulating roughly 2,000 gallons of blood."
+  },
+  {
+    id: "g57",
+    question: "Which fundamental force governs the orbits of planets, the tides of oceans, and the fall of apples?",
+    options: ["Gravity","Electromagnetism","Strong nuclear force","Weak nuclear force"],
+    answer: 0,
+    explanation: "Gravity is the attractive force that acts between all objects with mass across cosmic distances."
+  },
+  {
+    id: "g58",
+    question: "What is the only natural satellite that permanently orbits planet Earth?",
+    options: ["The Moon","Phobos","Europa","Titan"],
+    answer: 0,
+    explanation: "The Moon is Earth's only natural satellite, orbiting at an average distance of about 384,400 kilometers."
+  },
+  {
+    id: "g59",
+    question: "What is the name of the barred spiral galaxy in which our Solar System resides?",
+    options: ["The Milky Way","Andromeda","Triangulum","Whirlpool Galaxy"],
+    answer: 0,
+    explanation: "Our Solar System is situated in the Orion Arm of the Milky Way galaxy, containing an estimated 100 to 400 billion stars."
+  },
+  {
+    id: "g60",
+    question: "What type of star is the Sun at the center of our Solar System classified as?",
+    options: ["Yellow Dwarf (G-type main-sequence star)","Red Giant","White Dwarf","Blue Supergiant"],
+    answer: 0,
+    explanation: "The Sun is a G-type main-sequence star (G2V), commonly called a yellow dwarf, formed about 4.6 billion years ago."
+  },
+  {
+    id: "g61",
+    question: "How many chambers are there in the human heart?",
+    options: ["4 (two atria and two ventricles)","2","3","6"],
+    answer: 0,
+    explanation: "The human heart has four chambers: right atrium, right ventricle, left atrium, and left ventricle."
+  },
+  {
+    id: "g62",
+    question: "How many permanent teeth does a complete set of normal adult human dentition contain (including wisdom teeth)?",
+    options: ["32","28","24","36"],
+    answer: 0,
+    explanation: "Adult humans typically develop 32 permanent teeth: 8 incisors, 4 canines, 8 premolars, and 12 molars (including 4 wisdom teeth)."
+  },
+  {
+    id: "g63",
+    question: "In physics and electrical engineering, what unit is used to measure electrical resistance?",
+    options: ["Ohm (Omega)","Volt (V)","Watt (W)","Joule (J)"],
+    answer: 0,
+    explanation: "Resistance is measured in Ohms (symbol: Omega), named after German physicist Georg Simon Ohm."
+  },
+  {
+    id: "g64",
+    question: "What SI unit is used to measure electric current flow in a circuit?",
+    options: ["Ampere (Amp)","Coulomb","Tesla","Henry"],
+    answer: 0,
+    explanation: "Electric current is measured in Amperes (A), representing the flow of one coulomb of electrical charge per second."
+  },
+  {
+    id: "g65",
+    question: "What SI unit measures frequency, defined as the number of periodic cycles per second?",
+    options: ["Hertz (Hz)","Decibel (dB)","Lumen (lm)","Pascal (Pa)"],
+    answer: 0,
+    explanation: "Frequency is measured in Hertz (Hz), named after Heinrich Hertz who experimentally proved the existence of electromagnetic waves."
+  },
+  {
+    id: "g66",
+    question: "Which optical instrument gathers and magnifies light to observe distant planets and celestial bodies?",
+    options: ["Telescope","Microscope","Periscope","Kaleidoscope"],
+    answer: 0,
+    explanation: "Telescopes use lenses (refracting) or curved mirrors (reflecting) to collect light and observe distant cosmic objects."
+  },
+  {
+    id: "g67",
+    question: "Which scientific instrument uses lenses to magnify microscopic specimens such as cells and bacteria?",
+    options: ["Microscope","Stethoscope","Spectrometer","Seismograph"],
+    answer: 0,
+    explanation: "Microscopes magnify objects that are invisible to the naked human eye, enabling modern microbiology and histology."
+  },
+  {
+    id: "g68",
+    question: "Which country holds the record for winning the most FIFA Men's World Cup football championship titles?",
+    options: ["Brazil (5 titles)","Germany (4 titles)","Italy (4 titles)","Argentina (3 titles)"],
+    answer: 0,
+    explanation: "Brazil has won five Men's FIFA World Cup titles (1958, 1962, 1970, 1994, 2002), more than any other nation."
+  },
+  {
+    id: "g69",
+    question: "In which ancient country were the original Olympic Games held in the sanctuary of Olympia in 776 BC?",
+    options: ["Greece","Italy","Egypt","Persia"],
+    answer: 0,
+    explanation: "The ancient Olympic Games originated in Greece as a festival honoring the god Zeus, held every four years."
+  },
+  {
+    id: "g70",
+    question: "What is the federal capital city of Canada?",
+    options: ["Ottawa","Toronto","Vancouver","Montreal"],
+    answer: 0,
+    explanation: "Queen Victoria chose Ottawa as Canada's permanent capital in 1857 because of its strategic position between Upper and Lower Canada."
+  },
+  {
+    id: "g71",
+    question: "What is the largest island nation by land area in the Caribbean Sea?",
+    options: ["Cuba","Jamaica","Hispaniola","Puerto Rico"],
+    answer: 0,
+    explanation: "Cuba is the largest island in the Caribbean, spanning over 104,000 square kilometers."
+  },
+  {
+    id: "g72",
+    question: "Which human-engineered ship canal connects the Atlantic Ocean directly to the Pacific Ocean across Central America?",
+    options: ["Panama Canal","Suez Canal","Erie Canal","Kiel Canal"],
+    answer: 0,
+    explanation: "The Panama Canal opened in 1914, providing a crucial 82-kilometer shortcut between the Atlantic and Pacific oceans."
+  },
+  {
+    id: "g73",
+    question: "Which strategic maritime canal connects the Mediterranean Sea to the Red Sea, facilitating trade between Europe and Asia?",
+    options: ["Suez Canal","Panama Canal","Corinth Canal","Bosphorus Strait"],
+    answer: 0,
+    explanation: "Opened in 1869 in Egypt, the Suez Canal enables ships to travel between Europe and Asia without navigating around Africa."
+  },
+  {
+    id: "g74",
+    question: "The majority of the Amazon Rainforest, the world's largest tropical rainforest, lies within the borders of which nation?",
+    options: ["Brazil","Colombia","Peru","Venezuela"],
+    answer: 0,
+    explanation: "Approximately 60 percent of the Amazon Rainforest basin is situated within Brazil, supporting millions of species."
+  },
+  {
+    id: "g75",
+    question: "What branch of science is dedicated to studying the atmosphere, weather phenomena, and climate forecasting?",
+    options: ["Meteorology","Mineralogy","Geology","Seismology"],
+    answer: 0,
+    explanation: "Meteorology analyzes atmospheric physics, jet streams, humidity, and storm systems to forecast short-term weather."
+  },
+  {
+    id: "g76",
+    question: "What branch of science focuses on the study of fossils and prehistoric plant and animal life?",
+    options: ["Paleontology","Archaeology","Anthropology","Entomology"],
+    answer: 0,
+    explanation: "Paleontology investigates ancient organic life through fossil records preserved in sedimentary rock strata."
+  },
+  {
+    id: "g77",
+    question: "What is the official ISO 4217 international currency code for the United States Dollar?",
+    options: ["USD","US$","DLR","DOL"],
+    answer: 0,
+    explanation: "Under international standard ISO 4217, the United States Dollar is officially designated as 'USD'."
+  },
+  {
+    id: "g78",
+    question: "What famous landmark is the Great Clock tower located at the Palace of Westminster in London colloquially known as?",
+    options: ["Big Ben (Elizabeth Tower)","London Eye","Tower Bridge","St. Paul's Cathedral"],
+    answer: 0,
+    explanation: "Big Ben is the nickname of the Great Bell inside the clock tower, officially named the Elizabeth Tower in 2012."
+  },
+  {
+    id: "g79",
+    question: "In what year did the Berlin Wall fall, signaling a pivotal step toward German reunification and the end of the Cold War?",
+    options: ["1989","1991","1985","1979"],
+    answer: 0,
+    explanation: "On November 9, 1989, East German officials announced border crossings were open, leading citizens to dismantle the Berlin Wall."
+  },
+  {
+    id: "g80",
+    question: "What does the network protocol acronym HTTP stand for in web addresses?",
+    options: ["Hypertext Transfer Protocol","High-speed Text Transmission Program","Hyperlink Technical Transport Package","Host Terminal Transfer Protocol"],
+    answer: 0,
+    explanation: "HTTP (Hypertext Transfer Protocol) is the application-layer foundation for data communication across the World Wide Web."
   }
 ];
 
